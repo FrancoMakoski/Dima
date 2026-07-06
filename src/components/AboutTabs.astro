@@ -1,0 +1,192 @@
+---
+// AboutTabs.astro — card con 3 pestañas (Sobre mí / Enfoque / Valores) estilo Clearly.
+// tablist accesible: click + flechas de teclado (invertidas en RTL), aria-selected,
+// tabindex roving. Cada panel: párrafos con clamp opcional + botón Leer más/menos
+// que solo aparece si hay overflow real (medido en JS).
+import Card from './Card.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['about'];
+}
+
+const { t } = Astro.props;
+---
+
+<Card class="about-card">
+  <div class="about-tabs" role="tablist" aria-label={t.tabs.map((x) => x.label).join(' / ')}>
+    {t.tabs.map((tab, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`about-tab-${tab.id}`}
+        class:list={['about-tab', { 'is-active': i === 0 }]}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        aria-controls={`about-panel-${tab.id}`}
+        tabindex={i === 0 ? 0 : -1}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+
+  {t.tabs.map((tab, i) => (
+    <div
+      id={`about-panel-${tab.id}`}
+      class="about-panel"
+      role="tabpanel"
+      aria-labelledby={`about-tab-${tab.id}`}
+      hidden={i !== 0}
+    >
+      <div class="about-clamp" data-clamp>
+        {tab.paragraphs.map((p) => (
+          <p class="about-para">{p}</p>
+        ))}
+      </div>
+      <button type="button" class="about-more" data-more hidden>
+        <span data-more-label>{t.readMore}</span>
+      </button>
+    </div>
+  ))}
+</Card>
+
+<script is:inline define:vars={{ readMore: t.readMore, readLess: t.readLess }}>
+  (() => {
+    const card = document.currentScript.previousElementSibling;
+    if (!card) return;
+    const tabs = Array.from(card.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(card.querySelectorAll('[role="tabpanel"]'));
+
+    const measure = (panel) => {
+      const clamp = panel.querySelector('[data-clamp]');
+      const btn = panel.querySelector('[data-more]');
+      if (!clamp || !btn) return;
+      const overflow = clamp.scrollHeight - clamp.clientHeight > 4;
+      btn.hidden = !overflow && !clamp.classList.contains('is-open');
+    };
+
+    const selectTab = (idx, focus) => {
+      tabs.forEach((t, i) => {
+        const on = i === idx;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        t.classList.toggle('is-active', on);
+      });
+      panels.forEach((p, i) => {
+        p.hidden = i !== idx;
+      });
+      if (focus) tabs[idx].focus();
+      requestAnimationFrame(() => measure(panels[idx]));
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => selectTab(i, false));
+      tab.addEventListener('keydown', (e) => {
+        const rtl = document.dir === 'rtl';
+        let next = -1;
+        if (e.key === 'ArrowRight') next = rtl ? i - 1 : i + 1;
+        else if (e.key === 'ArrowLeft') next = rtl ? i + 1 : i - 1;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        if (next < 0 || next >= tabs.length) return;
+        e.preventDefault();
+        selectTab(next, true);
+      });
+    });
+
+    panels.forEach((panel) => {
+      const clamp = panel.querySelector('[data-clamp]');
+      const btn = panel.querySelector('[data-more]');
+      const label = btn && btn.querySelector('[data-more-label]');
+      if (!clamp || !btn || !label) return;
+      btn.addEventListener('click', () => {
+        const open = clamp.classList.toggle('is-open');
+        label.textContent = open ? readLess : readMore;
+      });
+    });
+
+    // Medir el panel visible inicial (y re-medir en resize).
+    const measureVisible = () => {
+      const idx = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+      if (idx >= 0) measure(panels[idx]);
+    };
+    requestAnimationFrame(measureVisible);
+    window.addEventListener('resize', measureVisible);
+  })();
+</script>
+
+<style>
+  .about-tabs {
+    display: flex;
+    gap: var(--sp-5);
+    border-block-end: 1px solid var(--color-border);
+    margin-block-end: var(--sp-5);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .about-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-tab {
+    padding: 0 0 var(--sp-3);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-2);
+    white-space: nowrap;
+    background: none;
+    border-block-end: 2px solid transparent;
+    margin-block-end: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .about-tab.is-active {
+    color: var(--color-text);
+    font-weight: var(--fw-semibold);
+    border-block-end-color: var(--color-primary);
+  }
+
+  .about-tab:hover {
+    color: var(--color-text);
+  }
+
+  .about-para {
+    color: var(--color-text);
+    line-height: var(--lh-normal);
+  }
+
+  .about-para + .about-para {
+    margin-block-start: var(--sp-3);
+  }
+
+  /* Clamp: al montar mostramos ~6 líneas; is-open expande. */
+  .about-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
+    overflow: hidden;
+  }
+
+  .about-clamp.is-open {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
+  }
+
+  .about-more {
+    display: block;
+    margin-block-start: var(--sp-3);
+    margin-inline: auto;
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    background: none;
+  }
+
+  .about-more:hover {
+    text-decoration: underline;
+  }
+</style>

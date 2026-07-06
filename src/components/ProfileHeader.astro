@@ -1,0 +1,147 @@
+---
+// ProfileHeader.astro — card de encabezado del perfil (columna principal, primera).
+// Nombre grande + años de experiencia + Nº de certificado + rol en gris, y fila de
+// stats con iconitos de color (precio azul, reseñas estrella, respuesta). Todo el
+// texto llega por props; este componente no decide copy. Solo props lógicas.
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['header'];
+}
+
+const { t } = Astro.props;
+---
+
+<Card class="profile-header">
+  <h1 class="ph-name">{t.name}</h1>
+  <p class="ph-years">{t.yearsExp}</p>
+  <p class="ph-cert">{t.certLine}</p>
+  <p class="ph-role">{t.role}</p>
+
+  <div class="ph-stats">
+    <div class="ph-stat">
+      <span class="ph-stat-icon ph-stat-icon--price">
+        <Icon name="bar-chart" size={18} />
+      </span>
+      <span class="ph-stat-text">
+        <span class="ph-stat-strong">{t.stats.price}</span>
+        <span class="ph-stat-note">{t.stats.priceNote}</span>
+      </span>
+    </div>
+
+    <div class="ph-stat">
+      <span class="ph-stat-icon ph-stat-icon--star">
+        <Icon name="star-rating" size={18} />
+      </span>
+      <span class="ph-stat-text">
+        <span class="ph-stat-strong">{t.stats.reviewsCount}</span>
+      </span>
+    </div>
+
+    <div class="ph-stat">
+      <span class="ph-stat-icon ph-stat-icon--chat">
+        <Icon name="chat-bubble-dots" size={18} />
+      </span>
+      <span class="ph-stat-text">
+        <span class="ph-stat-note ph-stat-note--inline">{t.stats.responseNote}</span>
+      </span>
+    </div>
+  </div>
+</Card>
+
+<style>
+  .ph-name {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    line-height: var(--lh-tight);
+    margin-block-end: var(--sp-2);
+  }
+
+  .ph-years {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-2);
+  }
+
+  .ph-cert {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-2);
+  }
+
+  .ph-role {
+    font-size: var(--fs-base);
+    color: var(--color-text-2);
+    margin-block-end: 0;
+  }
+
+  .ph-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-5) var(--sp-8);
+    margin-block-start: var(--sp-6);
+    padding-block-start: var(--sp-6);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .ph-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-inline-size: 0;
+  }
+
+  .ph-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-pill);
+    flex-shrink: 0;
+  }
+
+  .ph-stat-icon--price {
+    color: var(--color-primary);
+    background: var(--color-primary-100);
+  }
+
+  .ph-stat-icon--star {
+    color: var(--color-star);
+    background: color-mix(in srgb, var(--color-star) 16%, white);
+  }
+
+  .ph-stat-icon--chat {
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 14%, white);
+  }
+
+  .ph-stat-text {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    line-height: var(--lh-tight);
+  }
+
+  .ph-stat-strong {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+  }
+
+  .ph-stat-note {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    margin-block-start: 2px;
+  }
+
+  .ph-stat-note--inline {
+    margin-block-start: 0;
+    max-inline-size: 22ch;
+  }
+</style>

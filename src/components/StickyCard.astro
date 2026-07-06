@@ -1,0 +1,214 @@
+---
+// StickyCard.astro — tarjeta lateral (sidebar) estilo Clearly.
+// Foto arriba a sangre con overlay + nombre; cuerpo con precio/años, CTA WhatsApp
+// primario, botón "beseda" secundario y bloque de próxima disponibilidad.
+//
+// CONTRATO con el agente de disponibilidad (availability.ts):
+//   - [data-availability-block] : contenedor label+chip, empieza `hidden`. El script
+//      lo des-oculta (quita `hidden`) cuando tiene un valor real.
+//   - [data-next-availability]   : el <span> del chip, VACÍO + `hidden`. El script
+//      escribe el texto y lo des-oculta.
+//   Si JS no corre, ambos quedan ocultos (no hay fallback con horario inventado).
+import Icon from './Icon.astro';
+import CtaWhatsApp from './CtaWhatsApp.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['sticky'];
+  name: string;
+  waMessage: string;
+  photoAlt: string;
+}
+
+const { t, name, waMessage, photoAlt } = Astro.props;
+---
+
+<div class="sticky-card">
+  <div class="sc-photo">
+    <img
+      class="sc-photo-img"
+      src="/assets/img/dmitry-photo2-880.webp"
+      alt={photoAlt}
+      width="880"
+      height="1100"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="sc-photo-overlay"></div>
+    <span class="sc-photo-name">{name}</span>
+  </div>
+
+  <div class="sc-body">
+    <div class="sc-facts">
+      <span class="sc-fact">
+        <Icon name="bar-chart" size={16} class="sc-fact-icon" />
+        <span>{t.priceLine}</span>
+      </span>
+      <span class="sc-fact">
+        <Icon name="growth-chart-check" size={16} class="sc-fact-icon" />
+        <span>{t.yearsLine}</span>
+      </span>
+    </div>
+
+    <CtaWhatsApp
+      label={t.ctaWhatsApp}
+      message={waMessage}
+      trackLabel="sticky_whatsapp"
+      variant="primary"
+      class="sc-cta"
+    />
+
+    <a
+      class="sc-secondary"
+      href="#schedule"
+      data-track="free_call_cta_click"
+      data-track-label="sticky_free_call"
+    >
+      {t.ctaFreeCall}
+    </a>
+
+    <div class="sc-availability" data-availability-block hidden>
+      <p class="sc-availability-label">{t.nextAvailabilityLabel}</p>
+      <span class="sc-availability-chip" data-next-availability hidden></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sticky-card {
+    background: var(--color-surface);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-card);
+    overflow: hidden;
+  }
+
+  /* ---- Foto con overlay + nombre ---- */
+  .sc-photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .sc-photo-img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .sc-photo-overlay {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 45%;
+    background: linear-gradient(
+      to top,
+      rgba(30, 36, 51, 0.72) 0%,
+      rgba(30, 36, 51, 0.32) 45%,
+      rgba(30, 36, 51, 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  .sc-photo-name {
+    position: absolute;
+    inset-inline: var(--sp-4);
+    inset-block-end: var(--sp-4);
+    text-align: center;
+    color: #fff;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ---- Cuerpo ---- */
+  .sc-body {
+    padding: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .sc-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .sc-fact {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+  }
+
+  .sc-fact-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .sc-cta {
+    margin-block-start: var(--sp-1);
+  }
+
+  /* Botón secundario outline full-width (link a #schedule) */
+  .sc-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    padding-block: var(--sp-3);
+    padding-inline: var(--sp-6);
+    border-radius: var(--r-btn);
+    border: 1px solid var(--color-primary);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .sc-secondary:hover {
+    background: var(--color-primary-50);
+    text-decoration: none;
+  }
+
+  /* ---- Bloque próxima disponibilidad (lo llena availability.ts) ---- */
+  .sc-availability {
+    text-align: center;
+    margin-block-start: var(--sp-1);
+  }
+
+  .sc-availability[hidden] {
+    display: none;
+  }
+
+  .sc-availability-label {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    margin-block-end: var(--sp-2);
+  }
+
+  .sc-availability-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--sp-4);
+    padding-block: var(--sp-2);
+    border-radius: var(--r-pill);
+    background: var(--color-primary-100);
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+  }
+
+  .sc-availability-chip[hidden] {
+    display: none;
+  }
+</style>

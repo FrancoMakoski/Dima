@@ -1,0 +1,76 @@
+---
+// TopBar.astro — barra minimalista arriba del contenido (no sticky, sin card).
+// Logo al inicio + link de cambio de idioma al final. Transparente sobre el fondo.
+// Solo propiedades lógicas → se espeja solo con dir="rtl".
+import type { Locale, ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['topbar'];
+  locale: Locale;
+}
+
+const { t } = Astro.props;
+const siteName = 'DimaTherapy';
+---
+
+<div class="topbar">
+  <a class="topbar-brand" href="/" aria-label={siteName}>
+    <img
+      class="topbar-logo"
+      src="/assets/icons/logo-d-96.png"
+      width="32"
+      height="32"
+      alt={siteName}
+      loading="eager"
+      decoding="async"
+    />
+  </a>
+
+  <a class="topbar-lang" href={t.langSwitchHref} data-track="lang_switch">
+    {t.langSwitchLabel}
+  </a>
+</div>
+
+<style>
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding-block: var(--sp-4);
+  }
+
+  .topbar-brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .topbar-brand:hover {
+    text-decoration: none;
+  }
+
+  .topbar-logo {
+    inline-size: 32px;
+    block-size: 32px;
+  }
+
+  .topbar-lang {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-2);
+    text-decoration: none;
+    padding-inline: var(--sp-3);
+    padding-block: var(--sp-2);
+    border-radius: var(--r-pill);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .topbar-lang:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-50);
+    text-decoration: none;
+  }
+</style>

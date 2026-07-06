@@ -1,0 +1,78 @@
+---
+// ProfileShell.astro — contenedor centrado del perfil (estilo Clearly).
+// Desktop: 2 columnas [main | sidebar 340px], sidebar sticky.
+// Móvil (<960px): 1 columna, la sidebar se renderiza ANTES que main (mismo DOM,
+// solo CSS vía grid-template-areas). Slots nombrados: topbar, main, sidebar, after.
+// Solo propiedades lógicas → se espeja solo con dir="rtl".
+---
+
+<div class="shell">
+  <div class="shell-topbar">
+    <slot name="topbar" />
+  </div>
+
+  <div class="shell-grid">
+    <aside class="shell-sidebar">
+      <div class="shell-sidebar-inner">
+        <slot name="sidebar" />
+      </div>
+    </aside>
+
+    <main class="shell-main">
+      <slot name="main" />
+    </main>
+  </div>
+
+  <slot name="after" />
+</div>
+
+<style>
+  .shell {
+    max-inline-size: var(--content-max);
+    margin-inline: auto;
+    padding-inline: var(--page-pad);
+    padding-block-end: var(--sp-10);
+  }
+
+  .shell-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
+    grid-template-areas: 'main sidebar';
+    gap: var(--col-gap);
+    align-items: start;
+  }
+
+  .shell-main {
+    grid-area: main;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+
+  .shell-sidebar {
+    grid-area: sidebar;
+    min-inline-size: 0;
+  }
+
+  .shell-sidebar-inner {
+    position: sticky;
+    top: var(--sticky-top);
+    align-self: start;
+  }
+
+  /* Móvil: una sola columna, sidebar arriba (antes que main), sin sticky. */
+  @media (max-width: 960px) {
+    .shell-grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'sidebar'
+        'main';
+      gap: var(--sp-5);
+    }
+
+    .shell-sidebar-inner {
+      position: static;
+    }
+  }
+</style>

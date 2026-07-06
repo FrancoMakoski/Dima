@@ -1,0 +1,108 @@
+---
+// MobileCtaBar.astro — barra CTA fija abajo, SOLO visible <960px.
+// Dos botones: WhatsApp (primario, variant bar) + link a #schedule (outline compacto).
+// Script inline: IntersectionObserver sobre #schedule → cuando entra en viewport,
+// oculta la barra (clase). Si #schedule no existe, la barra queda visible sin error.
+// Solo propiedades lógicas → se espeja solo con dir="rtl".
+import CtaWhatsApp from './CtaWhatsApp.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['mobileBar'];
+  waMessage: string;
+}
+
+const { t, waMessage } = Astro.props;
+---
+
+<div class="mobile-cta-bar" data-mobile-cta-bar>
+  <CtaWhatsApp
+    label={t.ctaWhatsApp}
+    message={waMessage}
+    trackLabel="mobilebar_whatsapp"
+    variant="bar"
+    class="mcb-wa"
+  />
+
+  <a
+    class="mcb-secondary"
+    href="#schedule"
+    data-track="free_call_cta_click"
+    data-track-label="mobilebar_free_call"
+  >
+    {t.ctaFreeCall}
+  </a>
+</div>
+
+<style>
+  .mobile-cta-bar {
+    display: none;
+  }
+
+  @media (max-width: 960px) {
+    .mobile-cta-bar {
+      display: flex;
+      gap: var(--sp-3);
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: var(--z-ctabar);
+      background: var(--color-surface);
+      box-shadow: 0 -2px 12px rgba(30, 36, 51, 0.12);
+      padding-inline: var(--page-pad);
+      padding-block-start: var(--sp-3);
+      padding-block-end: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* Oculta la barra cuando #schedule está visible (la agenda ya está a la vista). */
+    .mobile-cta-bar.is-hidden {
+      transform: translateY(120%);
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  .mcb-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding-block: var(--sp-2);
+    padding-inline: var(--sp-4);
+    border-radius: var(--r-btn);
+    border: 1px solid var(--color-primary);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .mcb-secondary:hover {
+    background: var(--color-primary-50);
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  (() => {
+    const bar = document.querySelector<HTMLElement>('[data-mobile-cta-bar]');
+    if (!bar) return;
+    const target = document.getElementById('schedule');
+    if (!target || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          bar.classList.toggle('is-hidden', entry.isIntersecting);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(target);
+  })();
+</script>

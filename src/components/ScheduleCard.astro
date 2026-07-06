@@ -1,0 +1,230 @@
+---
+// ScheduleCard.astro — "Elige tu horario" (estilo Clearly).
+// Server-render: título, nota de zona horaria, contenedor VACÍO que llena el
+// script cliente (availability.ts), nota de honestidad, <noscript> de respaldo y
+// link discreto al calendario de Google.
+//
+// CONTRATO: id="schedule" — los CTA "Reservar llamada gratis" de otros componentes
+// anclan a #schedule. El script cliente completa [data-next-availability] /
+// [data-availability-block] (viven en la StickyCard de otro agente).
+//
+// El script NO importa el diccionario: le pasamos los strings como JSON en
+// data-attributes del contenedor, más el teléfono y el locale.
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import { PHONE, CALENDAR_URL, waLink } from '../config/site';
+import type { ProfileDict, Locale } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['schedule'];
+  locale: Locale;
+  /** Mensaje wa.me con placeholder {slot} (viene de waMessages.bookSlot). */
+  waBookSlotMessage: string;
+}
+
+const { t, locale, waBookSlotMessage } = Astro.props;
+
+// Strings que el script cliente necesita (serializados a JSON en un data-attr).
+const scheduleStrings = {
+  sectionLabelDay: t.sectionLabelDay,
+  sectionLabelEvening: t.sectionLabelEvening,
+  todayLabel: t.todayLabel,
+  tomorrowLabel: t.tomorrowLabel,
+  slotAriaLabel: t.slotAriaLabel,
+  bookSlotMessage: waBookSlotMessage,
+};
+---
+
+<Card title={t.title} icon="clock-badge-peach" id="schedule">
+  <p class="sched-tz">{t.timezoneNote}</p>
+
+  <div
+    class="sched-mount"
+    data-schedule-mount
+    data-phone={PHONE}
+    data-locale={locale}
+    data-strings={JSON.stringify(scheduleStrings)}
+  >
+    <noscript>
+      <p class="sched-noscript">
+        {t.noJsFallback}
+        {' '}
+        <a href={waLink(waBookSlotMessage.replace('{slot}', ''))} target="_blank" rel="noopener">WhatsApp</a>
+      </p>
+    </noscript>
+  </div>
+
+  <p class="sched-honesty">{t.honestyNote}</p>
+
+  <a
+    class="sched-calendar-link"
+    href={CALENDAR_URL}
+    target="_blank"
+    rel="noopener"
+    data-track="free_call_cta_click"
+    data-track-label="schedule_calendar_link"
+  >
+    <Icon name="checklist-book" size={16} class="sched-calendar-icon" />
+    <span>{t.calendarLinkLabel}</span>
+  </a>
+</Card>
+
+<script>
+  import { initSchedule } from '../scripts/availability';
+
+  const mount = document.querySelector<HTMLElement>('[data-schedule-mount]');
+  if (mount) {
+    const phone = mount.dataset.phone || '';
+    const locale = (mount.dataset.locale as 'ru' | 'he') || 'he';
+    let strings: Record<string, string> = {};
+    try {
+      strings = JSON.parse(mount.dataset.strings || '{}');
+    } catch {
+      strings = {};
+    }
+    initSchedule({
+      container: mount,
+      phone,
+      locale,
+      strings: strings as any,
+    });
+  }
+</script>
+
+<style>
+  .sched-tz {
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+    margin-block-end: var(--sp-4);
+  }
+
+  .sched-mount {
+    min-block-size: 96px;
+  }
+
+  .sched-noscript {
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+    line-height: var(--lh-normal);
+  }
+
+  .sched-honesty {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    margin-block-start: var(--sp-4);
+    line-height: var(--lh-normal);
+  }
+
+  .sched-calendar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+    text-decoration: none;
+  }
+
+  .sched-calendar-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .sched-calendar-icon {
+    flex-shrink: 0;
+  }
+
+  /* ---- Estructura renderizada por el script (selectores globales) ---- */
+  .sched-mount :global(.sched-days) {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-5);
+  }
+
+  .sched-mount :global(.sched-days-track) {
+    display: flex;
+    gap: var(--sp-1);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    flex: 1;
+  }
+
+  .sched-mount :global(.sched-days-track)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sched-mount :global(.sched-arrow) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    flex-shrink: 0;
+    border-radius: var(--r-pill);
+    color: var(--color-text-2);
+    background: var(--color-surface-2);
+  }
+
+  .sched-mount :global(.sched-arrow):hover {
+    color: var(--color-primary);
+    background: var(--color-primary-50);
+  }
+
+  .sched-mount :global(.sched-day) {
+    flex-shrink: 0;
+    padding: var(--sp-2) var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-2);
+    border-block-end: 2px solid transparent;
+    white-space: nowrap;
+    background: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .sched-mount :global(.sched-day.is-active) {
+    color: var(--color-text);
+    font-weight: var(--fw-semibold);
+    border-block-end-color: var(--color-primary);
+  }
+
+  .sched-mount :global(.sched-section) {
+    margin-block-end: var(--sp-4);
+  }
+
+  .sched-mount :global(.sched-section-label) {
+    display: block;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-2);
+    margin-block-end: var(--sp-2);
+  }
+
+  .sched-mount :global(.sched-chips) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .sched-mount :global(.sched-chip) {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-input);
+    background: var(--color-primary-100);
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .sched-mount :global(.sched-chip):hover {
+    background: color-mix(in srgb, var(--color-primary) 22%, white);
+    text-decoration: none;
+  }
+</style>

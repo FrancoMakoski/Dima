@@ -1,0 +1,107 @@
+---
+// VideoIntro.astro — facade 16:9 (poster local + botón play). Al click reemplaza
+// el contenido por el iframe de youtube-nocookie con autoplay. NADA de scripts de
+// YouTube antes del click (performance + privacidad).
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['video'];
+  videoId: string;
+}
+
+const { t, videoId } = Astro.props;
+const POSTER = '/assets/img/dmitry-photo2-880.webp';
+---
+
+<section class="video" aria-label={t.sectionAriaLabel}>
+  <div class="video-frame" data-video-facade data-video-id={videoId} data-iframe-title={t.iframeTitle}>
+    <img class="video-poster" src={POSTER} alt="" loading="lazy" />
+    <button type="button" class="video-play" data-video-play aria-label={t.playLabel}>
+      <svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" class="flip-rtl">
+        <path d="M8 5v14l11-7z" fill="currentColor"></path>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    document.querySelectorAll('[data-video-facade]').forEach((facade) => {
+      const btn = facade.querySelector('[data-video-play]');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const id = facade.getAttribute('data-video-id');
+        const title = facade.getAttribute('data-iframe-title') || '';
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+        iframe.title = title;
+        iframe.setAttribute('allow', 'autoplay; encrypted-media');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.className = 'video-iframe';
+        facade.replaceChildren(iframe);
+      });
+    });
+  })();
+</script>
+
+<style>
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    inline-size: 100%;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: #0d0f16;
+    box-shadow: var(--sh-card);
+  }
+
+  .video-poster {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    filter: brightness(0.82);
+  }
+
+  .video-play {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    inline-size: 68px;
+    block-size: 68px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-pill);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: var(--sh-pop);
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  /* El triángulo de play va ligeramente corrido para parecer centrado ópticamente. */
+  .video-play svg {
+    margin-inline-start: 3px;
+  }
+
+  .video-play:hover {
+    transform: translate(-50%, -50%) scale(1.06);
+    background: var(--color-surface-2);
+  }
+
+  .video-frame :global(.video-iframe) {
+    inline-size: 100%;
+    block-size: 100%;
+    border: 0;
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-play {
+      transition: none;
+    }
+    .video-play:hover {
+      transform: translate(-50%, -50%);
+    }
+  }
+</style>

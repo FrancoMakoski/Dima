@@ -1,0 +1,146 @@
+---
+// FaqSection.astro — "Preguntas frecuentes" (fuera de card, como Clearly).
+// Por grupo: subtítulo con Icon de color + título; cada pregunta un <details>
+// (fila blanca redondeada) con chevron-down-toggle que rota al abrir.
+// EMITE el JSON-LD FAQPage construido desde TODOS los q/a del diccionario.
+import Icon from './Icon.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['faq'];
+}
+
+const { t } = Astro.props;
+
+// JSON-LD FAQPage: aplanar todas las preguntas de todos los grupos.
+const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: t.groups.flatMap((group) =>
+    group.items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  ),
+};
+---
+
+<section class="faq" aria-labelledby="faq-title">
+  <h2 class="faq-title" id="faq-title">{t.title}</h2>
+
+  {t.groups.map((group) => (
+    <div class="faq-group">
+      <h3 class="faq-group-title">
+        <span class="faq-group-icon">
+          <Icon name={group.icon} size={22} />
+        </span>
+        {group.title}
+      </h3>
+      <div class="faq-items">
+        {group.items.map((item) => (
+          <details class="faq-item">
+            <summary class="faq-q">
+              <span class="faq-q-text">{item.q}</span>
+              <svg width="20" height="20" aria-hidden="true" class="faq-chevron"><use href="/assets/img/profile-icons.svg#chevron-down-toggle"></use></svg>
+            </summary>
+            <div class="faq-a-wrap">
+              <p class="faq-a">{item.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  ))}
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqPageSchema)}></script>
+
+<style>
+  .faq-title {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-6);
+    text-align: start;
+  }
+
+  .faq-group + .faq-group {
+    margin-block-start: var(--sp-7);
+  }
+
+  .faq-group-title {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-4);
+  }
+
+  .faq-group-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .faq-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .faq-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-btn);
+  }
+
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    cursor: pointer;
+    list-style: none;
+    font-weight: var(--fw-medium);
+    color: var(--color-text);
+    font-size: var(--fs-base);
+  }
+
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-2);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-a-wrap {
+    padding-inline: var(--sp-4);
+    padding-block-end: var(--sp-4);
+  }
+
+  .faq-a {
+    color: var(--color-text-2);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-normal);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-chevron {
+      transition: none;
+    }
+  }
+</style>

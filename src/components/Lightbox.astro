@@ -1,0 +1,110 @@
+---
+// Lightbox.astro — <dialog> único, sin props. JS delegado: cualquier
+// [data-lightbox-src] de la página abre el dialog con esa imagen. Cierra con
+// Esc (nativo del <dialog>), botón, y click en el backdrop. Scroll-lock del body
+// mientras está abierto. Montar UNA sola vez por página.
+---
+
+<dialog class="lightbox" data-lightbox aria-label="Certificate preview">
+  <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close">
+    <svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24">
+      <path
+        d="M6 6l12 12M18 6L6 18"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+      ></path>
+    </svg>
+  </button>
+  <img class="lightbox-img" data-lightbox-img src="" alt="" />
+</dialog>
+
+<script is:inline>
+  (() => {
+    const dialog = document.querySelector('[data-lightbox]');
+    if (!dialog) return;
+    const img = dialog.querySelector('[data-lightbox-img]');
+    const closeBtn = dialog.querySelector('[data-lightbox-close]');
+
+    const open = (src, alt) => {
+      img.src = src;
+      img.alt = alt || '';
+      document.body.style.overflow = 'hidden';
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+      else dialog.setAttribute('open', '');
+    };
+
+    const close = () => {
+      if (typeof dialog.close === 'function') dialog.close();
+      else dialog.removeAttribute('open');
+    };
+
+    const cleanup = () => {
+      document.body.style.overflow = '';
+      img.src = '';
+    };
+
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-lightbox-src]');
+      if (trigger) {
+        e.preventDefault();
+        open(trigger.getAttribute('data-lightbox-src'), trigger.getAttribute('data-lightbox-alt'));
+      }
+    });
+
+    closeBtn.addEventListener('click', close);
+
+    // Click en backdrop: el <dialog> ocupa toda la ventana; si el click cae fuera
+    // del contenido (sobre el propio dialog), cerramos.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+
+    dialog.addEventListener('close', cleanup);
+  })();
+</script>
+
+<style>
+  .lightbox {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-inline-size: 90vw;
+    max-block-size: 85vh;
+    overflow: visible;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(15, 18, 28, 0.82);
+  }
+
+  .lightbox-img {
+    display: block;
+    max-inline-size: 90vw;
+    max-block-size: 85vh;
+    inline-size: auto;
+    block-size: auto;
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-pop);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    inset-block-start: calc(-1 * var(--sp-8));
+    inset-inline-end: 0;
+    inline-size: 40px;
+    block-size: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-pill);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--sh-pop);
+  }
+
+  .lightbox-close:hover {
+    background: var(--color-surface-2);
+  }
+</style>

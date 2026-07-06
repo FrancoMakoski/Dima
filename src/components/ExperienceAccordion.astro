@@ -1,0 +1,173 @@
+---
+// ExperienceAccordion.astro — card "Mi experiencia" con filas expandibles.
+// Cada item es un <details> nativo (el PRIMERO abierto). <summary> con título +
+// iconos plus/minus del sprite (CSS alterna cuál se ve según details[open]).
+// Cuerpo: párrafos + grilla de miniaturas <button data-lightbox-src> (abren el
+// Lightbox delegado). Apertura animada con grid-template-rows 0fr→1fr.
+import Card from './Card.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['experience'];
+}
+
+const { t } = Astro.props;
+---
+
+<Card title={t.title} icon="growth-chart-check" class="exp-card">
+  <div class="exp-list">
+    {t.items.map((item, i) => (
+      <details class="exp-item" open={i === 0}>
+        <summary class="exp-summary">
+          <span class="exp-summary-title">{item.title}</span>
+          <span class="exp-summary-toggle" aria-hidden="true">
+            <svg width="22" height="22" class="exp-icon exp-icon-plus"><use href="/assets/img/profile-icons.svg#plus-toggle"></use></svg>
+            <svg width="22" height="22" class="exp-icon exp-icon-minus"><use href="/assets/img/profile-icons.svg#minus-toggle"></use></svg>
+          </span>
+        </summary>
+        <div class="exp-body-wrap">
+          <div class="exp-body">
+            {item.body.map((para) => (
+              <p class="exp-para">{para}</p>
+            ))}
+            {item.thumbs && item.thumbs.length > 0 && (
+              <div class="exp-thumbs">
+                {item.thumbs.map((thumb) => (
+                  <button
+                    type="button"
+                    class="exp-thumb"
+                    data-lightbox-src={thumb.full}
+                    data-lightbox-alt={thumb.alt}
+                    aria-label={thumb.alt}
+                  >
+                    <img src={thumb.src} alt={thumb.alt} loading="lazy" width="96" height="96" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </details>
+    ))}
+  </div>
+</Card>
+
+<style>
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .exp-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-btn);
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .exp-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    cursor: pointer;
+    list-style: none;
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+  }
+
+  .exp-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .exp-summary-title {
+    font-size: var(--fs-base);
+  }
+
+  .exp-summary-toggle {
+    flex-shrink: 0;
+    color: var(--color-primary);
+    display: inline-flex;
+  }
+
+  .exp-icon-minus {
+    display: none;
+  }
+
+  .exp-item[open] .exp-icon-plus {
+    display: none;
+  }
+
+  .exp-item[open] .exp-icon-minus {
+    display: inline;
+  }
+
+  /* Animación de apertura con grid-template-rows 0fr -> 1fr. */
+  .exp-body-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .exp-item[open] .exp-body-wrap {
+    grid-template-rows: 1fr;
+  }
+
+  .exp-body {
+    overflow: hidden;
+    min-block-size: 0;
+    padding-inline: var(--sp-4);
+    padding-block-end: var(--sp-4);
+  }
+
+  .exp-para {
+    color: var(--color-text-2);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-normal);
+  }
+
+  .exp-para + .exp-para {
+    margin-block-start: var(--sp-2);
+  }
+
+  .exp-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-4);
+  }
+
+  .exp-thumb {
+    inline-size: 96px;
+    block-size: 96px;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--r-input);
+    overflow: hidden;
+    background: var(--color-surface-2);
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .exp-thumb:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .exp-thumb img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .exp-body-wrap {
+      transition: none;
+    }
+    .exp-thumb {
+      transition: none;
+    }
+  }
+</style>
