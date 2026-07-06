@@ -130,6 +130,9 @@ export const he: ProfileDict = {
   reviews: {
     title: 'מה אומרים המטופלים',
     topics: ['חרדה חברתית', 'כאב כרוני', 'פחד', 'ביטחון עצמי'],
+    allLabel: 'כל חוות הדעת',
+    modalTitle: 'חוות דעת',
+    closeLabel: 'סגירה',
     allNote: '3 חוות דעת אמיתיות ממטופלים',
     items: [
       {

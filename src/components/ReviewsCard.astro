@@ -1,152 +1,151 @@
 ---
-// ReviewsCard.astro — "Lo que dicen los clientes". Chips de temas (Badge blue)
-// arriba, carrusel scroll-snap de reseñas (avatar-inicial, autor, ubicación,
-// Stars al final de línea, texto), flechas prev/next (chevrons del sprite,
-// flip-rtl), y nota gris con el total (sin botón fake de "ver todas").
-// aria-label de las flechas localizados por `locale` (ru/he) — no viven en el
-// dict (fuera del contrato de tipos congelado), se derivan acá igual que en
-// availability.ts.
+// ReviewsCard.astro — prueba social estilo Clearly. Una reseña DESTACADA
+// (items[0]) en la card: header con avatar-inicial, autor bold, ubicación gris
+// y Stars al final lógico de la fila; debajo los chips de temas (topics); luego
+// el texto. Al pie, botón outline azul "allLabel (N)" que abre un <dialog>
+// centrado con TODAS las reseñas (incluida la destacada) en el mismo formato,
+// separadas por divisor fino. allNote queda como microcopy gris bajo el botón.
+//
+// El modal imita el patrón de Lightbox.astro: showModal(), cierre por X / Esc /
+// backdrop, scroll-lock del body y devolución del foco al botón disparador.
+// El aria-label del X vive en el dict (t.closeLabel) por locale — más limpio que
+// derivarlo del `locale` como hacía el carrusel viejo, así el componente ya no
+// necesita la prop `locale`.
 import Card from './Card.astro';
 import Badge from './Badge.astro';
 import Stars from './Stars.astro';
-import type { ProfileDict, Locale } from '../i18n/types';
+import type { ProfileDict } from '../i18n/types';
 
 interface Props {
   t: ProfileDict['reviews'];
-  locale: Locale;
 }
 
-const { t, locale } = Astro.props;
-
-// aria-labels de las flechas prev/next del carrusel, localizados por locale.
-const prevReviewLabel = locale === 'ru' ? 'Предыдущий отзыв' : 'חוות הדעת הקודמת';
-const nextReviewLabel = locale === 'ru' ? 'Следующий отзыв' : 'חוות הדעת הבאה';
+const { t } = Astro.props;
 
 /** Inicial del autor para el avatar (primer carácter significativo). */
 const initialOf = (author: string): string => author.trim().charAt(0) || '•';
+
+const featured = t.items[0];
+const total = t.items.length;
+const allLabelWithCount = `${t.allLabel} (${total})`;
 ---
 
 <Card title={t.title} icon="star-rating" class="reviews-card">
-  <div class="reviews-topics">
-    {t.topics.map((topic) => (
-      <Badge variant="blue">{topic}</Badge>
+  {featured && (
+    <article class="review review-featured">
+      <div class="review-head">
+        <span class="review-avatar" aria-hidden="true">{initialOf(featured.author)}</span>
+        <div class="review-meta">
+          <p class="review-author">{featured.author}</p>
+          <p class="review-location">{featured.location}</p>
+        </div>
+        <Stars rating={featured.rating} label={`${featured.rating} / 5`} />
+      </div>
+
+      <div class="review-topics">
+        {t.topics.map((topic) => (
+          <Badge variant="blue">{topic}</Badge>
+        ))}
+      </div>
+
+      <p class="review-text">{featured.text}</p>
+    </article>
+  )}
+
+  <div class="reviews-cta">
+    <button
+      type="button"
+      class="reviews-all-btn"
+      data-reviews-open
+      data-track="reviews_open"
+      data-track-label="reviews_modal"
+    >
+      {allLabelWithCount}
+    </button>
+    <p class="reviews-all-note">{t.allNote}</p>
+  </div>
+</Card>
+
+<dialog class="reviews-modal" data-reviews-modal aria-labelledby="reviews-modal-title">
+  <header class="reviews-modal-head">
+    <h2 class="reviews-modal-title" id="reviews-modal-title">{t.modalTitle}</h2>
+    <button type="button" class="reviews-modal-close" data-reviews-close aria-label={t.closeLabel}>
+      <svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24">
+        <path
+          d="M6 6l12 12M18 6L6 18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </button>
+  </header>
+
+  <div class="reviews-modal-body">
+    {t.items.map((review) => (
+      <article class="review review-in-modal">
+        <div class="review-head">
+          <span class="review-avatar" aria-hidden="true">{initialOf(review.author)}</span>
+          <div class="review-meta">
+            <p class="review-author">{review.author}</p>
+            <p class="review-location">{review.location}</p>
+          </div>
+          <Stars rating={review.rating} label={`${review.rating} / 5`} />
+        </div>
+        <p class="review-text">{review.text}</p>
+      </article>
     ))}
   </div>
-
-  <div class="reviews-carousel">
-    <button type="button" class="reviews-arrow" data-reviews-prev aria-label={prevReviewLabel}>
-      <svg width="18" height="18" aria-hidden="true" class="flip-rtl"><use href="/assets/img/profile-icons.svg#chevron-left"></use></svg>
-    </button>
-
-    <div class="reviews-track" data-reviews-track>
-      {t.items.map((review) => (
-        <article class="review">
-          <div class="review-head">
-            <span class="review-avatar" aria-hidden="true">{initialOf(review.author)}</span>
-            <div class="review-meta">
-              <p class="review-author">{review.author}</p>
-              <p class="review-location">{review.location}</p>
-            </div>
-            <Stars rating={review.rating} label={`${review.rating} / 5`} />
-          </div>
-          <p class="review-text">{review.text}</p>
-        </article>
-      ))}
-    </div>
-
-    <button type="button" class="reviews-arrow" data-reviews-next aria-label={nextReviewLabel}>
-      <svg width="18" height="18" aria-hidden="true" class="flip-rtl"><use href="/assets/img/profile-icons.svg#chevron-right"></use></svg>
-    </button>
-  </div>
-
-  <p class="reviews-all-note">{t.allNote}</p>
-</Card>
+</dialog>
 
 <script is:inline>
   (() => {
-    document.querySelectorAll('.reviews-carousel').forEach((carousel) => {
-      const track = carousel.querySelector('[data-reviews-track]');
-      const prev = carousel.querySelector('[data-reviews-prev]');
-      const next = carousel.querySelector('[data-reviews-next]');
-      if (!track || !prev || !next) return;
+    const dialog = document.querySelector('[data-reviews-modal]');
+    const openBtn = document.querySelector('[data-reviews-open]');
+    if (!dialog || !openBtn) return;
+    const closeBtn = dialog.querySelector('[data-reviews-close]');
 
-      const step = () => {
-        const first = track.querySelector('.review');
-        const gap = 16;
-        return first ? first.getBoundingClientRect().width + gap : track.clientWidth * 0.9;
-      };
+    // Botón que abrió el modal: se le devuelve el foco al cerrar (a11y).
+    let lastTrigger = null;
 
-      // scrollBy en el eje inline según dir (en RTL scrollLeft crece hacia el inicio visual).
-      const move = (forward) => {
-        const rtl = document.dir === 'rtl';
-        const dir = forward ? 1 : -1;
-        track.scrollBy({ left: dir * (rtl ? -1 : 1) * step(), behavior: 'smooth' });
-      };
+    const restoreFocus = () => {
+      document.body.style.overflow = '';
+      if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+      lastTrigger = null;
+    };
 
-      prev.addEventListener('click', () => move(false));
-      next.addEventListener('click', () => move(true));
+    const open = () => {
+      lastTrigger = openBtn;
+      document.body.style.overflow = 'hidden';
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+      else dialog.setAttribute('open', '');
+    };
+
+    const close = () => {
+      if (typeof dialog.close === 'function') dialog.close();
+      else dialog.removeAttribute('open');
+      // Algunos motores no disparan 'close' de forma fiable: liberamos scroll-lock
+      // y devolvemos el foco inmediatamente.
+      restoreFocus();
+    };
+
+    openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    // Click en backdrop: cae sobre el propio <dialog> (fuera de su contenido).
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
     });
+
+    // Esc del <dialog> nativo dispara 'close' sin pasar por close(): aseguramos
+    // la limpieza también en ese caso.
+    dialog.addEventListener('close', restoreFocus);
   })();
 </script>
 
 <style>
-  .reviews-topics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-end: var(--sp-5);
-  }
-
-  .reviews-carousel {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-
-  .reviews-arrow {
-    flex-shrink: 0;
-    inline-size: 34px;
-    block-size: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--r-pill);
-    color: var(--color-text-2);
-    background: var(--color-surface-2);
-  }
-
-  .reviews-arrow:hover {
-    color: var(--color-primary);
-    background: var(--color-primary-50);
-  }
-
-  .reviews-track {
-    display: flex;
-    gap: var(--sp-4);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    flex: 1;
-    min-inline-size: 0;
-    scroll-behavior: smooth;
-  }
-
-  .reviews-track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .review {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    min-inline-size: 0;
-  }
-
-  @media (min-width: 560px) {
-    .review {
-      flex-basis: calc(50% - var(--sp-2));
-    }
-  }
-
+  /* ---- Reseña (formato compartido: destacada y dentro del modal) ---- */
   .review-head {
     display: flex;
     align-items: center;
@@ -174,7 +173,7 @@ const initialOf = (author: string): string => author.trim().charAt(0) || '•';
   }
 
   .review-author {
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
     color: var(--color-text);
     font-size: var(--fs-sm);
   }
@@ -184,16 +183,143 @@ const initialOf = (author: string): string => author.trim().charAt(0) || '•';
     color: var(--color-text-2);
   }
 
+  /* Stars al final lógico de la fila (inline-end): en RTL cae a la izquierda visual. */
+  .review-head :global(.stars) {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+  }
+
+  .review-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-4);
+  }
+
   .review-text {
     color: var(--color-text-2);
     font-size: var(--fs-sm);
     line-height: var(--lh-normal);
   }
 
-  .reviews-all-note {
-    margin-block-start: var(--sp-4);
-    font-size: var(--fs-sm);
-    color: var(--color-text-2);
+  /* ---- CTA: botón outline azul + microcopy ---- */
+  .reviews-cta {
+    margin-block-start: var(--sp-6);
     text-align: center;
+  }
+
+  .reviews-all-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-3) var(--sp-6);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .reviews-all-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+
+  .reviews-all-note {
+    margin-block-start: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+  }
+
+  /* ---- Modal ---- */
+  .reviews-modal {
+    padding: 0;
+    border: none;
+    /* El UA aplica a <dialog> un max-width/max-height físico (calc(100% - 6px - 2em))
+       que gana sobre nuestras logicas: lo anulamos para gobernar el tamaño acá. */
+    max-width: none;
+    max-height: none;
+    inline-size: min(640px, 92vw);
+    max-inline-size: 640px;
+    max-block-size: 85vh;
+    border-radius: var(--r-card);
+    background: var(--color-surface);
+    box-shadow: var(--sh-pop);
+    overflow: hidden;
+    /* <dialog> con showModal() se centra solo vía márgenes auto. */
+  }
+
+  .reviews-modal::backdrop {
+    background: rgba(15, 18, 28, 0.72);
+  }
+
+  .reviews-modal-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-5) var(--sp-6);
+    background: var(--color-primary-50);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .reviews-modal-title {
+    flex: 1;
+    min-inline-size: 0;
+    margin: 0;
+    font-size: var(--fs-lg);
+    line-height: var(--lh-tight);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+  }
+
+  .reviews-modal-close {
+    flex-shrink: 0;
+    inline-size: 36px;
+    block-size: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--color-text-2);
+    cursor: pointer;
+  }
+
+  .reviews-modal-close:hover {
+    background: var(--color-primary-100);
+    color: var(--color-text);
+  }
+
+  .reviews-modal-body {
+    padding: var(--sp-2) var(--sp-6) var(--sp-6);
+    overflow-y: auto;
+    max-block-size: calc(85vh - 72px);
+    overscroll-behavior: contain;
+  }
+
+  .review-in-modal {
+    padding-block: var(--sp-5);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .review-in-modal:last-child {
+    border-block-end: none;
+    padding-block-end: 0;
+  }
+
+  @media (max-width: 959px) {
+    .reviews-modal {
+      inline-size: 95vw;
+      max-inline-size: 95vw;
+      max-block-size: 90vh;
+    }
+
+    .reviews-modal-body {
+      max-block-size: calc(90vh - 72px);
+    }
   }
 </style>

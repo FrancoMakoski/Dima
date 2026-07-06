@@ -48,6 +48,13 @@ export interface ProfileDict {
   reviews: {
     title: string;
     topics: string[];
+    /** Texto del botón que abre el modal, SIN el número. El componente agrega " (N)" con items.length. */
+    allLabel: string;
+    /** Título del header del modal con todas las reseñas. */
+    modalTitle: string;
+    /** aria-label del botón X que cierra el modal ("Cerrar" por locale). */
+    closeLabel: string;
+    /** Microcopy gris bajo el botón (total de reseñas reales). */
     allNote: string;
     items: { author: string; location: string; rating: number; text: string }[];
   };

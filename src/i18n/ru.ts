@@ -130,6 +130,9 @@ export const ru: ProfileDict = {
   reviews: {
     title: 'Что говорят клиенты',
     topics: ['Социальная тревога', 'Хроническая боль', 'Страх', 'Уверенность в себе'],
+    allLabel: 'Все отзывы',
+    modalTitle: 'Отзывы',
+    closeLabel: 'Закрыть',
     allNote: '3 реальных отзыва клиентов',
     items: [
       {
