@@ -58,7 +58,10 @@ export interface ProfileDict {
     nextAvailabilityLabel: string;
   };
   mobileBar: { ctaWhatsApp: string; ctaFreeCall: string };
-  footer: { line: string; termsLabel: string; termsHref: string };
+  footer: {
+    nav: { heading: string; links: { label: string; href: string }[] };
+    line: string;
+  };
   waMessages: { general: string; priceInquiry: string; bookSlot: string }; // bookSlot con placeholder {slot}
   jsonLd: { personDescription: string; offerName: string };
 }

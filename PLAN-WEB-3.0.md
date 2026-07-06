@@ -104,6 +104,35 @@ accesibilidad), links internos, todos los CTAs disparando su evento de tracking,
 | Credenciales | `/credentials` | — |
 | 404 | `/404` | — |
 
+## Deploy y SEO (reglas del switch parcial)
+
+Hoy la 3.0 solo cubre 2 páginas (`/` y `/ru/`). El resto del sitio en producción
+(`booking`, `credentials`, `terms`, sus variantes) sigue vivo con sus URLs actuales. Por eso
+el deploy de la home nueva es un **reemplazo parcial**, y hay que cuidar los artefactos SEO que
+la 3.0 **todavía no genera**:
+
+1. **NO sobreescribir ni borrar `sitemap.xml` de producción.** El `sitemap.xml` en `..\Web 1.0`
+   lista todas las URLs vivas (`/`, `/ru/`, `/booking`, `/ru/booking`, `/credentials`,
+   `/terms`). La 3.0 **no genera sitemap** (correcto: solo tiene 2 páginas). Al copiar `dist/`
+   dentro de `..\Web 1.0`, `dist/` no incluye `sitemap.xml`, así que el de producción se
+   mantiene intacto — **verificar que sigue ahí después de copiar** y no pisarlo.
+2. **`robots.txt` y `.htaccess` de producción se mantienen.** Tampoco los genera la 3.0. El
+   `.htaccess` es el que hace las clean URLs (`/booking` → `booking.html`) y los 301 legacy;
+   `robots.txt` apunta al sitemap. `dist/` no los trae → quedan intactos al copiar. **No
+   tocarlos** en este switch.
+3. **Los enlaces internos del footer nuevo apuntan solo a páginas que existen** tras el switch
+   parcial: he → `/booking`, `/credentials`, `/terms`; ru → `/ru/booking` + `/credentials` y
+   `/terms` (compartidas, igual que hace hoy el nav ruso de producción). **No** enlazar todavía
+   a `/anxiety`, `/panic-attacks`, `/physical-symptoms`, `/social-anxiety`, `/free-call`,
+   `/dmitry-kazakov`: esas páginas del mapa de URLs son de fases futuras y **aún no existen** —
+   enlazarlas generaría 404 y desperdiciaría autoridad. Sumarlas al footer recién cuando se
+   construyan.
+4. **Cuando la 3.0 migre TODAS las páginas** (Fase 2 completa), recién ahí conviene que la 3.0
+   genere su **propio `sitemap.xml` con hreflang** (he ↔ ru) y, si aplica, su `robots.txt` /
+   `.htaccess`, reemplazando los de producción. Pendiente futuro — no ahora.
+5. **Tras publicar la home**, pedir en Google Search Console la **reindexación de `/` y `/ru/`**
+   (las 2 páginas que cambian) para que Google recoja el rediseño, metas y JSON-LD nuevos.
+
 ## Cómo trabajar en este proyecto
 
 - Abrir Claude Code **en esta carpeta** (es un proyecto aparte, con su propio contexto).

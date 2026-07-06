@@ -51,6 +51,14 @@ const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
 
+    <!-- Señales de indexación (paridad con producción: snippets/imágenes ricos) -->
+    <meta
+      name="robots"
+      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+    />
+    <meta name="author" content="Dmitriy Kazakov" />
+    <meta name="theme-color" content="#f7f4ef" />
+
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="he" href={heHref} />
     <link rel="alternate" hreflang="ru" href={ruHref} />
@@ -58,11 +66,20 @@ const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
 
     <!-- Open Graph -->
     <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Dima Therapy Online" />
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Dmitriy Kazakov" />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'he' ? 'he_IL' : 'ru_RU'} />
+    <meta property="og:locale:alternate" content={lang === 'he' ? 'ru_RU' : 'he_IL'} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Iconos -->
     <link rel="icon" type="image/png" href="/assets/icons/favicon-d.png" />

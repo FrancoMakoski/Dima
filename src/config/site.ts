@@ -8,6 +8,12 @@ export const SITE_URL = 'https://dimatherapyonline.com' as const;
 /** Teléfono en formato internacional sin '+' (para wa.me). */
 export const PHONE = '972528056068' as const;
 
+/** Teléfono en formato E.164 con '+' (para schema.org / tel:). */
+export const PHONE_E164 = '+972528056068' as const;
+
+/** Casilla de contacto (misma que producción, para el contactPoint del JSON-LD). */
+export const EMAIL = 'kadimaclinic@gmail.com' as const;
+
 /**
  * Construye un link de WhatsApp con el mensaje precargado y URL-encodeado.
  * @example waLink('שלום, אני מעוניין') // https://wa.me/972528056068?text=...

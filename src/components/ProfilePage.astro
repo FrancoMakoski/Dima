@@ -60,11 +60,17 @@ const t = getDict(locale);
     <FaqSection t={t.faq} />
 
     <footer class="profile-footer">
-      <p class="profile-footer-line">
-        {t.footer.line}
-        {' '}
-        <a href={t.footer.termsHref} class="profile-footer-link">{t.footer.termsLabel}</a>
-      </p>
+      <nav class="profile-footer-nav" aria-label={t.footer.nav.heading}>
+        <h2 class="profile-footer-heading">{t.footer.nav.heading}</h2>
+        <ul class="profile-footer-links">
+          {t.footer.nav.links.map((link) => (
+            <li>
+              <a href={link.href} class="profile-footer-link">{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <p class="profile-footer-line">{t.footer.line}</p>
     </footer>
   </Fragment>
 
@@ -80,8 +86,32 @@ const t = getDict(locale);
 
 <style>
   .profile-footer {
-    padding-block: var(--sp-6);
+    padding-block: var(--sp-8) var(--sp-6);
+    border-block-start: 1px solid var(--color-border);
     text-align: center;
+  }
+
+  .profile-footer-nav {
+    margin-block-end: var(--sp-5);
+  }
+
+  .profile-footer-heading {
+    margin-block-end: var(--sp-3);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-2);
+  }
+
+  .profile-footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-2) var(--sp-5);
   }
 
   .profile-footer-line {
@@ -90,11 +120,13 @@ const t = getDict(locale);
   }
 
   .profile-footer-link {
+    font-size: var(--fs-sm);
     color: var(--color-text-2);
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   .profile-footer-link:hover {
     color: var(--color-primary);
+    text-decoration: underline;
   }
 </style>
