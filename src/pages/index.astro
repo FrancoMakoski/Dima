@@ -1,10 +1,20 @@
 ---
+// index.astro (he) — página real de perfil en hebreo, idioma PRINCIPAL del sitio.
+// Vive en la RAÍZ (/) con dir="rtl". Espejo exacto del patrón de ru/index.astro:
+// solo aporta el layout Base (meta/head) y el JSON-LD Person+Offer; cero copy
+// hardcodeado, todo sale de getDict('he') + helpers de config.
 import Base from '../layouts/Base.astro';
+import ProfilePage from '../components/ProfilePage.astro';
+import { getDict } from '../i18n';
+import { buildPersonSchema } from '../config/jsonld';
+
+const t = getDict('he');
+const personSchema = buildPersonSchema(t, 'he');
 ---
 
-<Base title="DimaTherapy 3.0" lang="he">
-  <main>
-    <h1>DimaTherapy 3.0</h1>
-    <p>Placeholder — home en hebreo (RTL). El diseño real se define en la Fase 1 del plan.</p>
-  </main>
+<Base title={t.meta.title} description={t.meta.description} lang="he">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </Fragment>
+  <ProfilePage locale="he" />
 </Base>
