@@ -1,0 +1,66 @@
+---
+// Card.astro — tarjeta blanca base (surface + r-card + sh-card) para secciones
+// del perfil. Si recibe `title`, arma un header con Icon opcional + h2.
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  icon?: string;
+  id?: string;
+  class?: string;
+}
+
+const { title, icon, id, class: className } = Astro.props;
+---
+
+<section class:list={['card', className]} id={id}>
+  {title && (
+    <header class="card-header">
+      {icon && (
+        <span class="card-header-icon">
+          <Icon name={icon} size={22} />
+        </span>
+      )}
+      <h2 class="card-title">{title}</h2>
+    </header>
+  )}
+  <div class="card-body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .card {
+    background: var(--color-surface);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-card);
+    padding: var(--sp-6);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-5);
+  }
+
+  .card-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: var(--fs-lg);
+    line-height: var(--lh-tight);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .card-body {
+    color: var(--color-text);
+  }
+</style>

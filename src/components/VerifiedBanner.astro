@@ -1,0 +1,96 @@
+---
+// VerifiedBanner.astro — banner de confianza con degradado suave, checks
+// verdes y una ilustración decorativa (certificate-badge) al costado.
+import Icon from './Icon.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['verified'];
+}
+
+const { t } = Astro.props;
+---
+
+<section class="verified-banner">
+  <div class="verified-content">
+    <h2 class="verified-title">{t.title}</h2>
+    <ul class="verified-checks">
+      {t.checks.map((check) => (
+        <li class="verified-check">
+          <Icon name="checkmark" size={18} class="verified-check-icon" />
+          <span>{check}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="verified-illustration" aria-hidden="true">
+    <Icon name="certificate-badge" size={96} />
+  </div>
+</section>
+
+<style>
+  .verified-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-success) 10%, white) 0%, var(--color-surface) 100%);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-card);
+    padding: var(--sp-7) var(--sp-6);
+  }
+
+  .verified-content {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .verified-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--sp-4);
+  }
+
+  .verified-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .verified-check {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--color-text);
+    font-size: var(--fs-base);
+  }
+
+  .verified-check-icon {
+    color: var(--color-success);
+    flex-shrink: 0;
+  }
+
+  .verified-illustration {
+    flex-shrink: 0;
+    color: var(--color-success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) {
+    .verified-banner {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: start;
+    }
+
+    .verified-illustration {
+      display: none;
+    }
+  }
+</style>

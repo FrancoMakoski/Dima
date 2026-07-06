@@ -1,0 +1,25 @@
+---
+// Icon.astro — wrapper de <use> sobre el sprite public/assets/img/profile-icons.svg.
+// Los íconos monocromos heredan color vía currentColor (controlalo desde el
+// contenedor con `color:`); los badges multicolor ya traen sus tonos propios.
+interface Props {
+  name: string;
+  size?: number;
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 20, label, class: className } = Astro.props;
+const isDecorative = !label;
+---
+
+<svg
+  width={size}
+  height={size}
+  class={className}
+  aria-hidden={isDecorative ? 'true' : undefined}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+>
+  <use href={`/assets/img/profile-icons.svg#${name}`} />
+</svg>

@@ -1,0 +1,76 @@
+---
+// GeneralInfoCard.astro — filas de info general (idioma, modalidad, etc.):
+// ícono outline + label gris chico arriba + valor oscuro abajo.
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['generalInfo'];
+}
+
+const { t } = Astro.props;
+---
+
+<Card title={t.title}>
+  <dl class="info-grid">
+    {t.rows.map((row) => (
+      <div class="info-row">
+        <span class="info-row-icon">
+          <Icon name={row.icon} size={20} />
+        </span>
+        <div class="info-row-text">
+          <dt class="info-row-label">{row.label}</dt>
+          <dd class="info-row-value">{row.value}</dd>
+        </div>
+      </div>
+    ))}
+  </dl>
+</Card>
+
+<style>
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-5) var(--sp-6);
+    margin: 0;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  .info-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-block-start: 2px;
+  }
+
+  .info-row-text {
+    min-inline-size: 0;
+  }
+
+  .info-row-label {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    margin: 0 0 2px;
+  }
+
+  .info-row-value {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  @media (max-width: 480px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

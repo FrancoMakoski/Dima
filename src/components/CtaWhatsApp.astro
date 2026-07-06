@@ -1,0 +1,90 @@
+---
+// CtaWhatsApp.astro — CTA primario del sitio. SIEMPRE con tracking de click +
+// marca de conversión (data-conversion-whatsapp), leídos por src/scripts/track.ts.
+import Icon from './Icon.astro';
+import { waLink } from '../config/site';
+
+interface Props {
+  label: string;
+  message: string;
+  trackLabel: string;
+  variant?: 'primary' | 'outline' | 'bar';
+  class?: string;
+}
+
+const { label, message, trackLabel, variant = 'primary', class: className } = Astro.props;
+---
+
+<a
+  href={waLink(message)}
+  target="_blank"
+  rel="noopener"
+  class:list={['cta-wa', `cta-wa-${variant}`, className]}
+  data-track="whatsapp_click"
+  data-track-label={trackLabel}
+  data-conversion-whatsapp
+>
+  <Icon name="whatsapp-green" size={variant === 'bar' ? 18 : 20} class="cta-wa-icon" />
+  <span>{label}</span>
+</a>
+
+<style>
+  .cta-wa {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    border-radius: var(--r-btn);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-base);
+    line-height: var(--lh-tight);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+    padding-block: var(--sp-3);
+    padding-inline: var(--sp-6);
+  }
+
+  .cta-wa-icon {
+    flex-shrink: 0;
+  }
+
+  /* primary: azul sólido, full width (como Clearly) */
+  .cta-wa-primary {
+    inline-size: 100%;
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: 1px solid var(--color-primary);
+  }
+
+  .cta-wa-primary:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+
+  /* outline: borde azul, fondo blanco */
+  .cta-wa-outline {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+  }
+
+  .cta-wa-outline:hover {
+    background: var(--color-primary-50);
+  }
+
+  /* bar: compacto, para la barra fija móvil */
+  .cta-wa-bar {
+    padding-block: var(--sp-2);
+    padding-inline: var(--sp-4);
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: 1px solid var(--color-primary);
+    font-size: var(--fs-sm);
+    flex: 1;
+  }
+
+  .cta-wa-bar:hover {
+    background: var(--color-primary-hover);
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+// Stars.astro — fila de 5 estrellas para rating (perfil, reviews). Dibuja el
+// path a mano (mismo trazo que star-rating del sprite) porque a 16px el <use>
+// del sprite se ve mejor controlado con fill/stroke inline por estrella.
+interface Props {
+  rating: number;
+  label?: string;
+  size?: number;
+}
+
+const { rating, label, size = 16 } = Astro.props;
+const clamped = Math.max(0, Math.min(5, rating));
+const stars = Array.from({ length: 5 }, (_, i) => i < Math.round(clamped));
+const STAR_PATH =
+  'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
+---
+
+<span class="stars" role="img" aria-label={label ?? `${clamped} / 5`}>
+  {stars.map((filled) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      class:list={['star', { 'star-filled': filled, 'star-empty': !filled }]}
+    >
+      <path d={STAR_PATH} fill="currentColor" />
+    </svg>
+  ))}
+</span>
+
+<style>
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .star {
+    flex-shrink: 0;
+  }
+
+  .star-filled {
+    color: var(--color-star);
+  }
+
+  .star-empty {
+    color: var(--color-border-strong);
+  }
+</style>

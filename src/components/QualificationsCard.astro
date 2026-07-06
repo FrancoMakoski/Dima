@@ -1,0 +1,44 @@
+---
+// QualificationsCard.astro — diplomas/formación (degreeBadges) + enfoques
+// terapéuticos (approaches). Sin nombrar métodos/personas prohibidas: el copy
+// llega por props, este componente no decide qué texto mostrar.
+import Card from './Card.astro';
+import Badge from './Badge.astro';
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: ProfileDict['qualifications'];
+}
+
+const { t } = Astro.props;
+---
+
+<Card title={t.title} icon="certificate-badge">
+  <div class="badge-group">
+    {t.degreeBadges.map((badge) => (
+      <Badge variant="neutral">{badge}</Badge>
+    ))}
+  </div>
+
+  <h3 class="approaches-title">{t.approachesTitle}</h3>
+  <div class="badge-group">
+    {t.approaches.map((approach) => (
+      <Badge variant="blue">{approach}</Badge>
+    ))}
+  </div>
+</Card>
+
+<style>
+  .badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .approaches-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text-2);
+    margin: var(--sp-5) 0 var(--sp-3);
+  }
+</style>

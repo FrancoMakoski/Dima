@@ -4,92 +4,228 @@
 import type { ProfileDict } from './types';
 
 export const he: ProfileDict = {
-  meta: { title: 'TODO title', description: 'TODO description' },
+  meta: {
+    title: 'דמיטרי קזקוב — טיפול פסיכוסומטי אונליין',
+    description:
+      'דמיטרי קזקוב, מטפל מוסמך בפסיכוסומטיקה עם ניסיון של מעל 8 שנים. עבודה עם חרדה, מתח, כאב ותסמינים גופניים שמקורם רגשי — אונליין, בעברית וברוסית. שיחת הכוונה ראשונית, ללא עלות.',
+  },
   topbar: { langSwitchLabel: 'Русский', langSwitchHref: '/ru/' },
   header: {
-    name: 'TODO name',
-    role: 'TODO role',
-    yearsExp: 'TODO years',
-    certLine: 'TODO cert',
+    name: 'דמיטרי קזקוב',
+    role: 'מטפל מוסמך בפסיכוסומטיקה',
+    yearsExp: 'מעל 8 שנות ניסיון',
+    certLine: 'מוסמך על ידי האגודה הלאומית למומחים בפסיכוסומטיקה, תעודה מס\' 00113',
     stats: {
       price: '197 ₪',
-      priceNote: 'TODO price note',
-      reviewsCount: 'TODO reviews count',
-      responseNote: 'TODO response note',
+      priceNote: 'מפגש ראשון',
+      reviewsCount: '3 חוות דעת מטופלים',
+      responseNote: 'עונה בוואטסאפ בדרך כלל באותו היום',
     },
   },
   video: {
-    sectionAriaLabel: 'TODO video section',
-    playLabel: 'TODO play',
-    iframeTitle: 'TODO iframe title',
+    sectionAriaLabel: 'סרטון היכרות עם דמיטרי קזקוב',
+    playLabel: 'צפייה בסרטון ההיכרות',
+    iframeTitle: 'סרטון היכרות — דמיטרי קזקוב',
   },
   about: {
     tabs: [
-      { id: 'about', label: 'TODO tab 1', paragraphs: ['TODO paragraph.'] },
-      { id: 'approach', label: 'TODO tab 2', paragraphs: ['TODO paragraph.'] },
-      { id: 'values', label: 'TODO tab 3', paragraphs: ['TODO paragraph.'] },
+      {
+        id: 'about',
+        label: 'עליי',
+        paragraphs: [
+          'מטפל מוסמך בפסיכוסומטיקה, בעל ניסיון של מעל 8 שנים בעבודה עם אנשים הסובלים מכאב, מתח, חרדה ותסמינים גופניים שמקורם רגשי.',
+          'לאורך השנים ליוויתי מטופלים רבים בתהליכים עמוקים ומשני חיים, תוך שילוב בין שיטות קלאסיות מעולם הפסיכולוגיה לבין גישות מתקדמות בתחום הגוף-נפש.',
+          'הגישה שלי מבוססת על הבנה עמוקה שהגוף אינו פועל בנפרד מהנפש — אלא משקף אותה. לכן, במקום לטפל רק בסימפטום, אני מתמקד בזיהוי שורש הבעיה וביצירת שינוי אמיתי ויציב.',
+          'אני ממשיך ללמוד, לחקור ולפתח כלים חדשים על מנת להעניק למטופלים שלי את הפתרונות היעילים ביותר.',
+        ],
+      },
+      {
+        id: 'approach',
+        label: 'הגישה שלי',
+        paragraphs: [
+          'העבודה שלי מתמקדת בארבעה תחומים מרכזיים: חרדה וסטרס שמתבטאים בתסמינים פיזיים כמו כאב ראש ומתח בגוף; רגשות מודחקים שהגוף שומר אותם — לחץ בחזה, גוש בגרון, עייפות; רגשות עמוקים כמו פחד, טינה, אשמה ובושה; ודפוסים והרגלים חוזרים שדורשים זיהוי ואסטרטגיות חדשות.',
+          'העבודה משלבת אבחון מדויק של שורש הבעיה, כלים תודעתיים ופרקטיים כאחד. המטרה: לחשוף במהירות את מקור הקושי, לשחרר דפוסים עמוקים ולהפחית משמעותית כאב ותסמינים.',
+          'שינוי מורגש מגיע אצל רבים כבר בשלבים הראשונים של התהליך — לא רק בסוף הדרך.',
+        ],
+      },
+      {
+        id: 'values',
+        label: 'הערכים שלי',
+        paragraphs: [
+          'דיסקרטיות ופרטיות מלאה: סביבת טיפול חסויה ולא שיפוטית, בלי תיוק ובלי הקלטות ללא הסכמה מפורשת.',
+          'כנות לפני הכול: שיחת ההכוונה הראשונית איננה שיחת מכירה — היא נועדה לתת לכם תשובות אמיתיות כדי שתחליטו בראש שקט. אם בשלב כלשהו אעריך שהגישה שלי אינה מתאימה לכם, אומר זאת ביושר ואכוון אתכם הלאה, בלי שום לחץ.',
+          'הקצב שלכם, הגבולות שלכם, המרחב שלכם — עבודה בלי שיפוטיות, עם כבוד מלא לתהליך האישי של כל מטופל.',
+        ],
+      },
     ],
-    readMore: 'TODO read more',
-    readLess: 'TODO read less',
+    readMore: 'קריאת עוד',
+    readLess: 'הצגה מצומצמת',
   },
   qualifications: {
-    title: 'TODO qualifications',
-    degreeBadges: ['TODO badge'],
-    approachesTitle: 'TODO approaches title',
-    approaches: ['TODO approach'],
+    title: 'הכשרה מקצועית',
+    degreeBadges: [
+      'תעודת האגודה הלאומית למומחים בפסיכוסומטיקה (מס\' 00113)',
+      'חבר פעיל באגודה הלאומית למומחים בפסיכוסומטיקה',
+      'תעודת השתלמות מקצועית, 120 שעות — המכון הבינלאומי לפסיכולוגיה מעשית, מוסקבה, 2018',
+    ],
+    approachesTitle: 'תחומי עבודה',
+    approaches: ['פסיכוסומטיקה', 'חרדה וסטרס', 'רגשות מודחקים', 'דפוסים והרגלים'],
   },
   generalInfo: {
-    title: 'TODO general info',
-    rows: [{ icon: 'globe', label: 'TODO label', value: 'TODO value' }],
+    title: 'מידע כללי',
+    rows: [
+      { icon: 'chat-bubble-dots', label: 'שפות טיפול', value: 'עברית ורוסית' },
+      { icon: 'connection-nodes', label: 'סוג טיפול', value: 'טיפול אישי (פרטני)' },
+      { icon: 'checklist-book', label: 'מסגרת', value: 'אונליין, עד שעה למפגש' },
+    ],
   },
   experience: {
-    title: 'TODO experience',
-    items: [{ id: 'exp-1', title: 'TODO item title', body: ['TODO body.'] }],
+    title: 'ניסיון והכשרה',
+    items: [
+      {
+        id: 'education',
+        title: 'הכשרה אקדמית והסמכה',
+        body: [
+          'תעודת האגודה הלאומית למומחים בפסיכוסומטיקה (מס\' 00113), המאשרת הסמכה מקצועית כמטפל פסיכוסומטי מוסמך וחברות פעילה באיגוד.',
+          'תעודת השתלמות מקצועית בהיקף של 120 שעות בעבודה עם פסיכוסומטיקה, מטעם המכון הבינלאומי לפסיכולוגיה מעשית, מוסקבה, 2018.',
+        ],
+        thumbs: [
+          {
+            src: '/assets/img/certificate-psychosomatics-association.jpeg',
+            full: '/assets/img/certificate-psychosomatics-association.jpeg',
+            alt: 'תעודת האגודה הלאומית למומחים בפסיכוסומטיקה, מס\' 00113',
+          },
+          {
+            src: '/assets/img/certificate-practical-psychology-1600.webp',
+            full: '/assets/img/certificate-practical-psychology.jpg',
+            alt: 'תעודת השתלמות מקצועית בהיקף 120 שעות, מוסקבה 2018',
+          },
+        ],
+      },
+      {
+        id: 'practice',
+        title: 'ניסיון מעשי',
+        body: [
+          'מעל 8 שנות עבודה טיפולית עם מטופלים הסובלים מכאב, מתח, חרדה ותסמינים גופניים שמקורם רגשי.',
+          'טיפול אונליין בעברית וברוסית, המאפשר גישה נוחה מכל מקום מבלי לוותר על עומק העבודה.',
+        ],
+      },
+    ],
   },
   schedule: {
-    title: 'TODO schedule',
-    honestyNote: 'TODO honesty note',
-    timezoneNote: 'TODO timezone',
-    slotAriaLabel: 'TODO slot',
-    noJsFallback: 'TODO no-js fallback',
-    calendarLinkLabel: 'TODO calendar link',
-    sectionLabelEvening: 'TODO evening',
-    sectionLabelDay: 'TODO day',
-    todayLabel: 'TODO today',
-    tomorrowLabel: 'TODO tomorrow',
-    nextAvailabilityLabel: 'TODO next availability',
+    title: 'בחרו זמן שנוח לכם',
+    honestyNote: 'אלו שעות הפעילות הרגילות שלי — האישור הסופי למועד מתבצע בוואטסאפ.',
+    timezoneNote: 'כל השעות מוצגות לפי שעון ישראל.',
+    slotAriaLabel: 'בחירת מועד למפגש',
+    noJsFallback: 'ימי חול, 10:00–20:00 — כתבו לנו בוואטסאפ ונתאם מועד שנוח לכם.',
+    calendarLinkLabel: 'אני מעדיפ/ה לבחור מועד ביומן',
+    sectionLabelDay: 'שעות היום',
+    sectionLabelEvening: 'שעות הערב',
+    todayLabel: 'היום',
+    tomorrowLabel: 'מחר',
+    nextAvailabilityLabel: 'המועד הפנוי הקרוב',
   },
   reviews: {
-    title: 'TODO reviews',
-    topics: ['TODO topic'],
-    allNote: 'TODO all note',
-    items: [{ author: 'TODO author', location: 'TODO location', rating: 5, text: 'TODO review text.' }],
+    title: 'מה אומרים המטופלים',
+    topics: ['חרדה חברתית', 'כאב כרוני', 'פחד', 'ביטחון עצמי'],
+    allNote: '3 חוות דעת אמיתיות ממטופלים',
+    items: [
+      {
+        author: 'א.ב.',
+        location: 'תל אביב',
+        rating: 5,
+        text: 'לפני הטיפול הייתי מוקף חרדה חברתית בכל מפגש. אחרי 3 פגישות עם דמיטרי הרגשתי שינוי ממשי — פחות מתח, יותר ביטחון עצמי.',
+      },
+      {
+        author: 'מ.ר.',
+        location: 'חיפה',
+        rating: 5,
+        text: 'דמיטרי עזר לי להבין את הקשר בין רגשות שדחקתי לכאב הכרוני שסבלתי ממנו. תהליך שינה את הדרך שאני מסתכל על עצמי.',
+      },
+      {
+        author: 'ד.ל.',
+        location: 'ירושלים',
+        rating: 5,
+        text: 'תהליך מקצועי ומותאם אישי. הרגשתי שמגיעים אלי עם כבוד ובלי שיפוטיות. הפחד שעצר אותי שנים — פשוט ירד.',
+      },
+    ],
   },
-  verified: { title: 'TODO verified', checks: ['TODO check'] },
+  verified: {
+    title: 'הסמכות מאומתות',
+    checks: [
+      'הכשרה אקדמית מאומתת — תעודת האגודה הלאומית למומחים בפסיכוסומטיקה',
+      'ניסיון מעשי מאומת — מעל 8 שנות עבודה טיפולית',
+      'הסמכה מקצועית מאומתת — תעודת השתלמות 120 שעות',
+    ],
+  },
   faq: {
-    title: 'TODO faq',
+    title: 'שאלות נפוצות',
     groups: [
       {
-        id: 'faq-1',
-        icon: 'help',
-        title: 'TODO group title',
-        items: [{ q: 'TODO question?', a: 'TODO answer.' }],
+        id: 'payment',
+        icon: 'info-circle',
+        title: 'מחיר ותשלום',
+        items: [
+          {
+            q: 'כמה עולה מפגש?',
+            a: 'המפגש הראשון עולה 197 ₪. לגבי מסלולים ומפגשי המשך, המחיר משתנה לפי הצורך — לבירור מדויק כתבו לנו בוואטסאפ.',
+          },
+          {
+            q: 'מה קורה אם הגישה לא מתאימה לי?',
+            a: 'אם במהלך התהליך אעריך שהגישה אינה מתאימה לכם — אומר זאת ביושר, התהליך ייעצר והתשלום על מפגשים שלא התקיימו יוחזר.',
+          },
+          {
+            q: 'שיחת ההכוונה הראשונית באמת ללא עלות?',
+            a: 'כן, ללא עלות וללא התחייבות. המטרה היחידה שלה היא לתת לכם את כל המידע שאתם צריכים כדי להחליט בראש שקט — זו לא שיחת מכירה.',
+          },
+        ],
+      },
+      {
+        id: 'before-session',
+        icon: 'chat-bubble-dots',
+        title: 'לפני המפגש',
+        items: [
+          {
+            q: 'איך עובד הטיפול האונליין?',
+            a: 'מפגשים אישיים מהבית שלכם, בשיחת וידאו נוחה, עד שעה כל מפגש. מחקרים מראים שטיפול אונליין יעיל לא פחות מטיפול פנים-אל-פנים, ולרבים הוא נוח יותר.',
+          },
+          {
+            q: 'האם זה דיסקרטי?',
+            a: 'לחלוטין. פרטיות מלאה, ללא תיוק. השיחות אינן מוקלטות ללא הסכמה מפורשת.',
+          },
+          {
+            q: 'באילו שפות מתקיים הטיפול?',
+            a: 'בעברית וברוסית, באותה רמה. גם שיחת ההכוונה הראשונית זמינה בשתי השפות.',
+          },
+          {
+            q: 'כמה מפגשים צריך?',
+            a: 'תלוי במצב. מסלולי הטיפול בנויים בדרך כלל על 3 עד 5 מפגשים ממוקדים, ושינוי מורגש מגיע אצל רבים כבר במפגשים הראשונים.',
+          },
+        ],
       },
     ],
   },
   sticky: {
-    priceLine: 'TODO price line',
-    yearsLine: 'TODO years line',
-    ctaWhatsApp: 'TODO whatsapp',
-    ctaFreeCall: 'TODO free call',
-    nextAvailabilityLabel: 'TODO next availability',
+    priceLine: '197 ₪ · מפגש ראשון',
+    yearsLine: 'מעל 8 שנות ניסיון',
+    ctaWhatsApp: 'כתבו בוואטסאפ',
+    ctaFreeCall: 'קביעת שיחת הכוונה ללא עלות',
+    nextAvailabilityLabel: 'המועד הפנוי הקרוב',
   },
-  mobileBar: { ctaWhatsApp: 'TODO whatsapp', ctaFreeCall: 'TODO free call' },
-  footer: { line: 'TODO footer line', termsLabel: 'TODO terms', termsHref: '/terms' },
+  mobileBar: { ctaWhatsApp: 'וואטסאפ', ctaFreeCall: 'שיחת הכוונה' },
+  footer: {
+    line: '© דמיטרי קזקוב — מטפל מוסמך בפסיכוסומטיקה',
+    termsLabel: 'תנאי שימוש',
+    termsHref: '/terms',
+  },
   waMessages: {
-    general: 'TODO general message',
-    priceInquiry: 'TODO price inquiry message',
-    bookSlot: 'TODO book message {slot}',
+    general: 'שלום, הגעתי מהאתר ואשמח לקבל מידע נוסף.',
+    priceInquiry: 'שלום, אשמח לברר מחיר ופרטים לגבי המפגשים.',
+    bookSlot: 'שלום, אשמח לקבוע שיחת הכוונה ראשונית ללא עלות: {slot}',
   },
-  jsonLd: { personDescription: 'TODO person description', offerName: 'TODO offer name' },
+  jsonLd: {
+    personDescription:
+      'דמיטרי קזקוב, מטפל מוסמך בפסיכוסומטיקה עם ניסיון של מעל 8 שנים, המתמחה בעבודה עם חרדה, מתח וכאב שמקורם רגשי.',
+    offerName: 'מפגש ראשון',
+  },
 };
