@@ -42,6 +42,19 @@ const { t } = Astro.props;
         {tab.paragraphs.map((p) => (
           <p class="about-para">{p}</p>
         ))}
+        {tab.cases && (
+          <div class="about-cases">
+            {tab.casesTitle && <p class="about-cases-title">{tab.casesTitle}</p>}
+            <ul class="about-cases-list">
+              {tab.cases.map((c) => (
+                <li class="about-case">
+                  <strong class="about-case-title">{c.title}</strong>
+                  <span class="about-case-text">{c.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <button type="button" class="about-more" data-more hidden>
         <span data-more-label>{t.readMore}</span>
@@ -160,20 +173,51 @@ const { t } = Astro.props;
     margin-block-start: var(--sp-3);
   }
 
-  /* Clamp: al montar mostramos ~6 líneas; is-open expande. */
+  /* Clamp por altura (max-block-size): a diferencia de -webkit-line-clamp,
+     puede contener la lista de casos frecuentes sin romperla. is-open expande. */
   .about-clamp {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    line-clamp: 6;
+    max-block-size: 10em;
     overflow: hidden;
   }
 
   .about-clamp.is-open {
-    display: block;
-    -webkit-line-clamp: unset;
-    line-clamp: unset;
+    max-block-size: none;
     overflow: visible;
+  }
+
+  /* ---- Casos frecuentes (contenido de la 1.0) ---- */
+  .about-cases {
+    margin-block-start: var(--sp-4);
+  }
+
+  .about-cases-title {
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-3);
+  }
+
+  .about-cases-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .about-case {
+    padding-inline-start: var(--sp-4);
+    border-inline-start: 2px solid var(--color-primary-100);
+  }
+
+  .about-case-title {
+    display: block;
+    color: var(--color-text);
+    margin-block-end: var(--sp-1);
+  }
+
+  .about-case-text {
+    color: var(--color-text-2);
+    line-height: var(--lh-normal);
   }
 
   .about-more {

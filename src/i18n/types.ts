@@ -16,7 +16,18 @@ export interface ProfileDict {
     nextAvailabilityLabel: string;
   };
   video: { sectionAriaLabel: string; playLabel: string; iframeTitle: string };
-  about: { tabs: { id: string; label: string; paragraphs: string[] }[]; readMore: string; readLess: string };
+  about: {
+    tabs: {
+      id: string;
+      label: string;
+      paragraphs: string[];
+      /** Lista opcional "casos frecuentes — ¿te reconocés?" (contenido de la 1.0). */
+      casesTitle?: string;
+      cases?: { title: string; text: string }[];
+    }[];
+    readMore: string;
+    readLess: string;
+  };
   qualifications: { title: string; degreeBadges: string[]; approachesTitle: string; approaches: string[] };
   generalInfo: { title: string; rows: { icon: string; label: string; value: string }[] };
   experience: {
