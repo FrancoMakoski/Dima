@@ -409,7 +409,7 @@ export function initSchedule(opts: InitScheduleOptions): void {
     panels.appendChild(panel);
   });
 
-  const activate = (idx: number) => {
+  const activate = (idx: number, scroll = true) => {
     dayButtons.forEach((b, i) => {
       const on = i === idx;
       b.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -419,8 +419,10 @@ export function initSchedule(opts: InitScheduleOptions): void {
     dayPanels.forEach((p, i) => {
       p.hidden = i !== idx;
     });
-    // Trae la tab activa a la vista dentro del carrusel horizontal.
-    dayButtons[idx]?.scrollIntoView({ inline: 'center', block: 'nearest' });
+    // Trae la tab activa a la vista dentro del carrusel horizontal — SOLO en
+    // interacción del usuario: en el init scrollIntoView desplazaría la página
+    // entera hasta #schedule al cargar (bug reportado por Franco).
+    if (scroll) dayButtons[idx]?.scrollIntoView({ inline: 'center', block: 'nearest' });
   };
 
   // Día activo por defecto = primer día con slots (siempre es days[0] acá).
@@ -456,7 +458,8 @@ export function initSchedule(opts: InitScheduleOptions): void {
   root.append(daysRow, panels);
   container.innerHTML = '';
   container.appendChild(root);
-  activate(active);
+  // scroll=false: en el init NO desplazar (deslizaba la página hasta #schedule al cargar).
+  activate(active, false);
 
   // ---- Contrato: primer slot disponible → StickyCard ----
   const firstCol = days[0];

@@ -11,8 +11,6 @@ export interface ProfileDict {
     name: string;
     role: string;
     yearsExp: string;
-    /** Línea corta de certificado estilo Clearly ("Сертификат № 00113"). Bold chica, entre años y rol. */
-    certShort: string;
     stats: { price: string; priceNote: string; reviewsCount: string; responseNote: string };
     /** Label "próxima disponibilidad" del header compacto móvil (chip clickeable al lado). */
     nextAvailabilityLabel: string;
@@ -68,6 +66,12 @@ export interface ProfileDict {
     priceLabel: string;
     /** Label del CTA de WhatsApp dentro del modal ("Confirmar en WhatsApp"). */
     confirmWhatsApp: string;
+    /** Declaración del paciente en el modal de reserva — textos LEGALES textuales
+        del booking de producción (Web 1.0): título, 4 ítems y label del checkbox
+        que habilita el CTA. NO parafrasear. */
+    consentTitle: string;
+    consentItems: string[];
+    consentAcceptLabel: string;
   };
   reviews: {
     title: string;

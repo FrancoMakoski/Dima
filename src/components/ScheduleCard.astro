@@ -72,14 +72,16 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     </noscript>
   </div>
 
-  {/* Resumen del slot elegido: "21 июля, 02:00 (GMT+3)". Oculto hasta elegir. */}
-  <p class="sched-summary" data-sched-summary hidden></p>
+  {/* Resumen del slot elegido + botón de reserva, CENTRADOS (pedido de Franco). */}
+  <div class="sched-actions">
+    <p class="sched-summary" data-sched-summary hidden></p>
 
-  {/* Botón de reserva: gris/deshabilitado hasta elegir; el script lo habilita,
-      le cambia el label a t.reserveCta y abre el modal al hacer click. */}
-  <button type="button" class="sched-reserve" data-sched-reserve data-sched-open disabled>
-    {t.chooseSlotCta}
-  </button>
+    {/* Botón de reserva: gris/deshabilitado hasta elegir; el script lo habilita,
+        le cambia el label a t.reserveCta y abre el modal al hacer click. */}
+    <button type="button" class="sched-reserve" data-sched-reserve data-sched-open disabled>
+      {t.chooseSlotCta}
+    </button>
+  </div>
 
   <p class="sched-honesty">{t.honestyNote}</p>
 
@@ -157,9 +159,24 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
       </div>
     </dl>
 
-    {/* CTA primario full-width a WhatsApp; el href se actualiza con el slot. */}
+    {/* Declaración del paciente (textos legales del booking de producción):
+        el checkbox habilita el CTA de WhatsApp. */}
+    <div class="booking-consent" data-sched-consent-box>
+      <p class="booking-consent-title">{t.consentTitle}</p>
+      <ul class="booking-consent-list">
+        {t.consentItems.map((item) => <li>{item}</li>)}
+      </ul>
+      <label class="booking-consent-check">
+        <input type="checkbox" data-sched-consent />
+        <span>{t.consentAcceptLabel}</span>
+      </label>
+    </div>
+
+    {/* CTA primario full-width a WhatsApp; el href se actualiza con el slot.
+        Deshabilitado (is-disabled + aria-disabled) hasta aceptar la declaración. */}
     <a
-      class="booking-confirm"
+      class="booking-confirm is-disabled"
+      aria-disabled="true"
       href={initialWaHref}
       target="_blank"
       rel="noopener"
@@ -237,6 +254,31 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
 
     // Esc del <dialog> nativo dispara 'close' sin pasar por closeBooking().
     bookingModal.addEventListener('close', restoreFocus);
+
+    // ---- Consentimiento: el checkbox habilita el CTA de WhatsApp ----
+    const consentCheck = bookingModal.querySelector<HTMLInputElement>('[data-sched-consent]');
+    const consentBox = bookingModal.querySelector<HTMLElement>('[data-sched-consent-box]');
+    const confirmLink = bookingModal.querySelector<HTMLAnchorElement>('[data-sched-modal-wa]');
+    if (consentCheck && confirmLink) {
+      const syncConsent = () => {
+        const ok = consentCheck.checked;
+        confirmLink.classList.toggle('is-disabled', !ok);
+        confirmLink.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      };
+      syncConsent();
+      consentCheck.addEventListener('change', syncConsent);
+      confirmLink.addEventListener('click', (e) => {
+        if (consentCheck.checked) return;
+        // Sin consentimiento: no navegar ni disparar tracking de conversión;
+        // resaltar la declaración para guiar la vista.
+        e.preventDefault();
+        e.stopPropagation();
+        if (consentBox) {
+          consentBox.classList.add('is-attention');
+          window.setTimeout(() => consentBox.classList.remove('is-attention'), 1200);
+        }
+      });
+    }
   }
 </script>
 
@@ -287,7 +329,14 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     line-height: var(--lh-normal);
   }
 
-  /* ---- Resumen del slot elegido + botón de reserva ---- */
+  /* ---- Resumen del slot elegido + botón de reserva, CENTRADOS ---- */
+  .sched-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
   .sched-summary {
     margin-block-start: var(--sp-5);
     font-size: var(--fs-base);
@@ -300,13 +349,12 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     display: none;
   }
 
-  /* Botón de reserva, alineado a inicio como en Clearly. Deshabilitado = gris;
-     habilitado (con .is-selected vía JS) = azul primario. */
+  /* Botón de reserva centrado. Deshabilitado = gris;
+     habilitado = azul primario. */
   .sched-reserve {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    align-self: flex-start;
     margin-block-start: var(--sp-4);
     padding-block: var(--sp-3);
     padding-inline: var(--sp-6);
@@ -611,6 +659,70 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     font-variant-numeric: tabular-nums;
   }
 
+  /* ---- Declaración del paciente (consentimiento) ---- */
+  .booking-consent {
+    margin-block-end: var(--sp-5);
+    padding: var(--sp-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-input);
+    background: var(--color-surface-2);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .booking-consent.is-attention {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+  }
+
+  .booking-consent-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-3);
+  }
+
+  .booking-consent-list {
+    list-style: none;
+    margin: 0 0 var(--sp-3);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .booking-consent-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    line-height: var(--lh-normal);
+  }
+
+  .booking-consent-list li::before {
+    content: '•';
+    color: var(--color-primary);
+    flex-shrink: 0;
+    line-height: var(--lh-normal);
+  }
+
+  .booking-consent-check {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .booking-consent-check input {
+    inline-size: 18px;
+    block-size: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
   /* CTA primario full-width a WhatsApp */
   .booking-confirm {
     display: inline-flex;
@@ -634,6 +746,15 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
   .booking-confirm:hover {
     background: var(--color-primary-hover);
     border-color: var(--color-primary-hover);
+  }
+
+  /* Sin consentimiento: gris, no clickeable visualmente (el JS bloquea el click). */
+  .booking-confirm.is-disabled,
+  .booking-confirm.is-disabled:hover {
+    background: var(--color-surface-2);
+    border-color: var(--color-border-strong);
+    color: var(--color-text-2);
+    cursor: not-allowed;
   }
 
   .booking-confirm-icon {

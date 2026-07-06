@@ -38,7 +38,6 @@ const { t } = Astro.props;
     <div class="ph-id">
       <h1 class="ph-name">{t.name}</h1>
       <p class="ph-years">{t.yearsExp}</p>
-      <p class="ph-cert">{t.certShort}</p>
       <p class="ph-role">{t.role}</p>
     </div>
   </div>
@@ -124,15 +123,6 @@ const { t } = Astro.props;
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
     color: var(--color-text);
-    margin-block-end: var(--sp-1);
-  }
-
-  /* Línea corta de certificado estilo Clearly: bold chica, entre años y rol. */
-  .ph-cert {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
-    color: var(--color-text);
-    line-height: var(--lh-tight);
     margin-block-end: var(--sp-1);
   }
 
