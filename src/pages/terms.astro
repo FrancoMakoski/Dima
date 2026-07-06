@@ -1,0 +1,504 @@
+---
+// terms.astro — Página legal (he-only, RTL): תנאי שימוש, הצהרת פרטיות ומדיניות טיפול.
+// Contenido legal migrado TEXTUALMENTE desde ..\Web 1.0\terms.html (producción,
+// versión 1.1, 21-abr-2026). Cero reescritura: mismos headings, cláusulas, montos
+// ("100 ₪" es excepción legal permitida), datos de contacto y referencias de ley.
+// Solo cambia el envoltorio visual → design system 3.0 (tokens, Card, TopBar, Rubik).
+// El footer ruso (/ru/) también enlaza acá, igual que en producción: NO hay versión ru.
+import Base from '../layouts/Base.astro';
+import TopBar from './../components/TopBar.astro';
+import Card from '../components/Card.astro';
+import { getDict } from '../i18n';
+
+const t = getDict('he');
+
+const pageTitle = 'תנאי שימוש ומדיניות פרטיות | דמיטרי קזקוב — מומחה לפסיכוסומטיקה';
+const pageDescription =
+  'תנאי שימוש, הצהרת פרטיות ומדיניות טיפול של האתר dimatherapyonline.com — דמיטרי קזקוב, מומחה לפסיכוסומטיקה.';
+
+// Tabla de contenidos (mismo orden y texto que producción).
+const toc = [
+  { id: 's1', label: 'פרטי בעל האתר והנותן שירות' },
+  { id: 's2', label: 'הגדרות' },
+  { id: 's3', label: 'קבלת התנאים' },
+  { id: 's4', label: 'אופי השירות — הבהרה מהותית' },
+  { id: 's5', label: 'תנאי שימוש באתר' },
+  { id: 's6', label: 'הזמנה וביטול פגישות' },
+  { id: 's7', label: 'תשלום ומחירים' },
+  { id: 's8', label: 'הגנת פרטיות ועיבוד מידע אישי' },
+  { id: 's9', label: 'סודיות טיפולית' },
+  { id: 's10', label: 'קבצי Cookie ועקיבה דיגיטלית' },
+  { id: 's11', label: 'קניין רוחני' },
+  { id: 's12', label: 'הגבלת אחריות' },
+  { id: 's13', label: 'שיפוי' },
+  { id: 's14', label: 'דין חל וסמכות שיפוט' },
+  { id: 's15', label: 'שינויים במסמך' },
+  { id: 's16', label: 'יצירת קשר' },
+];
+---
+
+<Base title={pageTitle} description={pageDescription} lang="he" robots="noindex,follow" alternates={false}>
+  <div class="legal">
+    <TopBar t={t.topbar} locale="he" />
+
+    <a class="legal-back" href="/">
+      <svg class="legal-back-icon flip-rtl" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      <span>חזרה לאתר הראשי</span>
+    </a>
+
+    <Card class="legal-doc">
+      <header class="legal-header">
+        <h1 class="legal-title">תנאי שימוש, הצהרת פרטיות ומדיניות טיפול</h1>
+        <div class="legal-meta">
+          <span>גרסה: 1.1</span>
+          <span>תאריך כניסה לתוקף: 21 באפריל 2026</span>
+          <span>עודכן לאחרונה: 21 באפריל 2026</span>
+          <span>שפה מחייבת: עברית</span>
+        </div>
+      </header>
+
+      <nav class="legal-toc" aria-label="תוכן עניינים">
+        <p class="legal-toc-title">תוכן עניינים</p>
+        <ol class="legal-toc-list">
+          {toc.map((item) => (
+            <li><a href={`#${item.id}`}>{item.label}</a></li>
+          ))}
+        </ol>
+      </nav>
+
+      <section class="legal-section" id="s1">
+        <h2>1. פרטי בעל האתר והנותן שירות</h2>
+        <p>האתר <strong>dimatherapyonline.com</strong> (להלן: "האתר") מופעל על ידי <strong>דמיטרי קזקוב</strong> (להלן: "המטפל" או "נותן השירות"). האתר משמש חלון ראווה ומערכת קביעת פגישות לשירותי ייעוץ פסיכוסומטי וליווי רגשי-גופני מקוון.</p>
+        <ul>
+          <li><strong>שם מלא:</strong> דמיטרי קזקוב (Dmitriy Kazakov)</li>
+          <li><strong>כתובת דוא"ל:</strong> kadimaclinic@gmail.com</li>
+          <li><strong>טלפון / WhatsApp:</strong> +972-52-805-6068</li>
+          <li><strong>מדינה:</strong> מדינת ישראל</li>
+        </ul>
+      </section>
+
+      <section class="legal-section" id="s2">
+        <h2>2. הגדרות</h2>
+        <ul>
+          <li><strong>"משתמש" / "לקוח"</strong> — כל אדם הגולש באתר, ממלא טופס, קובע פגישה או מתקשר עם נותן השירות בכל דרך.</li>
+          <li><strong>"שירות"</strong> — ייעוץ פסיכוסומטי, ליווי רגשי-גופני ו/או כל שירות מקצועי אחר המסופק על ידי המטפל.</li>
+          <li><strong>"מידע אישי"</strong> — כמשמעותו בסעיף 7 לחוק הגנת הפרטיות, תשמ"א-1981.</li>
+          <li><strong>"מידע רגיש"</strong> — מידע על בריאות, מצב נפשי, חיי מין, השקפות דתיות או פוליטיות, כמשמעותו בחוק הגנת הפרטיות.</li>
+          <li><strong>"פגישה"</strong> — מפגש אחד-על-אחד בין המטפל ללקוח, שנערך בפלטפורמת וידיאו מקוונת.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section" id="s3">
+        <h2>3. קבלת התנאים</h2>
+        <p>השימוש באתר, קביעת פגישה, מילוי טופס, שליחת הודעה, או ביצוע תשלום מהווים הסכמה מלאה ובלתי מסויגת לתנאים המפורטים במסמך זה. אם אינך מסכים לתנאי כלשהו — הינך מתבקש להימנע מכל שימוש בשירות.</p>
+        <div class="legal-callout">
+          <p>גיל מינימלי לשימוש עצמאי בשירות: <strong>18 שנה</strong>. קטינים יכולים לקבל שירות אך ורק בהסכמה בכתב של שני ההורים או האפוטרופוס החוקי, ובהתאם לחוק הכשרות המשפטית והאפוטרופסות, תשכ"ב-1962.</p>
+        </div>
+      </section>
+
+      <section class="legal-section" id="s4">
+        <h2>4. אופי השירות — הבהרה מהותית</h2>
+        <div class="legal-callout legal-callout-warn">
+          <p><strong>השירות אינו מהווה חירום פסיכיאטרי.</strong> במקרה של מחשבות אובדניות, פגיעה עצמית, פסיכוזה חריפה, או כל מצב חירום אחר — פנה מיידית לחדר מיון, לטלפון 101 (מגן דוד אדום), לקו החירום הנפשי 1201 (ער"ן), או למשטרה 100.</p>
+        </div>
+        <p>השירות המוצע הוא ייעוץ פסיכוסומטי וליווי רגשי-גופני במרחב דיגיטלי. הוא אינו מחליף אבחנה פסיכיאטרית, מרשם תרופתי, אשפוז, או כל טיפול רפואי אחר. המטפל אינו פסיכיאטר ואינו מוסמך לרשום תרופות.</p>
+      </section>
+
+      <section class="legal-section" id="s5">
+        <h2>5. תנאי שימוש באתר</h2>
+        <h3>5.1 שימוש מותר</h3>
+        <p>השימוש באתר מותר לצרכים אישיים ולא מסחריים בלבד — לרבות קבלת מידע על השירות, קביעת פגישה, והתקשרות עם המטפל.</p>
+        <h3>5.2 שימוש אסור</h3>
+        <ul>
+          <li>הגשת מידע כוזב, מזהה שגוי, או התחזות לאדם אחר.</li>
+          <li>ניסיון לגשת שלא כדין למערכות האתר, לרבות scanning, scraping, או כל פעולה העלולה לפגוע בתפקוד האתר (עבירה לפי חוק המחשבים, תשנ"ה-1995).</li>
+          <li>העלאת תוכן בלתי חוקי, פוגעני, מטעה, או המפר זכויות צד שלישי.</li>
+          <li>שימוש מסחרי בתוכן האתר ללא אישור מפורש בכתב.</li>
+          <li>כל שימוש שנועד להטריד, לאיים, או לפגוע במטפל או במשתמשים אחרים.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section" id="s6">
+        <h2>6. הזמנה וביטול פגישות</h2>
+        <h3>6.1 אישור פגישה</h3>
+        <p>פגישה תיחשב מאושרת רק לאחר שהתקבל אישור מפורש מהמטפל בכתב (WhatsApp או דוא"ל) ולאחר ביצוע התשלום כנדרש.</p>
+        <h3>6.2 ביטול על ידי הלקוח</h3>
+        <ul>
+          <li>ביטול <strong>48 שעות לפחות</strong> לפני מועד הפגישה — ללא חיוב.</li>
+          <li>ביטול בין <strong>24 ל-48 שעות</strong> לפני — חיוב בשיעור 50% מעלות הפגישה.</li>
+          <li>ביטול <strong>פחות מ-24 שעות</strong> לפני, או אי-הגעה ללא הודעה — חיוב מלא בגין הפגישה.</li>
+        </ul>
+        <h3>6.3 ביטול על ידי המטפל</h3>
+        <p>המטפל שומר לעצמו הזכות לבטל פגישה בשל מצב חירום רפואי, כוח עליון, או נסיבות שאינן בשליטתו. במקרה כזה תיקבע פגישה חלופית ללא עלות נוספת, או תוחזר התמורה ששולמה.</p>
+        <p class="legal-ref">בהתאם לחוק הגנת הצרכן, תשמ"א-1981, ולתקנות הגנת הצרכן (ביטול עסקה), תשע"א-2010.</p>
+        <h3>6.4 ביטול עסקה לפי חוק הגנת הצרכן</h3>
+        <p>לקוח הרוכש שירות אונליין זכאי לבטל את העסקה תוך <strong>14 ימים</strong> ממועד כריתת החוזה ו/או ממועד קבלת מסמך גילוי נאות, ובלבד שהשירות טרם סופק בפועל. דמי ביטול לא יעלו על 5% ממחיר העסקה או 100 ₪, לפי הנמוך.</p>
+      </section>
+
+      <section class="legal-section" id="s7">
+        <h2>7. תשלום ומחירים</h2>
+        <p>המחירים מפורטים בדף השירותים ומוצגים בשקלים חדשים (₪) כולל מע"מ כדין, אלא אם נאמר אחרת. המטפל רשאי לשנות מחירים בהודעה מוקדמת של 14 ימים. שינוי מחיר לא יחול על פגישות שכבר שולמו.</p>
+        <p>התשלום מבוצע באמצעות האמצעים המפורטים בדף ההזמנה. נותן השירות אינו שומר פרטי כרטיס אשראי על גבי שרתיו.</p>
+      </section>
+
+      <section class="legal-section" id="s8">
+        <h2>8. הגנת פרטיות ועיבוד מידע אישי</h2>
+        <p class="legal-ref">בהתאם לחוק הגנת הפרטיות, תשמ"א-1981; תקנות הגנת הפרטיות (אבטחת מידע), תשע"ז-2017; וכן לתקנות האיחוד האירופי GDPR (EU) 2016/679, ככל שיחולו.</p>
+
+        <h3>8.1 סוגי מידע הנאסף</h3>
+        <ul>
+          <li><strong>מידע מזהה:</strong> שם, כתובת דוא"ל, מספר טלפון.</li>
+          <li><strong>מידע בריאותי ונפשי (מידע רגיש):</strong> מסרים, תשובות לשאלונים, ותוכן הפגישות.</li>
+          <li><strong>מידע טכני:</strong> כתובת IP, סוג דפדפן, נתוני Google Analytics.</li>
+        </ul>
+
+        <h3>8.2 מטרות עיבוד המידע</h3>
+        <ul>
+          <li>מתן שירותי הייעוץ הפסיכוסומטי והליווי המקצועי.</li>
+          <li>ניהול פגישות, תשלומים, והתכתבויות.</li>
+          <li>שיפור האתר וניתוח סטטיסטי אנונימי.</li>
+          <li>עמידה בחובות חוקיות ורגולטוריות.</li>
+        </ul>
+
+        <h3>8.3 בסיס חוקי לעיבוד</h3>
+        <p>עיבוד מידע רגיש (בריאות ומצב נפשי) מתבצע על בסיס הסכמה מפורשת של הלקוח, הניתנת בעת קביעת הפגישה הראשונה. המשך השימוש בשירות מהווה אישור מתמשך להסכמה.</p>
+
+        <h3>8.4 שמירת מידע</h3>
+        <p>מידע טיפולי ישמר לתקופה של <strong>7 שנים</strong> ממועד הפגישה האחרונה, בהתאם לצורך תיעודי, לדיני הרשלנות המקצועית ולהוראות כל דין. מידע טכני ישמר עד 26 חודשים.</p>
+
+        <h3>8.5 זכויות הלקוח</h3>
+        <p>בהתאם לחוק הגנת הפרטיות, הלקוח זכאי ל:</p>
+        <ul>
+          <li>עיון במידע האישי המוחזק עליו.</li>
+          <li>תיקון מידע שגוי.</li>
+          <li>מחיקת מידע, בכפוף למגבלות חוקיות.</li>
+          <li>התנגדות לעיבוד מידע לצרכי שיווק.</li>
+        </ul>
+        <p>בקשות יש להפנות אל: kadimaclinic@gmail.com. מענה יינתן תוך 30 ימים.</p>
+
+        <h3>8.6 העברת מידע לצדדים שלישיים</h3>
+        <p>המידע האישי לא יועבר לצדדים שלישיים, למעט:</p>
+        <ul>
+          <li>ספקי טכנולוגיה הכרחיים לפעילות האתר (Google Analytics, פלטפורמת הווידיאו) — בהתאם להסכמי עיבוד נתונים.</li>
+          <li>חובה חוקית — על-פי צו שיפוטי, דרישת רשות מוסמכת, או חובת דיווח קבועה בחוק.</li>
+          <li>מניעת סכנה מיידית לחיים או לגוף — בהתאם להוראות כל דין ולצורך הגנה על אינטרס חיוני של הלקוח או של אדם אחר.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section" id="s9">
+        <h2>9. סודיות טיפולית</h2>
+        <p>המטפל שואף לשמור על סודיות מלאה במידע הנמסר לו במסגרת השירות. עם זאת, הסודיות מוגבלת במקרים הקבועים בחוק:</p>
+        <ul>
+          <li>גילוי חובה בשל סכנת חיים מיידית — ללקוח עצמו או לאחר.</li>
+          <li>גילוי חובה בשל התעללות בקטין, לפי חוק הכשרות המשפטית והאפוטרופסות ותיקוניו.</li>
+          <li>צו בית משפט מחייב.</li>
+        </ul>
+        <p>פגישות מקוונות אינן מוקלטות על ידי המטפל ללא הסכמה מפורשת מראש ובכתב.</p>
+        <div class="legal-callout legal-callout-warn">
+          <p>הלקוח מוזהר כי אבטחת שיחות וידיאו אינה מוחלטת. אחריות על אבטחת המכשיר, הרשת, ומיקום הקבלה מוטלת על הלקוח.</p>
+        </div>
+      </section>
+
+      <section class="legal-section" id="s10">
+        <h2>10. קבצי Cookie ועקיבה דיגיטלית</h2>
+        <p>האתר עושה שימוש ב-Google Analytics לניתוח תעבורה אנונימי. Google Analytics מניח קבצי cookie; ניתן לבטל עקיבה זו דרך הגדרות הדפדפן או כלי ה-opt-out של Google.</p>
+        <p>האתר אינו עושה שימוש בעוגיות שיווקיות, remarketing, או רשתות פרסום צד שלישי.</p>
+      </section>
+
+      <section class="legal-section" id="s11">
+        <h2>11. קניין רוחני</h2>
+        <p>כל התכנים המופיעים באתר — לרבות טקסטים, תמונות, עיצוב גרפי, לוגו, ומבנה האתר — הם קניינו הרוחני הבלעדי של דמיטרי קזקוב, מוגנים לפי חוק זכות יוצרים, תשס"ח-2007.</p>
+        <p>אין להעתיק, לשכפל, להפיץ, לפרסם, לתרגם, לעבד, או לעשות שימוש מסחרי בכל חלק מהתכנים ללא אישור מפורש ובכתב.</p>
+      </section>
+
+      <section class="legal-section" id="s12">
+        <h2>12. הגבלת אחריות</h2>
+        <p>השירות ניתן "כמות שהוא" (AS IS). נותן השירות אינו אחראי לנזקים הנובעים מ:</p>
+        <ul>
+          <li>תקלות טכנולוגיות בפלטפורמת הווידיאו, חיבור אינטרנט, או ציוד הלקוח.</li>
+          <li>אי-עמידה ביעדי התהליך — אין בשירות התחייבות לתוצאה ספציפית.</li>
+          <li>שימוש בלתי מורשה של צד שלישי במידע הלקוח כתוצאה ממעשה או מחדל של הלקוח.</li>
+          <li>אי-זמינות האתר בשל תחזוקה, כוח עליון, או גורמים חיצוניים.</li>
+        </ul>
+        <p>אחריות נותן השירות, ככל שתקבע, מוגבלת לסכום ששולם בפועל בגין הפגישה שבגינה נוצר הנזק.</p>
+        <p class="legal-ref">בהתאם לחוק החוזים (תרופות בשל הפרת חוזה), תשל"א-1970, וחוק עוולות אזרחיות, תש"ד-1944.</p>
+      </section>
+
+      <section class="legal-section" id="s13">
+        <h2>13. שיפוי</h2>
+        <p>הלקוח מסכים לשפות את המטפל, עובדיו, נציגיו, ויורשיו בגין כל תביעה, הוצאה, נזק, או אחריות הנובעים משימוש הלקוח באתר בניגוד לתנאים אלה, ממסירת מידע כוזב, או מהפרת זכויות צד שלישי על ידי הלקוח.</p>
+      </section>
+
+      <section class="legal-section" id="s14">
+        <h2>14. דין חל וסמכות שיפוט</h2>
+        <p>תנאים אלה כפופים לדיני מדינת ישראל. כל סכסוך שיתגלע בין הצדדים ייושב, ראשית, בהליך גישור וולונטרי. בהיעדר הסכמה — לבתי המשפט המוסמכים במחוז תל אביב-יפו תהיה סמכות שיפוט ייחודית ובלעדית.</p>
+        <p class="legal-ref">בהתאם לחוק בתי המשפט [נוסח משולב], תשמ"ד-1984.</p>
+      </section>
+
+      <section class="legal-section" id="s15">
+        <h2>15. שינויים במסמך</h2>
+        <p>נותן השירות שומר לעצמו הזכות לשנות תנאים אלה בכל עת. שינויים מהותיים יפורסמו באתר עם הודעה מוקדמת של <strong>14 ימים</strong>. המשך השימוש בשירות לאחר תאריך כניסת השינוי לתוקף מהווה הסכמה לגרסה המעודכנת.</p>
+      </section>
+
+      <section class="legal-section" id="s16">
+        <h2>16. יצירת קשר</h2>
+        <div class="legal-callout legal-contact">
+          <p class="legal-contact-title">מומחה לפסיכוסומטיקה</p>
+          <p class="legal-contact-subtitle">דמיטרי קזקוב</p>
+          <p>דוא"ל: <a href="mailto:kadimaclinic@gmail.com">kadimaclinic@gmail.com</a></p>
+          <p>WhatsApp: <a href="https://wa.me/972528056068">+972-52-805-6068</a></p>
+          <p>בקשות עיון במידע אישי, ביטול הסכמה, ותלונות על פרטיות — לאותה כתובת דוא"ל, בנושא: "בקשת פרטיות".</p>
+        </div>
+      </section>
+    </Card>
+
+    <footer class="legal-footer">
+      <a class="legal-footer-back" href="/">חזרה לאתר הראשי</a>
+      <p class="legal-footer-line">© 2026 דמיטרי קזקוב. מסמך זה מהווה הסכם משפטי מחייב.</p>
+      <p class="legal-footer-line">גרסה 1.1 — 21 באפריל 2026. השפה המחייבת לצרכי פרשנות היא עברית.</p>
+    </footer>
+  </div>
+</Base>
+
+<style>
+  /* Contenedor angoso centrado sobre el fondo con patrón (más estrecho que el
+     perfil: lectura legal cómoda). */
+  .legal {
+    max-inline-size: 800px;
+    margin-inline: auto;
+    padding-inline: var(--page-pad);
+    padding-block-end: var(--sp-10);
+  }
+
+  /* Link de volver (discreto, con chevron que se espeja en RTL vía .flip-rtl). */
+  .legal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-5);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-2);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .legal-back:hover {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .legal-back-icon {
+    flex-shrink: 0;
+  }
+
+  /* ---- Cabecera del documento ---- */
+  .legal-header {
+    padding-block-end: var(--sp-5);
+    margin-block-end: var(--sp-6);
+    border-block-end: 2px solid var(--color-primary);
+  }
+
+  .legal-title {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    line-height: var(--lh-tight);
+    margin-block-end: var(--sp-3);
+  }
+
+  .legal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-5);
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+  }
+
+  /* ---- Tabla de contenidos ---- */
+  .legal-toc {
+    background: var(--color-surface-2);
+    border-radius: var(--r-input);
+    border-inline-start: 3px solid var(--color-primary);
+    padding: var(--sp-4) var(--sp-5);
+    margin-block-end: var(--sp-7);
+  }
+
+  .legal-toc-title {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .legal-toc-list {
+    list-style: decimal;
+    padding-inline-start: var(--sp-5);
+    margin: 0;
+    color: var(--color-text-2);
+    display: grid;
+    gap: var(--sp-1);
+  }
+
+  .legal-toc-list li {
+    padding-inline-start: var(--sp-1);
+  }
+
+  .legal-toc-list a {
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .legal-toc-list a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* ---- Secciones ---- */
+  .legal-section {
+    margin-block-end: var(--sp-7);
+  }
+
+  .legal-section:last-child {
+    margin-block-end: 0;
+  }
+
+  .legal-section :global(h2) {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    padding-block-end: var(--sp-2);
+    margin-block-end: var(--sp-3);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .legal-section :global(h3) {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin-block: var(--sp-4) var(--sp-2);
+  }
+
+  .legal-section :global(p) {
+    color: var(--color-text-2);
+    line-height: var(--lh-normal);
+    margin-block-end: var(--sp-3);
+  }
+
+  .legal-section :global(p:last-child) {
+    margin-block-end: 0;
+  }
+
+  .legal-section :global(ul) {
+    list-style: disc;
+    padding-inline-start: var(--sp-6);
+    margin-block-end: var(--sp-3);
+    color: var(--color-text-2);
+  }
+
+  .legal-section :global(li) {
+    margin-block-end: var(--sp-2);
+    line-height: var(--lh-normal);
+  }
+
+  .legal-section :global(li:last-child) {
+    margin-block-end: 0;
+  }
+
+  .legal-section :global(strong) {
+    color: var(--color-text);
+    font-weight: var(--fw-semibold);
+  }
+
+  .legal-section :global(a) {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .legal-section :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  /* Referencia legal (citas de ley, cursiva tenue). */
+  .legal-section :global(.legal-ref) {
+    font-size: var(--fs-xs);
+    font-style: italic;
+    color: var(--color-text-2);
+    opacity: 0.85;
+  }
+
+  /* ---- Callouts (highlight-box / warning-box / contact-card del original) ---- */
+  .legal-section :global(.legal-callout) {
+    background: var(--color-primary-50);
+    border: 1px solid var(--color-primary-100);
+    border-radius: var(--r-input);
+    padding: var(--sp-4) var(--sp-5);
+    margin-block: var(--sp-4);
+  }
+
+  .legal-section :global(.legal-callout p) {
+    margin-block-end: var(--sp-2);
+  }
+
+  .legal-section :global(.legal-callout p:last-child) {
+    margin-block-end: 0;
+  }
+
+  /* Aviso importante (no-emergencia / seguridad): tono ámbar sobre la estrella. */
+  .legal-section :global(.legal-callout-warn) {
+    background: #fdf6e9;
+    border-color: #f2d9a4;
+  }
+
+  /* Tarjeta de contacto. */
+  .legal-section :global(.legal-contact-title) {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    margin-block-end: var(--sp-1);
+  }
+
+  .legal-section :global(.legal-contact-subtitle) {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--color-primary);
+    margin-block-end: var(--sp-3);
+  }
+
+  /* ---- Footer legal ---- */
+  .legal-footer {
+    margin-block-start: var(--sp-6);
+    padding-block-start: var(--sp-6);
+    border-block-start: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  .legal-footer-back {
+    display: inline-block;
+    margin-block-end: var(--sp-4);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .legal-footer-back:hover {
+    text-decoration: underline;
+  }
+
+  .legal-footer-line {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    margin-block-end: var(--sp-1);
+  }
+
+  .legal-footer-line:last-child {
+    margin-block-end: 0;
+  }
+</style>

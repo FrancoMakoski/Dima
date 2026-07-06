@@ -12,22 +12,36 @@ interface Props {
   title: string;
   description?: string;
   lang?: Locale;
+  // Directiva robots. Default = paridad con producción (snippets/imágenes ricos).
+  // Páginas legales/no indexables la sobreescriben con 'noindex,follow' para
+  // emitir UNA sola <meta robots> (sin duplicados contradictorios).
+  robots?: string;
+  // Páginas que existen en un solo idioma (ej. /terms, solo hebreo) ponen esto en
+  // false para NO emitir hreflang hacia un espejo /ru/... inexistente.
+  alternates?: boolean;
 }
 
-const { title, lang = 'he', description = '' } = Astro.props;
+const {
+  title,
+  lang = 'he',
+  description = '',
+  robots = 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+  alternates = true,
+} = Astro.props;
 const dir = lang === 'he' ? 'rtl' : 'ltr';
 
 // URLs canónicas y alternas he<->ru. Con build.format:'file' el pathname en build
 // llega como '/ru.html', '/booking.html' o '/index.html'; hay que normalizarlo a la
-// forma limpia que sirve producción (sin '.html', con barra final) antes de derivar.
+// forma que sirve producción: raíces con barra final (/, /ru/), subpáginas SIN barra
+// final (/terms, /booking) — igual que los canonical del htaccess de producción.
 const rawPath = Astro.url.pathname;
 const cleanPath = rawPath
-  .replace(/index\.html$/, '') // /index.html -> /
-  .replace(/\.html$/, '/') //     /ru.html -> /ru/ , /booking.html -> /booking/
+  .replace(/index\.html$/, '') // /index.html -> / ; /ru/index.html -> /ru/
+  .replace(/\.html$/, '') //     /ru.html -> /ru , /booking.html -> /booking
   .replace(/\/{2,}/g, '/'); // colapsa dobles barras
-// basePath = ruta hebrea equivalente (sin el prefijo /ru), siempre con barra final.
+// basePath = ruta hebrea equivalente (sin el prefijo /ru); raíz = '/', resto sin barra final.
 let basePath = cleanPath.replace(/^\/ru(?=\/|$)/, '') || '/';
-if (!basePath.endsWith('/')) basePath += '/';
+if (basePath !== '/' && basePath.endsWith('/')) basePath = basePath.slice(0, -1);
 const heHref = new URL(basePath, SITE_URL).href;
 const ruHref = new URL(basePath === '/' ? '/ru/' : `/ru${basePath}`, SITE_URL).href;
 const canonical = lang === 'he' ? heHref : ruHref;
@@ -51,18 +65,16 @@ const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
 
-    <!-- Señales de indexación (paridad con producción: snippets/imágenes ricos) -->
-    <meta
-      name="robots"
-      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
-    />
+    <!-- Señales de indexación: por defecto paridad con producción (snippets/imágenes
+         ricos); las páginas legales pasan robots="noindex,follow" para no indexarse. -->
+    <meta name="robots" content={robots} />
     <meta name="author" content="Dmitriy Kazakov" />
     <meta name="theme-color" content="#f7f4ef" />
 
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="he" href={heHref} />
-    <link rel="alternate" hreflang="ru" href={ruHref} />
-    <link rel="alternate" hreflang="x-default" href={heHref} />
+    {alternates && <link rel="alternate" hreflang="he" href={heHref} />}
+    {alternates && <link rel="alternate" hreflang="ru" href={ruHref} />}
+    {alternates && <link rel="alternate" hreflang="x-default" href={heHref} />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="profile" />
