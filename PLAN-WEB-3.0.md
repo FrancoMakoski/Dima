@@ -24,7 +24,8 @@ el diseño nuevo.
 ## Qué se hereda del sitio viejo (obligatorio)
 
 - **Reglas de copy** — ver CLAUDE.md: sin "hipnosis"/"psicólogo", llamada gratis sin duración,
-  cero precios, WhatsApp primario, activo Makulov para el segmento ruso.
+  precios ocultos salvo la primera sesión (197 ₪), WhatsApp primario, sin mencionar a Makulov
+  (decisión Franco 6-jul-2026).
 - **Integraciones:** booking con Google Calendar, analytics doble, tracking gclid/utm y
   `whatsapp_click` en los CTAs.
 - **SEO ya ganado:** schema/JSON-LD, sitemap con hreflang, htaccess (clean URLs, 404),
@@ -52,6 +53,15 @@ Carpeta, repo git, scaffold Astro con i18n he/ru, este plan, CLAUDE.md con regla
    visual: tipografía, color, hero, CTAs, cards, testimonios, FAQ, footer.
 3. Revisión con Franco (y Dima para el copy) antes de replicar al resto. **Gate: no se avanza
    a Fase 2 sin OK del diseño.**
+
+> **Nota — 6-jul-2026 (decisión de Franco):** dirección visual definida. La home (`/`) va a
+> ser una **página de perfil de terapeuta estilo Clearly** (referencia:
+> `app.clearly.help/therapist/32352`) — one-page con header de stats, video de presentación,
+> tabs sobre mí/enfoque/valores, formación con diplomas, info general, selector de horarios,
+> opiniones, banner de verificación y sidebar sticky con foto y CTAs. Orden de construcción:
+> **ruso primero** (LTR), pase a RTL y espejo hebreo después. Social proof solo con datos
+> reales (sin contadores inventados). Precio de la primera sesión (**197 ₪**) visible en el
+> perfil — regla actualizada en CLAUDE.md.
 
 ### Fase 2 — Construcción
 1. Layout base + componentes compartidos (nav, hero, CTA WhatsApp, sección precios sin cifras,

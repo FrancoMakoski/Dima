@@ -1,6 +1,41 @@
 ---
+// Base.astro — layout raíz del sitio 3.0 (perfil estilo Clearly).
+// Head completo: meta, OG, canonical + hreflang he<->ru, favicon, preload de fuentes,
+// GTM, y un slot 'head' para JSON-LD por página.
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/global.css';
+import { SITE_URL, GTM_ID } from '../config/site';
+import type { Locale } from '../i18n/types';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: Locale;
+}
+
 const { title, lang = 'he', description = '' } = Astro.props;
 const dir = lang === 'he' ? 'rtl' : 'ltr';
+
+// URLs canónicas y alternas he<->ru. Con build.format:'file' el pathname en build
+// llega como '/ru.html', '/booking.html' o '/index.html'; hay que normalizarlo a la
+// forma limpia que sirve producción (sin '.html', con barra final) antes de derivar.
+const rawPath = Astro.url.pathname;
+const cleanPath = rawPath
+  .replace(/index\.html$/, '') // /index.html -> /
+  .replace(/\.html$/, '/') //     /ru.html -> /ru/ , /booking.html -> /booking/
+  .replace(/\/{2,}/g, '/'); // colapsa dobles barras
+// basePath = ruta hebrea equivalente (sin el prefijo /ru), siempre con barra final.
+let basePath = cleanPath.replace(/^\/ru(?=\/|$)/, '') || '/';
+if (!basePath.endsWith('/')) basePath += '/';
+const heHref = new URL(basePath, SITE_URL).href;
+const ruHref = new URL(basePath === '/' ? '/ru/' : `/ru${basePath}`, SITE_URL).href;
+const canonical = lang === 'he' ? heHref : ruHref;
+
+// Preload del subset de Rubik del idioma actual + latín (siempre presente: dígitos/símbolos).
+const localeFont = lang === 'he' ? '/assets/fonts/rubik-var-hebrew.woff2' : '/assets/fonts/rubik-var-cyrillic.woff2';
+
+const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
 ---
 
 <!doctype html>
@@ -8,10 +43,45 @@ const dir = lang === 'he' ? 'rtl' : 'ltr';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google Tag Manager -->
+    <script is:inline set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`} />
+    <!-- End Google Tag Manager -->
+
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="he" href={heHref} />
+    <link rel="alternate" hreflang="ru" href={ruHref} />
+    <link rel="alternate" hreflang="x-default" href={heHref} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'he' ? 'he_IL' : 'ru_RU'} />
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/png" href="/assets/icons/favicon-d.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+
+    <!-- Preload de fuentes: subset del locale actual + latín -->
+    <link rel="preload" href={localeFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- JSON-LD u otras etiquetas por página -->
+    <slot name="head" />
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <slot />
   </body>
 </html>

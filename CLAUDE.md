@@ -13,12 +13,17 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
    Dima no es psicólogo colegiado). Tampoco equivalentes en hebreo/ruso.
 2. La oferta gratuita es **"llamada inicial de orientación, sin costo"**. NUNCA mencionar
    duración (ni "sin apuro", ni "15 minutos", nada de tiempo).
-3. **CERO precios visibles** en todo el sitio (incluido booking). Todo precio → link
-   "consultar precio" que abre wa.me precargado. Únicas excepciones: el "100 ₪" legal en
-   terms y el `price: 0` del JSON-LD de la llamada gratis.
+3. **Precio de la primera sesión visible** (decisión de Franco, 6-jul-2026): **197 ₪** SÍ se
+   muestra en la página de perfil (header de stats y tarjeta lateral) y donde el diseño lo
+   pida. El resto de precios (sesiones siguientes, paquetes) sigue **sin mostrarse** → link
+   "consultar precio" que abre wa.me precargado. Excepciones legales que se mantienen: el
+   "100 ₪" legal en terms y el `price: 0` del JSON-LD de la llamada gratis. El JSON-LD del
+   perfil ahora puede llevar un `Offer` de 197 ILS para la primera sesión.
 4. **WhatsApp es el CTA primario** en todo el sitio, siempre con tracking de conversión.
-5. Segmento ruso: usar el linaje de autoridad **V.Yu. Makulov** (referente de psicosomática
-   en Rusia, formador de Dima) — es oro para ese público.
+5. **NO mencionar a V.Yu. Makulov ni "el método Makulov"** en ningún copy público, en ningún
+   idioma (decisión Franco 6-jul-2026). La formación de 120h se describe por institución,
+   horas y año (Instituto Internacional de Psicología Práctica, Moscú, 2018) sin nombrar
+   el método.
 
 ## Stack y estructura
 

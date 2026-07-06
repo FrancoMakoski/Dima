@@ -1,0 +1,80 @@
+/* tokens.css — Sistema de diseño DimaTherapy 3.0 (perfil estilo Clearly).
+   Contrato de variables para todos los agentes/componentes. NO usar valores
+   crudos en los componentes: siempre referenciar estas variables. */
+
+:root {
+  /* ---- Paleta ---- */
+  --color-primary: #4a6cf7;        /* azul primario (botones, tabs activas, links) */
+  --color-primary-hover: #3452d8;  /* hover más oscuro */
+  --color-primary-100: #e9eefe;    /* tint chip celeste (fondo) */
+  --color-primary-50: #f2f5ff;     /* tint más claro (hovers suaves, fondos) */
+
+  --color-bg: #f6f7fb;             /* fondo gris-lavanda de la página */
+  --color-surface: #ffffff;        /* tarjetas */
+  --color-surface-2: #f6f7fb;      /* superficie hundida / filas alternas */
+
+  --color-text: #1e2433;           /* texto principal casi negro */
+  --color-text-2: #5b6478;         /* texto secundario gris azulado */
+  --color-text-on-primary: #ffffff;/* texto sobre botón azul */
+
+  --color-border: #e6e9f2;         /* bordes finos apenas visibles */
+  --color-border-strong: #d5d9e6;  /* borde de inputs / botón secundario */
+
+  --color-star: #f6a723;           /* estrellas de rating naranjas */
+  --color-success: #16a34a;        /* verificación / checks */
+  --color-whatsapp: #1db876;       /* verde WhatsApp (CTA) */
+  --color-whatsapp-hover: #159b62;
+
+  /* ---- Radios ---- */
+  --r-card: 16px;
+  --r-btn: 12px;
+  --r-input: 10px;
+  --r-pill: 999px;
+
+  /* ---- Sombras ---- */
+  --sh-card: 0 1px 2px rgba(30, 36, 51, 0.04), 0 4px 16px rgba(30, 36, 51, 0.06);
+  --sh-pop: 0 8px 28px rgba(30, 36, 51, 0.14);
+
+  /* ---- Escala de espaciado (base 4px) ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 48px;
+  --sp-10: 64px;
+
+  /* ---- Tipografía ---- */
+  --font-sans: 'Rubik', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-md: 1.125rem;   /* 18px */
+  --fs-lg: 1.375rem;   /* 22px */
+  --fs-xl: 1.75rem;    /* 28px */
+  --fs-2xl: 2.25rem;   /* 36px */
+
+  --lh-tight: 1.25;
+  --lh-normal: 1.55;
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ---- Layout ---- */
+  --content-max: 1140px;
+  --sidebar-w: 340px;
+  --col-gap: 32px;
+  --sticky-top: 24px;
+  --page-pad: 20px;   /* padding lateral del contenedor en móvil */
+
+  /* ---- Z-indexes ---- */
+  --z-sticky: 10;
+  --z-ctabar: 20;
+  --z-dialog: 30;
+}
