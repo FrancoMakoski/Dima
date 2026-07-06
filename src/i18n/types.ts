@@ -94,11 +94,13 @@ export interface ProfileDict {
   sticky: {
     priceLine: string;
     yearsLine: string;
-    ctaWhatsApp: string;
-    ctaFreeCall: string;
+    /** CTA primario azul → #schedule ("Reservar sesión", como Clearly). */
+    ctaBook: string;
+    /** CTA secundario outline → WhatsApp con logo ("Contactar", como Clearly). */
+    ctaContact: string;
     nextAvailabilityLabel: string;
   };
-  mobileBar: { ctaWhatsApp: string; ctaFreeCall: string };
+  mobileBar: { ctaBook: string; ctaContact: string };
   footer: {
     nav: { heading: string; links: { label: string; href: string }[] };
     line: string;

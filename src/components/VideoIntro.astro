@@ -10,12 +10,27 @@ interface Props {
 }
 
 const { t, videoId } = Astro.props;
-const POSTER = '/assets/img/dmitry-photo2-880.webp';
+// Póster = fotograma real del video de Dima (thumbnail de YouTube) para que se
+// vea que es SU video. Cadena de respaldo: maxres → hq → foto local (data-attrs
+// que consume el script inline con onerror).
+const POSTER_MAX = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+const POSTER_HQ = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+const POSTER_LOCAL = '/assets/img/dmitry-photo2-880.webp';
 ---
 
 <section class="video" aria-label={t.sectionAriaLabel}>
   <div class="video-frame" data-video-facade data-video-id={videoId} data-iframe-title={t.iframeTitle}>
-    <img class="video-poster" src={POSTER} alt="" loading="lazy" width="880" height="495" decoding="async" />
+    <img
+      class="video-poster"
+      src={POSTER_MAX}
+      data-poster-hq={POSTER_HQ}
+      data-poster-local={POSTER_LOCAL}
+      alt=""
+      loading="lazy"
+      width="880"
+      height="495"
+      decoding="async"
+    />
     <button type="button" class="video-play" data-video-play aria-label={t.playLabel}>
       <svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" class="flip-rtl">
         <path d="M8 5v14l11-7z" fill="currentColor"></path>
@@ -26,6 +41,21 @@ const POSTER = '/assets/img/dmitry-photo2-880.webp';
 
 <script is:inline>
   (() => {
+    // Respaldo del póster: si el thumbnail maxres de YouTube no existe (404),
+    // baja a hq y, si tampoco, a la foto local — sin dejar imagen rota.
+    document.querySelectorAll('.video-poster').forEach((img) => {
+      img.addEventListener('error', function onErr() {
+        const hq = this.getAttribute('data-poster-hq');
+        const local = this.getAttribute('data-poster-local');
+        if (hq && this.src !== hq) {
+          this.src = hq;
+        } else if (local) {
+          this.removeEventListener('error', onErr);
+          this.src = local;
+        }
+      });
+    });
+
     document.querySelectorAll('[data-video-facade]').forEach((facade) => {
       const btn = facade.querySelector('[data-video-play]');
       if (!btn) return;

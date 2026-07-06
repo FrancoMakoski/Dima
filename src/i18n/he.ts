@@ -232,11 +232,11 @@ export const he: ProfileDict = {
   sticky: {
     priceLine: '197 ₪ · מפגש ראשון',
     yearsLine: 'מעל 8 שנות ניסיון',
-    ctaWhatsApp: 'כתבו בוואטסאפ',
-    ctaFreeCall: 'קביעת שיחת הכוונה ללא עלות',
+    ctaBook: 'קביעת מפגש',
+    ctaContact: 'צור קשר',
     nextAvailabilityLabel: 'המועד הפנוי הקרוב',
   },
-  mobileBar: { ctaWhatsApp: 'וואטסאפ', ctaFreeCall: 'שיחת הכוונה' },
+  mobileBar: { ctaBook: 'קביעת מפגש', ctaContact: 'צור קשר' },
   footer: {
     nav: {
       heading: 'ניווט',

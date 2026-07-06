@@ -50,22 +50,24 @@ const { t, name, waMessage, photoAlt } = Astro.props;
       </span>
     </div>
 
-    <CtaWhatsApp
-      label={t.ctaWhatsApp}
-      message={waMessage}
-      trackLabel="sticky_whatsapp"
-      variant="primary"
-      class="sc-cta"
-    />
-
+    {/* Primario azul → agenda (como Clearly: "Reservar sesión"). */}
     <a
-      class="sc-secondary"
+      class="sc-primary"
       href="#schedule"
       data-track="free_call_cta_click"
-      data-track-label="sticky_free_call"
+      data-track-label="sticky_reserve"
     >
-      {t.ctaFreeCall}
+      {t.ctaBook}
     </a>
+
+    {/* Secundario outline → WhatsApp con logo (como Clearly: "Contactar"). */}
+    <CtaWhatsApp
+      label={t.ctaContact}
+      message={waMessage}
+      trackLabel="sticky_contact"
+      variant="outline"
+      class="sc-cta"
+    />
 
     <div class="sc-availability" data-availability-block hidden>
       <p class="sc-availability-label">{t.nextAvailabilityLabel}</p>
@@ -160,28 +162,30 @@ const { t, name, waMessage, photoAlt } = Astro.props;
     margin-block-start: var(--sp-1);
   }
 
-  /* Botón secundario outline full-width (link a #schedule) */
-  .sc-secondary {
+  /* Botón primario azul full-width (link a #schedule → agenda). */
+  .sc-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     inline-size: 100%;
+    margin-block-start: var(--sp-1);
     padding-block: var(--sp-3);
     padding-inline: var(--sp-6);
     border-radius: var(--r-btn);
     border: 1px solid var(--color-primary);
-    background: var(--color-surface);
-    color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
     font-size: var(--fs-base);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
   }
 
-  .sc-secondary:hover {
-    background: var(--color-primary-50);
+  .sc-primary:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
     text-decoration: none;
   }
 

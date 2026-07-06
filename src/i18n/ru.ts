@@ -232,11 +232,11 @@ export const ru: ProfileDict = {
   sticky: {
     priceLine: '197 ₪ · первая сессия',
     yearsLine: 'Более 8 лет опыта',
-    ctaWhatsApp: 'Написать в WhatsApp',
-    ctaFreeCall: 'Записаться на бесплатную беседу',
+    ctaBook: 'Записаться на сессию',
+    ctaContact: 'Связаться',
     nextAvailabilityLabel: 'Ближайшее свободное время',
   },
-  mobileBar: { ctaWhatsApp: 'WhatsApp', ctaFreeCall: 'Ориентационная беседа' },
+  mobileBar: { ctaBook: 'Записаться', ctaContact: 'Связаться' },
   footer: {
     nav: {
       heading: 'Разделы',
