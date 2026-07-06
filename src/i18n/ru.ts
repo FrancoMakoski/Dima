@@ -74,7 +74,7 @@ export const ru: ProfileDict = {
     title: 'Общая информация',
     rows: [
       { icon: 'chat-bubble-dots', label: 'Языки терапии', value: 'Русский и иврит' },
-      { icon: 'connection-nodes', label: 'Формат терапии', value: 'Индивидуальные сессии' },
+      { icon: 'sprout-plant', label: 'Формат терапии', value: 'Индивидуальные сессии' },
       { icon: 'checklist-book', label: 'Формат встреч', value: 'Онлайн, до одного часа за сессию' },
     ],
   },

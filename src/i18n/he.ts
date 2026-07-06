@@ -74,7 +74,7 @@ export const he: ProfileDict = {
     title: 'מידע כללי',
     rows: [
       { icon: 'chat-bubble-dots', label: 'שפות טיפול', value: 'עברית ורוסית' },
-      { icon: 'connection-nodes', label: 'סוג טיפול', value: 'טיפול אישי (פרטני)' },
+      { icon: 'sprout-plant', label: 'סוג טיפול', value: 'טיפול אישי (פרטני)' },
       { icon: 'checklist-book', label: 'מסגרת', value: 'אונליין, עד שעה למפגש' },
     ],
   },
