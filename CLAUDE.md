@@ -2,8 +2,8 @@
 
 Sitio web **3.0 de DimaTherapy** (Dima Kazakov, terapeuta en Israel): rebuild total desde cero,
 decidido por Franco el 6-jul-2026 porque el sitio en producción no convierte lo suficiente.
-Reemplaza al sitio 1.0 en producción y a la rama `cro-hormozi` (2.x, nunca publicada) del
-proyecto viejo: `C:\Users\franc_tcymweq\Desktop\Proyectos\DimaThereapy`.
+Reemplaza al sitio 1.0 en producción (carpeta hermana `..\Web 1.0`, el repo que se publica)
+y a la 2.2 nunca publicada (carpeta hermana `..\Web 2.0`, branch `cro-hormozi`).
 
 El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de tocar nada.
 
@@ -30,8 +30,9 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
 
 ## Deploy
 
-El hosting NO cambia: mismo dominio, mismo Hostinger, mismo canal git del proyecto viejo.
-Publicar = `npm run build` → copiar el contenido de `dist/` al repo viejo → `/pushweb` desde ahí.
+El hosting NO cambia: mismo dominio, mismo Hostinger, mismo repo (`..\Web 1.0`).
+Publicar = `npm run build` → copiar el contenido de `dist/` adentro de `..\Web 1.0\` →
+`push-dima.bat` desde ahí.
 
 ## Idioma de trabajo
 

@@ -15,10 +15,10 @@ el diseño nuevo.
 
 | Decisión | Elegido | Por qué |
 |---|---|---|
-| Carpeta/proyecto | `Proyectos\DimaTherapy-3.0`, repo git propio | Lo pidió Franco: empezar de 0, separado del viejo |
+| Carpeta/proyecto | `DimaThereapy\Web 3.0`, repo git propio | Lo pidió Franco: las tres versiones juntas dentro de la carpeta DimaThereapy |
 | Stack | **Astro 5**, salida estática | Componentes + i18n nativo = se acaba el CSS duplicado y los espejos he/ru a mano (la deuda #1 del sitio viejo). El build genera HTML plano → Hostinger no cambia nada |
 | URLs | Idénticas a producción | No se pierde SEO, no hacen falta redirects 301 |
-| Deploy | `npm run build` → `dist/` → repo viejo → `/pushweb` | Dominio, SSL y hosting intactos; cero riesgo de migración |
+| Deploy | `npm run build` → `dist/` → `..\Web 1.0` → `push-dima.bat` | Dominio, SSL y hosting intactos; cero riesgo de migración |
 | Idiomas | Hebreo (RTL) en raíz, ruso en `/ru/` | Igual que producción |
 
 ## Qué se hereda del sitio viejo (obligatorio)
@@ -73,7 +73,7 @@ accesibilidad), links internos, todos los CTAs disparando su evento de tracking,
 
 ### Fase 5 — Switch a producción
 1. `npm run build` → verificar `dist/` contra el mapa de URLs de abajo.
-2. Copiar `dist/` al repo viejo (reemplazando los archivos) → `/pushweb`.
+2. Copiar `dist/` adentro de `..\Web 1.0\` (reemplazando los archivos) → `push-dima.bat`.
 3. Verificar en vivo: home he/ru, una landing, booking, free-call, 404, htaccess.
 4. Google Search Console: pedir reindexación de las páginas principales.
 5. Monitorear 2 semanas: visitas, clicks WhatsApp, posiciones SEO.
@@ -103,5 +103,5 @@ accesibilidad), links internos, todos los CTAs disparando su evento de tracking,
 ## Riesgo a tener presente
 
 Mientras se construye la 3.0, producción sigue con el sitio 1.0 (el que no convierte) — la
-rama `cro-hormozi` del proyecto viejo tiene un sitio 2.2 terminado que se puede publicar en
-cualquier momento como puente si la 3.0 se demora.
+carpeta hermana `..\Web 2.0` (branch `cro-hormozi`) tiene un sitio 2.2 terminado que se puede
+publicar en cualquier momento como puente si la 3.0 se demora.
