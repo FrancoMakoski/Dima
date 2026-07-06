@@ -34,14 +34,17 @@ const t = getDict(locale);
 <ProfileShell>
   <TopBar slot="topbar" t={t.topbar} locale={locale} />
 
-  {/* Región A (2 columnas): identidad + contenido "sobre el terapeuta". */}
+  {/* Región A (2 columnas): identidad + contenido "sobre el terapeuta".
+      Cada sección va envuelta en un `.pm-item pm-<n>`: en móvil los wrappers
+      intermedios del Shell colapsan (display:contents) y estos items pasan a ser
+      hijos directos del contenedor de página, ordenados por `order` (ver Shell). */}
   <Fragment slot="main">
-    <ProfileHeader t={t.header} />
-    <VideoIntro t={t.video} videoId={VIDEO_ID} />
-    <AboutTabs t={t.about} />
-    <QualificationsCard t={t.qualifications} />
-    <GeneralInfoCard t={t.generalInfo} />
-    <ExperienceAccordion t={t.experience} />
+    <div class="pm-item pm-header"><ProfileHeader t={t.header} /></div>
+    <div class="pm-item pm-video"><VideoIntro t={t.video} videoId={VIDEO_ID} /></div>
+    <div class="pm-item pm-about"><AboutTabs t={t.about} /></div>
+    <div class="pm-item pm-qualifications"><QualificationsCard t={t.qualifications} /></div>
+    <div class="pm-item pm-general"><GeneralInfoCard t={t.generalInfo} /></div>
+    <div class="pm-item pm-experience"><ExperienceAccordion t={t.experience} /></div>
   </Fragment>
 
   <StickyCard
@@ -54,12 +57,12 @@ const t = getDict(locale);
 
   {/* Región B (ancho completo): agenda, prueba social, confianza, FAQ, footer. */}
   <Fragment slot="wide">
-    <ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} />
-    <ReviewsCard t={t.reviews} locale={locale} />
-    <VerifiedBanner t={t.verified} />
-    <FaqSection t={t.faq} />
+    <div class="pm-item pm-schedule"><ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} /></div>
+    <div class="pm-item pm-reviews"><ReviewsCard t={t.reviews} locale={locale} /></div>
+    <div class="pm-item pm-verified"><VerifiedBanner t={t.verified} /></div>
+    <div class="pm-item pm-faq"><FaqSection t={t.faq} /></div>
 
-    <footer class="profile-footer">
+    <footer class="profile-footer pm-footer">
       <nav class="profile-footer-nav" aria-label={t.footer.nav.heading}>
         <h2 class="profile-footer-heading">{t.footer.nav.heading}</h2>
         <ul class="profile-footer-links">
@@ -85,6 +88,33 @@ const t = getDict(locale);
 </script>
 
 <style>
+  /* ---- Wrappers de sección para el reorden móvil ----
+     Desktop: transparentes al layout (display:contents) → las secciones reales
+     (Cards) siguen siendo hijas directas de .shell-main / .shell-wide y conservan
+     el gap del flex column. Móvil: se vuelven items reales del flex de .shell
+     (ver ProfileShell) y se ordenan con `order` en el orden Clearly. */
+  .pm-item {
+    display: contents;
+  }
+
+  @media (max-width: 960px) {
+    .pm-item {
+      display: block;
+    }
+
+    .pm-header { order: 1; }
+    .pm-video { order: 2; }
+    .pm-about { order: 3; }
+    .pm-qualifications { order: 4; }
+    .pm-schedule { order: 5; }
+    .pm-reviews { order: 6; }
+    .pm-general { order: 7; }
+    .pm-experience { order: 8; }
+    .pm-verified { order: 9; }
+    .pm-faq { order: 10; }
+    .pm-footer { order: 11; }
+  }
+
   .profile-footer {
     padding-block: var(--sp-8) var(--sp-6);
     border-block-start: 1px solid var(--color-border);

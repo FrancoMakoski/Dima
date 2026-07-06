@@ -1,8 +1,18 @@
 ---
 // ProfileHeader.astro — card de encabezado del perfil (columna principal, primera).
-// Nombre grande + años de experiencia + Nº de certificado + rol en gris, y fila de
-// stats con iconitos de color (precio azul, reseñas estrella, respuesta). Todo el
-// texto llega por props; este componente no decide copy. Solo props lógicas.
+//
+// DESKTOP (>=960px): nombre grande + años + rol en gris, y fila de stats horizontal
+//   con iconitos de color (precio azul, reseñas estrella, respuesta). La foto y la
+//   fila de disponibilidad quedan OCULTAS (ya viven en la StickyCard lateral).
+//
+// MÓVIL (<960px): tarjeta compacta estilo Clearly:
+//   - fila superior: foto (~90px, inline-start) + bloque nombre/años/rol al lado;
+//   - stats APILADAS a lo ancho (precio en línea 1; reseñas + respuesta con wrap);
+//   - fila inferior: label "próxima disponibilidad" + CHIP clickeable (a #schedule).
+//
+// El chip [data-next-availability] arranca hidden; lo llena availability.ts (que
+// des-oculta también [data-availability-block]). Todo el texto llega por props.
+// Solo props lógicas → se espeja solo con dir="rtl".
 import Card from './Card.astro';
 import Icon from './Icon.astro';
 import type { ProfileDict } from '../i18n/types';
@@ -15,12 +25,25 @@ const { t } = Astro.props;
 ---
 
 <Card class="profile-header">
-  <h1 class="ph-name">{t.name}</h1>
-  <p class="ph-years">{t.yearsExp}</p>
-  <p class="ph-role">{t.role}</p>
+  <div class="ph-top">
+    <img
+      class="ph-photo"
+      src="/assets/img/dmitry-photo2-880.webp"
+      alt={t.name}
+      width="880"
+      height="1100"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="ph-id">
+      <h1 class="ph-name">{t.name}</h1>
+      <p class="ph-years">{t.yearsExp}</p>
+      <p class="ph-role">{t.role}</p>
+    </div>
+  </div>
 
   <div class="ph-stats">
-    <div class="ph-stat">
+    <div class="ph-stat ph-stat--price">
       <span class="ph-stat-icon ph-stat-icon--price">
         <Icon name="bar-chart" size={18} />
       </span>
@@ -48,9 +71,39 @@ const { t } = Astro.props;
       </span>
     </div>
   </div>
+
+  <div class="ph-availability" data-availability-block hidden>
+    <span class="ph-availability-label">{t.nextAvailabilityLabel}</span>
+    <a
+      class="ph-availability-chip"
+      href="#schedule"
+      data-track="free_call_cta_click"
+      data-track-label="availability_chip"
+      data-next-availability
+      hidden
+    ></a>
+  </div>
 </Card>
 
 <style>
+  /* ---- Fila superior (foto + identidad): solo visible en móvil ---- */
+  .ph-top {
+    display: none;
+  }
+
+  .ph-photo {
+    inline-size: 90px;
+    block-size: 90px;
+    border-radius: 12px;
+    object-fit: cover;
+    object-position: center top;
+    flex-shrink: 0;
+  }
+
+  .ph-id {
+    min-inline-size: 0;
+  }
+
   .ph-name {
     font-size: var(--fs-2xl);
     font-weight: var(--fw-bold);
@@ -72,6 +125,7 @@ const { t } = Astro.props;
     margin-block-end: 0;
   }
 
+  /* ---- Stats: fila horizontal en desktop ---- */
   .ph-stats {
     display: flex;
     flex-wrap: wrap;
@@ -135,5 +189,90 @@ const { t } = Astro.props;
   .ph-stat-note--inline {
     margin-block-start: 0;
     max-inline-size: 22ch;
+  }
+
+  /* ---- Fila de disponibilidad: solo visible en móvil ---- */
+  .ph-availability {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-5);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .ph-availability[hidden] {
+    display: none;
+  }
+
+  .ph-availability-label {
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+  }
+
+  .ph-availability-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--sp-4);
+    padding-block: var(--sp-2);
+    border-radius: var(--r-pill);
+    background: var(--color-primary-100);
+    color: var(--color-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .ph-availability-chip:hover {
+    background: color-mix(in srgb, var(--color-primary) 22%, white);
+    text-decoration: none;
+  }
+
+  .ph-availability-chip:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .ph-availability-chip[hidden] {
+    display: none;
+  }
+
+  /* ---- Móvil (<960px): tarjeta compacta estilo Clearly ---- */
+  @media (max-width: 960px) {
+    .ph-top {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-4);
+    }
+
+    .ph-name {
+      font-size: var(--fs-xl);
+    }
+
+    /* Stats apiladas: el precio ocupa su propia línea; reseñas + respuesta
+       comparten la línea siguiente y hacen wrap si no entran. */
+    .ph-stats {
+      flex-wrap: wrap;
+      gap: var(--sp-4) var(--sp-5);
+      margin-block-start: var(--sp-5);
+      padding-block-start: var(--sp-5);
+    }
+
+    .ph-stat--price {
+      flex-basis: 100%;
+    }
+
+    .ph-availability {
+      display: flex;
+    }
+
+    /* Cuando el bloque sigue hidden (JS no corrió / sin slot) no se muestra. */
+    .ph-availability[hidden] {
+      display: none;
+    }
   }
 </style>

@@ -5,8 +5,13 @@
 //     sticky y acompaña el scroll durante toda la región A.
 //   Región B (.shell-wide): ancho completo del contenido (~1140px), debajo de
 //     la región A. Aquí van schedule, reseñas, banner verificado, FAQ y footer.
-// Móvil (<960px): 1 columna. La sidebar-card va arriba (antes que main), luego
-//   main, luego la región wide — todo apilado en flujo normal, sin sticky.
+// Móvil (<960px): 1 sola columna con ORDEN estilo Clearly (header → video →
+//   about → qualifications → schedule → reviews → generalInfo → experience →
+//   verified → faq → footer). Para lograrlo sin duplicar markup, los wrappers
+//   intermedios (.shell-grid, .shell-main, .shell-sidebar*, .shell-wide) pasan a
+//   display:contents y el propio .shell se vuelve un flex column; así todas las
+//   secciones (envueltas en .pm-item por ProfilePage) se vuelven hermanas y se
+//   ordenan con `order` (definido en ProfilePage). La StickyCard queda oculta.
 // Slots nombrados: topbar, main, sidebar, wide, after.
 // Solo propiedades lógicas → se espeja solo con dir="rtl".
 ---
@@ -81,23 +86,27 @@
     margin-block-start: var(--sp-6);
   }
 
-  /* Móvil: una sola columna, sidebar arriba (antes que main), sin sticky. */
+  /* Móvil: una sola columna, orden Clearly. Los wrappers intermedios colapsan
+     (display:contents) para que TODAS las secciones (.pm-item) se vuelvan
+     hermanas dentro del flex column de .shell y se ordenen con `order`. */
   @media (max-width: 960px) {
-    .shell-grid {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas:
-        'sidebar'
-        'main';
+    .shell {
+      display: flex;
+      flex-direction: column;
       gap: var(--sp-5);
     }
 
-    .shell-sidebar-inner {
-      position: static;
+    /* El topbar debe quedar SIEMPRE primero, fuera del reordenado. */
+    .shell-topbar {
+      order: -1;
     }
 
+    .shell-grid,
+    .shell-main,
+    .shell-sidebar,
+    .shell-sidebar-inner,
     .shell-wide {
-      gap: var(--sp-5);
-      margin-block-start: var(--sp-5);
+      display: contents;
     }
   }
 </style>

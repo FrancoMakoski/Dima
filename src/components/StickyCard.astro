@@ -69,7 +69,14 @@ const { t, name, waMessage, photoAlt } = Astro.props;
 
     <div class="sc-availability" data-availability-block hidden>
       <p class="sc-availability-label">{t.nextAvailabilityLabel}</p>
-      <span class="sc-availability-chip" data-next-availability hidden></span>
+      <a
+        class="sc-availability-chip"
+        href="#schedule"
+        data-track="free_call_cta_click"
+        data-track-label="availability_chip"
+        data-next-availability
+        hidden
+      ></a>
     </div>
   </div>
 </div>
@@ -206,9 +213,29 @@ const { t, name, waMessage, photoAlt } = Astro.props;
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .sc-availability-chip:hover {
+    background: color-mix(in srgb, var(--color-primary) 22%, white);
+    text-decoration: none;
+  }
+
+  .sc-availability-chip:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   .sc-availability-chip[hidden] {
     display: none;
+  }
+
+  /* Móvil (<960px): la StickyCard entera se oculta — sus CTA viven en
+     MobileCtaBar y la disponibilidad/foto ya están en el ProfileHeader compacto. */
+  @media (max-width: 960px) {
+    .sticky-card {
+      display: none;
+    }
   }
 </style>

@@ -36,7 +36,16 @@ const scheduleStrings = {
 ---
 
 <Card title={t.title} icon="clock-badge-peach" id="schedule">
-  <p class="sched-tz">{t.timezoneNote}</p>
+  <p class="sched-tz">
+    {t.timezoneNote}
+    {/* Hora actual de Israel en vivo, la llena availability.ts: "(GMT+3), 19:53". */}
+    <span class="sched-tz-live" data-live-time hidden></span>
+  </p>
+
+  <p class="sched-modality">
+    <Icon name="info-circle" size={16} class="sched-modality-icon" />
+    <span>{t.modalityNote}</span>
+  </p>
 
   <div
     class="sched-mount"
@@ -95,7 +104,30 @@ const scheduleStrings = {
   .sched-tz {
     font-size: var(--fs-sm);
     color: var(--color-text-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .sched-tz-live {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sched-tz-live[hidden] {
+    display: none;
+  }
+
+  /* "Online, terapia individual" con icono, dentro de la card sobre los chips. */
+  .sched-modality {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
     margin-block-end: var(--sp-4);
+  }
+
+  .sched-modality-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
   }
 
   .sched-mount {
@@ -226,5 +258,20 @@ const scheduleStrings = {
   .sched-mount :global(.sched-chip):hover {
     background: color-mix(in srgb, var(--color-primary) 22%, white);
     text-decoration: none;
+  }
+
+  /* Móvil: chips táctiles, 2 por fila (grid) y min-height cómoda para el dedo. */
+  @media (max-width: 960px) {
+    .sched-mount :global(.sched-chips) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-3);
+    }
+
+    .sched-mount :global(.sched-chip) {
+      justify-content: center;
+      min-block-size: 48px;
+      font-size: var(--fs-base);
+    }
   }
 </style>

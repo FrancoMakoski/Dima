@@ -20,6 +20,7 @@ export const ru: ProfileDict = {
       reviewsCount: '3 отзыва клиентов',
       responseNote: 'обычно отвечает в WhatsApp в тот же день',
     },
+    nextAvailabilityLabel: 'Ближайшее свободное время',
   },
   video: {
     sectionAriaLabel: 'Видео-знакомство с Дмитрием Казаковым',
@@ -115,6 +116,7 @@ export const ru: ProfileDict = {
     title: 'Выберите удобное время',
     honestyNote: 'Это обычные часы приёма — окончательное подтверждение времени происходит в WhatsApp.',
     timezoneNote: 'Всё время указано по часовому поясу Израиля.',
+    modalityNote: 'Онлайн, индивидуальная терапия',
     slotAriaLabel: 'Выбор времени сессии',
     noJsFallback: 'Будние дни, 10:00–20:00 — напишите нам в WhatsApp, и мы подберём удобное время.',
     calendarLinkLabel: 'Предпочитаю выбрать время в календаре',

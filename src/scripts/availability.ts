@@ -198,6 +198,30 @@ function formatNextShort(
   return `${dayLabel}, ${time}`;
 }
 
+/**
+ * Hora actual de Israel + offset real del momento, formato "(GMT+3), 19:53".
+ * El offset se toma con `timeZoneName: 'shortOffset'` (da "GMT+3"/"GMT+2" según
+ * horario de verano), la hora con hour/minute 24h — todo en TIMEZONE, no en la
+ * zona del navegador del visitante.
+ */
+function formatLiveTime(now: Date, locale: 'ru' | 'he'): string {
+  const parts = new Intl.DateTimeFormat(localeTag(locale), {
+    timeZone: TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZoneName: 'shortOffset',
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+  const hh = get('hour');
+  const mm = get('minute');
+  // "GMT+3" → lo envolvemos en paréntesis. Fallback a cadena vacía si el motor
+  // no expone el offset (no rompemos: quedaría solo la hora).
+  const offset = get('timeZoneName');
+  const time = `${hh}:${mm}`;
+  return offset ? `(${offset}), ${time}` : time;
+}
+
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   className?: string,
@@ -215,6 +239,14 @@ export function initSchedule(opts: InitScheduleOptions): void {
   const { container, phone, locale, strings } = opts;
   const now = new Date();
   const days = buildDays(now, strings);
+
+  // Hora actual de Israel en vivo, junto a la nota de zona horaria. Se llena
+  // siempre, incluso si no hay slots calculables (tiene sentido igual).
+  document.querySelectorAll<HTMLElement>('[data-live-time]').forEach((span) => {
+    span.textContent = ` ${formatLiveTime(now, locale)}`;
+    span.hidden = false;
+    span.removeAttribute('hidden');
+  });
 
   if (days.length === 0) {
     // Sin disponibilidad calculable: dejamos el <noscript>/fallback server. No rompemos.

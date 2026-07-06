@@ -12,6 +12,8 @@ export interface ProfileDict {
     role: string;
     yearsExp: string;
     stats: { price: string; priceNote: string; reviewsCount: string; responseNote: string };
+    /** Label "próxima disponibilidad" del header compacto móvil (chip clickeable al lado). */
+    nextAvailabilityLabel: string;
   };
   video: { sectionAriaLabel: string; playLabel: string; iframeTitle: string };
   about: { tabs: { id: string; label: string; paragraphs: string[] }[]; readMore: string; readLess: string };
@@ -30,6 +32,8 @@ export interface ProfileDict {
     title: string;
     honestyNote: string;
     timezoneNote: string;
+    /** Nota de modalidad dentro de la card ("Online, terapia individual"). */
+    modalityNote: string;
     slotAriaLabel: string;
     noJsFallback: string;
     calendarLinkLabel: string;

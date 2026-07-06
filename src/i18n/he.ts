@@ -20,6 +20,7 @@ export const he: ProfileDict = {
       reviewsCount: '3 חוות דעת מטופלים',
       responseNote: 'עונה בוואטסאפ בדרך כלל באותו היום',
     },
+    nextAvailabilityLabel: 'המועד הפנוי הקרוב',
   },
   video: {
     sectionAriaLabel: 'סרטון היכרות עם דמיטרי קזקוב',
@@ -115,6 +116,7 @@ export const he: ProfileDict = {
     title: 'בחרו זמן שנוח לכם',
     honestyNote: 'אלו שעות הפעילות הרגילות שלי — האישור הסופי למועד מתבצע בוואטסאפ.',
     timezoneNote: 'כל השעות מוצגות לפי שעון ישראל.',
+    modalityNote: 'אונליין, טיפול אישי',
     slotAriaLabel: 'בחירת מועד למפגש',
     noJsFallback: 'ימי חול, 10:00–20:00 — כתבו לנו בוואטסאפ ונתאם מועד שנוח לכם.',
     calendarLinkLabel: 'אני מעדיפ/ה לבחור מועד ביומן',
