@@ -34,6 +34,7 @@ const t = getDict(locale);
 <ProfileShell>
   <TopBar slot="topbar" t={t.topbar} locale={locale} />
 
+  {/* Región A (2 columnas): identidad + contenido "sobre el terapeuta". */}
   <Fragment slot="main">
     <ProfileHeader t={t.header} />
     <VideoIntro t={t.video} videoId={VIDEO_ID} />
@@ -41,6 +42,18 @@ const t = getDict(locale);
     <QualificationsCard t={t.qualifications} />
     <GeneralInfoCard t={t.generalInfo} />
     <ExperienceAccordion t={t.experience} />
+  </Fragment>
+
+  <StickyCard
+    slot="sidebar"
+    t={t.sticky}
+    name={t.header.name}
+    waMessage={t.waMessages.general}
+    photoAlt={t.header.name}
+  />
+
+  {/* Región B (ancho completo): agenda, prueba social, confianza, FAQ, footer. */}
+  <Fragment slot="wide">
     <ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} />
     <ReviewsCard t={t.reviews} />
     <VerifiedBanner t={t.verified} />
@@ -54,14 +67,6 @@ const t = getDict(locale);
       </p>
     </footer>
   </Fragment>
-
-  <StickyCard
-    slot="sidebar"
-    t={t.sticky}
-    name={t.header.name}
-    waMessage={t.waMessages.general}
-    photoAlt={t.header.name}
-  />
 
   <Fragment slot="after">
     <MobileCtaBar t={t.mobileBar} waMessage={t.waMessages.general} />

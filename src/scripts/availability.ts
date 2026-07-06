@@ -228,10 +228,15 @@ export function initSchedule(opts: InitScheduleOptions): void {
   const root = el('div', 'sched');
 
   // Fila de días con flechas prev/next.
+  // aria-labels de las flechas de scroll del carrusel de días, localizados por
+  // locale (evita 'prev'/'next' en inglés para lectores de pantalla ru/he).
+  const prevLabel = locale === 'ru' ? 'Предыдущие дни' : 'ימים קודמים';
+  const nextLabel = locale === 'ru' ? 'Следующие дни' : 'ימים הבאים';
+
   const daysRow = el('div', 'sched-days');
   const prevBtn = el('button', 'sched-arrow');
   prevBtn.type = 'button';
-  prevBtn.setAttribute('aria-label', 'prev');
+  prevBtn.setAttribute('aria-label', prevLabel);
   prevBtn.innerHTML = CHEVRON('left');
 
   const daysTrack = el('div', 'sched-days-track');
@@ -240,7 +245,7 @@ export function initSchedule(opts: InitScheduleOptions): void {
 
   const nextBtn = el('button', 'sched-arrow');
   nextBtn.type = 'button';
-  nextBtn.setAttribute('aria-label', 'next');
+  nextBtn.setAttribute('aria-label', nextLabel);
   nextBtn.innerHTML = CHEVRON('right');
 
   daysRow.append(prevBtn, daysTrack, nextBtn);

@@ -1,8 +1,13 @@
 ---
 // ProfileShell.astro — contenedor centrado del perfil (estilo Clearly).
-// Desktop: 2 columnas [main | sidebar 340px], sidebar sticky.
-// Móvil (<960px): 1 columna, la sidebar se renderiza ANTES que main (mismo DOM,
-// solo CSS vía grid-template-areas). Slots nombrados: topbar, main, sidebar, after.
+// Layout de DOS REGIONES (igual que Clearly):
+//   Región A (.shell-grid): 2 columnas [main | sidebar 340px]. La sidebar es
+//     sticky y acompaña el scroll durante toda la región A.
+//   Región B (.shell-wide): ancho completo del contenido (~1140px), debajo de
+//     la región A. Aquí van schedule, reseñas, banner verificado, FAQ y footer.
+// Móvil (<960px): 1 columna. La sidebar-card va arriba (antes que main), luego
+//   main, luego la región wide — todo apilado en flujo normal, sin sticky.
+// Slots nombrados: topbar, main, sidebar, wide, after.
 // Solo propiedades lógicas → se espeja solo con dir="rtl".
 ---
 
@@ -23,6 +28,10 @@
     </main>
   </div>
 
+  <div class="shell-wide">
+    <slot name="wide" />
+  </div>
+
   <slot name="after" />
 </div>
 
@@ -39,7 +48,8 @@
     grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
     grid-template-areas: 'main sidebar';
     gap: var(--col-gap);
-    align-items: start;
+    /* SIN align-items:start: el aside debe estirarse a la altura de la fila para
+       que su hijo sticky tenga recorrido durante toda la región A. */
   }
 
   .shell-main {
@@ -53,12 +63,22 @@
   .shell-sidebar {
     grid-area: sidebar;
     min-inline-size: 0;
+    /* stretch por defecto (altura completa de la fila del grid) → da recorrido
+       al sticky de .shell-sidebar-inner. */
   }
 
   .shell-sidebar-inner {
     position: sticky;
     top: var(--sticky-top);
-    align-self: start;
+  }
+
+  /* Región B: ancho completo del contenido, apilada bajo la región A con el
+     mismo ritmo vertical que las cards de la columna main. */
+  .shell-wide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    margin-block-start: var(--sp-6);
   }
 
   /* Móvil: una sola columna, sidebar arriba (antes que main), sin sticky. */
@@ -73,6 +93,11 @@
 
     .shell-sidebar-inner {
       position: static;
+    }
+
+    .shell-wide {
+      gap: var(--sp-5);
+      margin-block-start: var(--sp-5);
     }
   }
 </style>

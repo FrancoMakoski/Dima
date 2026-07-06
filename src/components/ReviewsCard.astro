@@ -3,6 +3,8 @@
 // arriba, carrusel scroll-snap de reseñas (avatar-inicial, autor, ubicación,
 // Stars al final de línea, texto), flechas prev/next (chevrons del sprite,
 // flip-rtl), y nota gris con el total (sin botón fake de "ver todas").
+// NOTA i18n: los aria-label de las flechas están en ruso (esta home es la ru).
+// Cuando se monte la home hebrea, localizarlos por locale (o moverlos al dict).
 import Card from './Card.astro';
 import Badge from './Badge.astro';
 import Stars from './Stars.astro';
@@ -26,7 +28,7 @@ const initialOf = (author: string): string => author.trim().charAt(0) || '•';
   </div>
 
   <div class="reviews-carousel">
-    <button type="button" class="reviews-arrow" data-reviews-prev aria-label="prev">
+    <button type="button" class="reviews-arrow" data-reviews-prev aria-label="Предыдущий отзыв">
       <svg width="18" height="18" aria-hidden="true" class="flip-rtl"><use href="/assets/img/profile-icons.svg#chevron-left"></use></svg>
     </button>
 
@@ -46,7 +48,7 @@ const initialOf = (author: string): string => author.trim().charAt(0) || '•';
       ))}
     </div>
 
-    <button type="button" class="reviews-arrow" data-reviews-next aria-label="next">
+    <button type="button" class="reviews-arrow" data-reviews-next aria-label="Следующий отзыв">
       <svg width="18" height="18" aria-hidden="true" class="flip-rtl"><use href="/assets/img/profile-icons.svg#chevron-right"></use></svg>
     </button>
   </div>

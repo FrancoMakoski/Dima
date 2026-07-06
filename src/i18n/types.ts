@@ -11,7 +11,6 @@ export interface ProfileDict {
     name: string;
     role: string;
     yearsExp: string;
-    certLine: string;
     stats: { price: string; priceNote: string; reviewsCount: string; responseNote: string };
   };
   video: { sectionAriaLabel: string; playLabel: string; iframeTitle: string };

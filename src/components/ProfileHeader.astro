@@ -17,7 +17,6 @@ const { t } = Astro.props;
 <Card class="profile-header">
   <h1 class="ph-name">{t.name}</h1>
   <p class="ph-years">{t.yearsExp}</p>
-  <p class="ph-cert">{t.certLine}</p>
   <p class="ph-role">{t.role}</p>
 
   <div class="ph-stats">
@@ -63,13 +62,6 @@ const { t } = Astro.props;
   .ph-years {
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
-    color: var(--color-text);
-    margin-block-end: var(--sp-2);
-  }
-
-  .ph-cert {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
     color: var(--color-text);
     margin-block-end: var(--sp-2);
   }
