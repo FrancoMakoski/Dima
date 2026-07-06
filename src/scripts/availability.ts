@@ -25,6 +25,8 @@ interface ScheduleStrings {
   slotAriaLabel: string;
   /** Mensaje de WhatsApp con placeholder {slot}. */
   bookSlotMessage: string;
+  /** Label del botón de reserva tras elegir slot (habilitado). */
+  reserveCta: string;
 }
 
 export interface InitScheduleOptions {
@@ -180,6 +182,30 @@ function formatSlotFull(slot: Slot, locale: 'ru' | 'he'): string {
   }).format(slot.date);
 }
 
+/** Fecha larga sin hora para el resumen y la fila "Fecha" del modal: "21 июля". */
+function formatSlotDateLong(slot: Slot, locale: 'ru' | 'he'): string {
+  return new Intl.DateTimeFormat(localeTag(locale), {
+    day: 'numeric',
+    month: 'long',
+  }).format(slot.date);
+}
+
+/**
+ * Offset GMT real del momento en TIMEZONE, ej. "GMT+3" (verano) / "GMT+2".
+ * Reutiliza la misma fuente que formatLiveTime (timeZoneName: 'shortOffset').
+ * Cadena vacía si el motor no lo expone (el resumen queda sin el offset, sin romper).
+ */
+function getGmtOffset(now: Date, locale: 'ru' | 'he'): string {
+  const parts = new Intl.DateTimeFormat(localeTag(locale), {
+    timeZone: TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZoneName: 'shortOffset',
+  }).formatToParts(now);
+  return parts.find((p) => p.type === 'timeZoneName')?.value ?? '';
+}
+
 /** Etiqueta corta para [data-next-availability]: "Mañana, 20:00" / "Сегодня, 20:00". */
 function formatNextShort(
   col: DayColumn,
@@ -256,6 +282,16 @@ export function initSchedule(opts: InitScheduleOptions): void {
   const waLink = (fullSlot: string): string =>
     `https://wa.me/${phone}?text=${encodeURIComponent(strings.bookSlotMessage.replace('{slot}', fullSlot))}`;
 
+  // ---- Nodos de la UI de reserva (los renderiza ScheduleCard.astro) ----
+  // Resumen del slot elegido, botón de reserva y campos dinámicos del modal.
+  // Viven fuera del contenedor de slots pero dentro del ScheduleCard: los
+  // localizamos por data-attribute propio (una sola ScheduleCard por página).
+  const summaryEl = document.querySelector<HTMLElement>('[data-sched-summary]');
+  const reserveBtn = document.querySelector<HTMLButtonElement>('[data-sched-reserve]');
+  const modalDate = document.querySelector<HTMLElement>('[data-sched-modal-date]');
+  const modalTime = document.querySelector<HTMLElement>('[data-sched-modal-time]');
+  const modalWaLink = document.querySelector<HTMLAnchorElement>('[data-sched-modal-wa]');
+
   // ---- Estructura ----
   const root = el('div', 'sched');
 
@@ -287,6 +323,45 @@ export function initSchedule(opts: InitScheduleOptions): void {
 
   const dayButtons: HTMLButtonElement[] = [];
   const dayPanels: HTMLElement[] = [];
+  /** Todos los chips (de todos los días) para gestionar la selección única. */
+  const allChips: HTMLButtonElement[] = [];
+  const gmtOffset = getGmtOffset(now, locale);
+
+  /**
+   * Marca un chip como seleccionado (desmarcando el resto) y actualiza el
+   * resumen + botón + campos del modal. Se llama desde el click de cada chip.
+   */
+  const selectChip = (chip: HTMLButtonElement, slot: Slot) => {
+    allChips.forEach((c) => {
+      const on = c === chip;
+      c.classList.toggle('is-selected', on);
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    const dateLong = formatSlotDateLong(slot, locale);
+    const time = formatSlotTime(slot, locale);
+    const fullSlot = formatSlotFull(slot, locale);
+
+    // Resumen "21 июля, 02:00 (GMT+3)" (offset solo si el motor lo expone).
+    if (summaryEl) {
+      summaryEl.textContent = gmtOffset
+        ? `${dateLong}, ${time} (${gmtOffset})`
+        : `${dateLong}, ${time}`;
+      summaryEl.hidden = false;
+      summaryEl.removeAttribute('hidden');
+    }
+
+    // Botón de reserva: pasa a habilitado con el label "reserveCta".
+    if (reserveBtn) {
+      reserveBtn.disabled = false;
+      reserveBtn.textContent = strings.reserveCta;
+    }
+
+    // Campos dinámicos del modal (fecha, hora, href de WhatsApp con el slot).
+    if (modalDate) modalDate.textContent = dateLong;
+    if (modalTime) modalTime.textContent = time;
+    if (modalWaLink) modalWaLink.href = waLink(fullSlot);
+  };
 
   days.forEach((col, i) => {
     const tab = el('button', 'sched-day');
@@ -310,15 +385,18 @@ export function initSchedule(opts: InitScheduleOptions): void {
       h.textContent = label;
       const chips = el('div', 'sched-chips');
       for (const slot of slots) {
-        const a = el('a', 'sched-chip');
-        a.href = waLink(formatSlotFull(slot, locale));
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.textContent = formatSlotTime(slot, locale);
-        a.setAttribute('data-track', 'whatsapp_click');
-        a.setAttribute('data-track-label', 'schedule_chip');
-        a.setAttribute('data-conversion-whatsapp', '');
-        chips.appendChild(a);
+        // Los chips ya NO son <a> a wa.me: son <button> seleccionables. El
+        // salto a WhatsApp ocurre desde el modal de confirmación. El track de
+        // "schedule_slot_select" lo dispara track.ts vía [data-track] al click.
+        const btn = el('button', 'sched-chip');
+        btn.type = 'button';
+        btn.textContent = formatSlotTime(slot, locale);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('data-track', 'schedule_slot_select');
+        btn.setAttribute('data-track-label', formatSlotFull(slot, locale));
+        btn.addEventListener('click', () => selectChip(btn, slot));
+        allChips.push(btn);
+        chips.appendChild(btn);
       }
       sec.append(h, chips);
       panel.appendChild(sec);

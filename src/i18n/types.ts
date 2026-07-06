@@ -44,6 +44,30 @@ export interface ProfileDict {
     todayLabel: string;
     tomorrowLabel: string;
     nextAvailabilityLabel: string;
+    /** Label del botón de reserva ANTES de elegir un slot (deshabilitado). */
+    chooseSlotCta: string;
+    /** Label del botón de reserva TRAS elegir un slot (habilitado). */
+    reserveCta: string;
+    /** Título del header del modal de confirmación de reserva. */
+    bookingModalTitle: string;
+    /** aria-label del botón X que cierra el modal de reserva. */
+    closeLabel: string;
+    /** Etiqueta de la fila "Fecha" en el modal. */
+    dateLabel: string;
+    /** Etiqueta de la fila "Hora" en el modal. */
+    timeLabel: string;
+    /** Etiqueta de la fila "Tipo de terapia" en el modal. */
+    typeLabel: string;
+    /** Valor de la fila "Tipo de terapia" (ej. "Individual"). */
+    typeValue: string;
+    /** Etiqueta de la fila "Formato" en el modal. */
+    formatLabel: string;
+    /** Valor de la fila "Formato" (ej. "Online"). */
+    formatValue: string;
+    /** Etiqueta de la fila de precio (debe dejar claro que es la PRIMERA sesión). */
+    priceLabel: string;
+    /** Label del CTA de WhatsApp dentro del modal ("Confirmar en WhatsApp"). */
+    confirmWhatsApp: string;
   };
   reviews: {
     title: string;

@@ -57,7 +57,7 @@ const t = getDict(locale);
 
   {/* Región B (ancho completo): agenda, prueba social, confianza, FAQ, footer. */}
   <Fragment slot="wide">
-    <div class="pm-item pm-schedule"><ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} /></div>
+    <div class="pm-item pm-schedule"><ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} name={t.header.name} yearsExp={t.header.yearsExp} /></div>
     <div class="pm-item pm-reviews"><ReviewsCard t={t.reviews} /></div>
     <div class="pm-item pm-verified"><VerifiedBanner t={t.verified} /></div>
     <div class="pm-item pm-faq"><FaqSection t={t.faq} /></div>

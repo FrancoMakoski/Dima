@@ -12,7 +12,7 @@
 // data-attributes del contenedor, más el teléfono y el locale.
 import Card from './Card.astro';
 import Icon from './Icon.astro';
-import { PHONE, CALENDAR_URL, waLink } from '../config/site';
+import { PHONE, CALENDAR_URL, PRICE_DISPLAY, waLink } from '../config/site';
 import type { ProfileDict, Locale } from '../i18n/types';
 
 interface Props {
@@ -20,9 +20,13 @@ interface Props {
   locale: Locale;
   /** Mensaje wa.me con placeholder {slot} (viene de waMessages.bookSlot). */
   waBookSlotMessage: string;
+  /** Nombre del terapeuta para la mini-tarjeta del modal (t.header.name). */
+  name: string;
+  /** Línea de años de experiencia para la mini-tarjeta del modal (t.header.yearsExp). */
+  yearsExp: string;
 }
 
-const { t, locale, waBookSlotMessage } = Astro.props;
+const { t, locale, waBookSlotMessage, name, yearsExp } = Astro.props;
 
 // Strings que el script cliente necesita (serializados a JSON en un data-attr).
 const scheduleStrings = {
@@ -32,7 +36,12 @@ const scheduleStrings = {
   tomorrowLabel: t.tomorrowLabel,
   slotAriaLabel: t.slotAriaLabel,
   bookSlotMessage: waBookSlotMessage,
+  reserveCta: t.reserveCta,
 };
+
+// Href inicial del CTA del modal (sin slot): el script lo reescribe con el slot
+// elegido al seleccionar un chip. Sirve de fallback si el JS de selección no corre.
+const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
 ---
 
 <Card title={t.title} icon="clock-badge-peach" id="schedule">
@@ -63,6 +72,15 @@ const scheduleStrings = {
     </noscript>
   </div>
 
+  {/* Resumen del slot elegido: "21 июля, 02:00 (GMT+3)". Oculto hasta elegir. */}
+  <p class="sched-summary" data-sched-summary hidden></p>
+
+  {/* Botón de reserva: gris/deshabilitado hasta elegir; el script lo habilita,
+      le cambia el label a t.reserveCta y abre el modal al hacer click. */}
+  <button type="button" class="sched-reserve" data-sched-reserve data-sched-open disabled>
+    {t.chooseSlotCta}
+  </button>
+
   <p class="sched-honesty">{t.honestyNote}</p>
 
   <a
@@ -77,6 +95,86 @@ const scheduleStrings = {
     <span>{t.calendarLinkLabel}</span>
   </a>
 </Card>
+
+{/* Modal de confirmación de reserva. Mismo patrón que el modal de ReviewsCard:
+    header celeste, X, cierre por Esc/backdrop/X, scroll-lock y focus-return. El
+    script cliente rellena fecha/hora y el href de WhatsApp con el slot elegido. */}
+<dialog class="booking-modal" data-sched-modal aria-labelledby="booking-modal-title">
+  <header class="booking-modal-head">
+    <h2 class="booking-modal-title" id="booking-modal-title">{t.bookingModalTitle}</h2>
+    <button type="button" class="booking-modal-close" data-sched-close aria-label={t.closeLabel}>
+      <svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24">
+        <path
+          d="M6 6l12 12M18 6L6 18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </button>
+  </header>
+
+  <div class="booking-modal-body">
+    {/* Mini-tarjeta del terapeuta: foto chica + nombre + años (dato honesto). */}
+    <div class="booking-therapist">
+      <img
+        class="booking-therapist-photo"
+        src="/assets/img/dmitry-photo2-880.webp"
+        alt={name}
+        width="48"
+        height="48"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="booking-therapist-meta">
+        <p class="booking-therapist-name">{name}</p>
+        <p class="booking-therapist-years">{yearsExp}</p>
+      </div>
+    </div>
+
+    {/* Filas label → valor con divisores finos. */}
+    <dl class="booking-rows">
+      <div class="booking-row">
+        <dt class="booking-row-label">{t.dateLabel}</dt>
+        <dd class="booking-row-value" data-sched-modal-date></dd>
+      </div>
+      <div class="booking-row">
+        <dt class="booking-row-label">{t.timeLabel}</dt>
+        <dd class="booking-row-value" data-sched-modal-time></dd>
+      </div>
+      <div class="booking-row">
+        <dt class="booking-row-label">{t.typeLabel}</dt>
+        <dd class="booking-row-value">{t.typeValue}</dd>
+      </div>
+      <div class="booking-row">
+        <dt class="booking-row-label">{t.formatLabel}</dt>
+        <dd class="booking-row-value">{t.formatValue}</dd>
+      </div>
+      <div class="booking-row">
+        <dt class="booking-row-label">{t.priceLabel}</dt>
+        <dd class="booking-row-value">{PRICE_DISPLAY}</dd>
+      </div>
+    </dl>
+
+    {/* CTA primario full-width a WhatsApp; el href se actualiza con el slot. */}
+    <a
+      class="booking-confirm"
+      href={initialWaHref}
+      target="_blank"
+      rel="noopener"
+      data-sched-modal-wa
+      data-track="whatsapp_click"
+      data-track-label="booking_modal"
+      data-conversion-whatsapp
+    >
+      <Icon name="whatsapp" size={20} class="booking-confirm-icon" />
+      <span>{t.confirmWhatsApp}</span>
+    </a>
+
+    <p class="booking-honesty">{t.honestyNote}</p>
+  </div>
+</dialog>
 
 <script>
   import { initSchedule } from '../scripts/availability';
@@ -97,6 +195,48 @@ const scheduleStrings = {
       locale,
       strings: strings as any,
     });
+  }
+
+  // ---- Modal de confirmación de reserva ----
+  // Mismo patrón que ReviewsCard: showModal(), cierre por X / Esc / backdrop,
+  // scroll-lock del body y devolución del foco al botón que lo abrió.
+  const bookingModal = document.querySelector<HTMLDialogElement>('[data-sched-modal]');
+  const bookingOpenBtn = document.querySelector<HTMLButtonElement>('[data-sched-open]');
+  if (bookingModal && bookingOpenBtn) {
+    const bookingCloseBtn = bookingModal.querySelector<HTMLButtonElement>('[data-sched-close]');
+    let lastTrigger: HTMLElement | null = null;
+
+    const restoreFocus = () => {
+      document.body.style.overflow = '';
+      if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+      lastTrigger = null;
+    };
+
+    const openBooking = () => {
+      // No abrir si el botón sigue deshabilitado (sin slot elegido).
+      if (bookingOpenBtn.disabled) return;
+      lastTrigger = bookingOpenBtn;
+      document.body.style.overflow = 'hidden';
+      if (typeof bookingModal.showModal === 'function') bookingModal.showModal();
+      else bookingModal.setAttribute('open', '');
+    };
+
+    const closeBooking = () => {
+      if (typeof bookingModal.close === 'function') bookingModal.close();
+      else bookingModal.removeAttribute('open');
+      restoreFocus();
+    };
+
+    bookingOpenBtn.addEventListener('click', openBooking);
+    if (bookingCloseBtn) bookingCloseBtn.addEventListener('click', closeBooking);
+
+    // Click en backdrop: cae sobre el propio <dialog> (fuera de su contenido).
+    bookingModal.addEventListener('click', (e) => {
+      if (e.target === bookingModal) closeBooking();
+    });
+
+    // Esc del <dialog> nativo dispara 'close' sin pasar por closeBooking().
+    bookingModal.addEventListener('close', restoreFocus);
   }
 </script>
 
@@ -145,6 +285,53 @@ const scheduleStrings = {
     color: var(--color-text-2);
     margin-block-start: var(--sp-4);
     line-height: var(--lh-normal);
+  }
+
+  /* ---- Resumen del slot elegido + botón de reserva ---- */
+  .sched-summary {
+    margin-block-start: var(--sp-5);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sched-summary[hidden] {
+    display: none;
+  }
+
+  /* Botón de reserva, alineado a inicio como en Clearly. Deshabilitado = gris;
+     habilitado (con .is-selected vía JS) = azul primario. */
+  .sched-reserve {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-block-start: var(--sp-4);
+    padding-block: var(--sp-3);
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--r-btn);
+    background: var(--color-surface-2);
+    color: var(--color-text-2);
+    font-family: inherit;
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+    cursor: not-allowed;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .sched-reserve:not(:disabled) {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    cursor: pointer;
+  }
+
+  .sched-reserve:not(:disabled):hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
   }
 
   .sched-calendar-link {
@@ -242,22 +429,40 @@ const scheduleStrings = {
     gap: var(--sp-2);
   }
 
+  /* Chips ahora son <button>: reset + estado seleccionable. Borde presente
+     siempre (transparente) para que la selección no desplace el layout. */
   .sched-mount :global(.sched-chip) {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: var(--sp-2) var(--sp-4);
+    border: 2px solid transparent;
     border-radius: var(--r-input);
     background: var(--color-primary-100);
     color: var(--color-primary);
+    font-family: inherit;
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    text-decoration: none;
-    transition: background-color 0.15s ease;
+    line-height: var(--lh-tight);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
 
   .sched-mount :global(.sched-chip):hover {
     background: color-mix(in srgb, var(--color-primary) 22%, white);
-    text-decoration: none;
+  }
+
+  /* Seleccionado: fondo blanco, borde azul grueso, texto bold (como Clearly). */
+  .sched-mount :global(.sched-chip.is-selected) {
+    background: var(--color-surface);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: var(--fw-bold);
+  }
+
+  .sched-mount :global(.sched-chip):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   /* Móvil: chips táctiles, 2 por fila (grid) y min-height cómoda para el dedo. */
@@ -272,6 +477,186 @@ const scheduleStrings = {
       justify-content: center;
       min-block-size: 48px;
       font-size: var(--fs-base);
+    }
+  }
+
+  /* ---- Modal de confirmación de reserva (patrón del modal de ReviewsCard) ---- */
+  .booking-modal {
+    padding: 0;
+    border: none;
+    /* Anular el max-width/height físico que el UA impone a <dialog>. */
+    max-width: none;
+    max-height: none;
+    inline-size: min(460px, 92vw);
+    max-inline-size: 460px;
+    max-block-size: 85vh;
+    border-radius: var(--r-card);
+    background: var(--color-surface);
+    box-shadow: var(--sh-pop);
+    overflow: hidden;
+  }
+
+  .booking-modal::backdrop {
+    background: rgba(15, 18, 28, 0.72);
+  }
+
+  .booking-modal-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-5) var(--sp-6);
+    background: var(--color-primary-50);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .booking-modal-title {
+    flex: 1;
+    min-inline-size: 0;
+    margin: 0;
+    font-size: var(--fs-lg);
+    line-height: var(--lh-tight);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+  }
+
+  .booking-modal-close {
+    flex-shrink: 0;
+    inline-size: 36px;
+    block-size: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--color-text-2);
+    cursor: pointer;
+  }
+
+  .booking-modal-close:hover {
+    background: var(--color-primary-100);
+    color: var(--color-text);
+  }
+
+  .booking-modal-body {
+    padding: var(--sp-5) var(--sp-6) var(--sp-6);
+    overflow-y: auto;
+    max-block-size: calc(85vh - 72px);
+    overscroll-behavior: contain;
+  }
+
+  /* Mini-tarjeta del terapeuta */
+  .booking-therapist {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-5);
+  }
+
+  .booking-therapist-photo {
+    flex-shrink: 0;
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: var(--r-pill);
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .booking-therapist-name {
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    font-size: var(--fs-base);
+  }
+
+  .booking-therapist-years {
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+  }
+
+  /* Filas label → valor con divisores finos */
+  .booking-rows {
+    margin: 0 0 var(--sp-5);
+  }
+
+  .booking-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-4);
+    padding-block: var(--sp-3);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .booking-row:first-child {
+    padding-block-start: 0;
+  }
+
+  .booking-row:last-child {
+    border-block-end: none;
+    padding-block-end: 0;
+  }
+
+  .booking-row-label {
+    flex-shrink: 0;
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
+  }
+
+  .booking-row-value {
+    margin: 0;
+    margin-inline-start: auto;
+    text-align: end;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* CTA primario full-width a WhatsApp */
+  .booking-confirm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    inline-size: 100%;
+    padding-block: var(--sp-3);
+    padding-inline: var(--sp-6);
+    border-radius: var(--r-btn);
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border: 1px solid var(--color-primary);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .booking-confirm:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+
+  .booking-confirm-icon {
+    flex-shrink: 0;
+  }
+
+  .booking-honesty {
+    margin-block-start: var(--sp-4);
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+    line-height: var(--lh-normal);
+    text-align: center;
+  }
+
+  @media (max-width: 959px) {
+    .booking-modal {
+      inline-size: 95vw;
+      max-inline-size: 95vw;
+      max-block-size: 90vh;
+    }
+
+    .booking-modal-body {
+      max-block-size: calc(90vh - 72px);
     }
   }
 </style>
