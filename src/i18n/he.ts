@@ -165,7 +165,7 @@ export const he: ProfileDict = {
     groups: [
       {
         id: 'payment',
-        icon: 'info-circle',
+        icon: 'wallet-green',
         title: 'מחיר ותשלום',
         items: [
           {
@@ -184,7 +184,7 @@ export const he: ProfileDict = {
       },
       {
         id: 'before-session',
-        icon: 'chat-bubble-dots',
+        icon: 'clock-badge-peach',
         title: 'לפני המפגש',
         items: [
           {
