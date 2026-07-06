@@ -1,0 +1,95 @@
+---
+// ProfilePage.astro — ENSAMBLADOR único de la página de perfil (estilo Clearly).
+// Locale-agnóstico total: recibe `locale`, resuelve el dict con getDict, y monta
+// todos los componentes en el orden Clearly. La futura página hebrea solo cambia
+// la prop `locale` — nada de copy ni de estructura vive acá.
+import { getDict } from '../i18n';
+import type { Locale } from '../i18n/types';
+import { VIDEO_ID } from '../config/site';
+
+import ProfileShell from './ProfileShell.astro';
+import TopBar from './TopBar.astro';
+import ProfileHeader from './ProfileHeader.astro';
+import VideoIntro from './VideoIntro.astro';
+import AboutTabs from './AboutTabs.astro';
+import QualificationsCard from './QualificationsCard.astro';
+import GeneralInfoCard from './GeneralInfoCard.astro';
+import ExperienceAccordion from './ExperienceAccordion.astro';
+import ScheduleCard from './ScheduleCard.astro';
+import ReviewsCard from './ReviewsCard.astro';
+import VerifiedBanner from './VerifiedBanner.astro';
+import FaqSection from './FaqSection.astro';
+import StickyCard from './StickyCard.astro';
+import MobileCtaBar from './MobileCtaBar.astro';
+import Lightbox from './Lightbox.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+---
+
+<ProfileShell>
+  <TopBar slot="topbar" t={t.topbar} locale={locale} />
+
+  <Fragment slot="main">
+    <ProfileHeader t={t.header} />
+    <VideoIntro t={t.video} videoId={VIDEO_ID} />
+    <AboutTabs t={t.about} />
+    <QualificationsCard t={t.qualifications} />
+    <GeneralInfoCard t={t.generalInfo} />
+    <ExperienceAccordion t={t.experience} />
+    <ScheduleCard t={t.schedule} locale={locale} waBookSlotMessage={t.waMessages.bookSlot} />
+    <ReviewsCard t={t.reviews} />
+    <VerifiedBanner t={t.verified} />
+    <FaqSection t={t.faq} />
+
+    <footer class="profile-footer">
+      <p class="profile-footer-line">
+        {t.footer.line}
+        {' '}
+        <a href={t.footer.termsHref} class="profile-footer-link">{t.footer.termsLabel}</a>
+      </p>
+    </footer>
+  </Fragment>
+
+  <StickyCard
+    slot="sidebar"
+    t={t.sticky}
+    name={t.header.name}
+    waMessage={t.waMessages.general}
+    photoAlt={t.header.name}
+  />
+
+  <Fragment slot="after">
+    <MobileCtaBar t={t.mobileBar} waMessage={t.waMessages.general} />
+    <Lightbox />
+  </Fragment>
+</ProfileShell>
+
+<script>
+  import '../scripts/track';
+</script>
+
+<style>
+  .profile-footer {
+    padding-block: var(--sp-6);
+    text-align: center;
+  }
+
+  .profile-footer-line {
+    font-size: var(--fs-xs);
+    color: var(--color-text-2);
+  }
+
+  .profile-footer-link {
+    color: var(--color-text-2);
+    text-decoration: underline;
+  }
+
+  .profile-footer-link:hover {
+    color: var(--color-primary);
+  }
+</style>
