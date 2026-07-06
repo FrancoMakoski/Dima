@@ -329,12 +329,12 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     line-height: var(--lh-normal);
   }
 
-  /* ---- Resumen del slot elegido + botón de reserva, CENTRADOS ---- */
+  /* ---- Resumen del slot elegido + botón de reserva, al costado (inicio) ---- */
   .sched-actions {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: start;
   }
 
   .sched-summary {
@@ -532,6 +532,9 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
   .booking-modal {
     padding: 0;
     border: none;
+    /* Centrar el <dialog>: el reset global `* { margin: 0 }` anula el `margin:auto`
+       del user-agent que lo centra, así que hay que restituirlo explícitamente. */
+    margin: auto;
     /* Anular el max-width/height físico que el UA impone a <dialog>. */
     max-width: none;
     max-height: none;

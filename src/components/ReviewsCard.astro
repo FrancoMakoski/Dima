@@ -238,6 +238,9 @@ const allLabelWithCount = `${t.allLabel} (${total})`;
   .reviews-modal {
     padding: 0;
     border: none;
+    /* Centrar el <dialog>: el reset global `* { margin: 0 }` anula el `margin:auto`
+       del user-agent que lo centra, así que hay que restituirlo explícitamente. */
+    margin: auto;
     /* El UA aplica a <dialog> un max-width/max-height físico (calc(100% - 6px - 2em))
        que gana sobre nuestras logicas: lo anulamos para gobernar el tamaño acá. */
     max-width: none;
@@ -249,7 +252,6 @@ const allLabelWithCount = `${t.allLabel} (${total})`;
     background: var(--color-surface);
     box-shadow: var(--sh-pop);
     overflow: hidden;
-    /* <dialog> con showModal() se centra solo vía márgenes auto. */
   }
 
   .reviews-modal::backdrop {
