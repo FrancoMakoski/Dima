@@ -21,6 +21,18 @@ html {
   tab-size: 4;
 }
 
+/* Anclas internas (#schedule, etc.): scroll suave, no salto seco.
+   Respeta la preferencia de movimiento reducido del sistema. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+[id] {
+  scroll-margin-block-start: var(--sp-6, 24px);
+}
+
 body {
   min-height: 100vh;
   font-family: var(--font-sans);
