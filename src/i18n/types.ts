@@ -11,6 +11,8 @@ export interface ProfileDict {
     name: string;
     role: string;
     yearsExp: string;
+    /** Línea corta de certificado estilo Clearly ("Сертификат № 00113"). Bold chica, entre años y rol. */
+    certShort: string;
     stats: { price: string; priceNote: string; reviewsCount: string; responseNote: string };
     /** Label "próxima disponibilidad" del header compacto móvil (chip clickeable al lado). */
     nextAvailabilityLabel: string;

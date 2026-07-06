@@ -38,6 +38,7 @@ const { t } = Astro.props;
     <div class="ph-id">
       <h1 class="ph-name">{t.name}</h1>
       <p class="ph-years">{t.yearsExp}</p>
+      <p class="ph-cert">{t.certShort}</p>
       <p class="ph-role">{t.role}</p>
     </div>
   </div>
@@ -86,9 +87,14 @@ const { t } = Astro.props;
 </Card>
 
 <style>
-  /* ---- Fila superior (foto + identidad): solo visible en móvil ---- */
+  /* ---- Fila superior (identidad) ----
+     DESKTOP: bloque de texto identidad (nombre → años → cert → rol) visible; la
+       FOTO queda oculta (vive en la StickyCard lateral).
+     MÓVIL: foto chica + el mismo bloque al lado (ver media query). */
   .ph-top {
-    display: none;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-4);
   }
 
   .ph-photo {
@@ -98,6 +104,8 @@ const { t } = Astro.props;
     object-fit: cover;
     object-position: center top;
     flex-shrink: 0;
+    /* Desktop: la foto vive en la StickyCard lateral, acá se oculta. */
+    display: none;
   }
 
   .ph-id {
@@ -109,14 +117,23 @@ const { t } = Astro.props;
     font-weight: var(--fw-bold);
     color: var(--color-text);
     line-height: var(--lh-tight);
-    margin-block-end: var(--sp-2);
+    margin-block-end: var(--sp-1);
   }
 
   .ph-years {
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
     color: var(--color-text);
-    margin-block-end: var(--sp-2);
+    margin-block-end: var(--sp-1);
+  }
+
+  /* Línea corta de certificado estilo Clearly: bold chica, entre años y rol. */
+  .ph-cert {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--color-text);
+    line-height: var(--lh-tight);
+    margin-block-end: var(--sp-1);
   }
 
   .ph-role {
@@ -125,46 +142,44 @@ const { t } = Astro.props;
     margin-block-end: 0;
   }
 
-  /* ---- Stats: fila horizontal en desktop ---- */
+  /* ---- Stats: fila compacta en UNA línea (estilo Clearly) ----
+     Iconos "pelados" (color propio, sin chip/fondo), texto ~14px, separación
+     holgada entre stats. Margen superior mayor que entre líneas de identidad. */
   .ph-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--sp-5) var(--sp-8);
-    margin-block-start: var(--sp-6);
-    padding-block-start: var(--sp-6);
+    align-items: center;
+    gap: var(--sp-4) var(--sp-7);
+    margin-block-start: var(--sp-5);
+    padding-block-start: var(--sp-5);
     border-block-start: 1px solid var(--color-border);
   }
 
   .ph-stat {
     display: flex;
     align-items: center;
-    gap: var(--sp-3);
+    gap: var(--sp-2);
     min-inline-size: 0;
   }
 
+  /* Iconos pelados: sin fondo/pill, solo su color. */
   .ph-stat-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 32px;
-    block-size: 32px;
-    border-radius: var(--r-pill);
     flex-shrink: 0;
   }
 
   .ph-stat-icon--price {
     color: var(--color-primary);
-    background: var(--color-primary-100);
   }
 
   .ph-stat-icon--star {
     color: var(--color-star);
-    background: color-mix(in srgb, var(--color-star) 16%, white);
   }
 
   .ph-stat-icon--chat {
     color: var(--color-success);
-    background: color-mix(in srgb, var(--color-success) 14%, white);
   }
 
   .ph-stat-text {
@@ -175,8 +190,8 @@ const { t } = Astro.props;
   }
 
   .ph-stat-strong {
-    font-size: var(--fs-base);
-    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
     color: var(--color-text);
   }
 
@@ -186,9 +201,13 @@ const { t } = Astro.props;
     margin-block-start: 2px;
   }
 
+  /* El 3er stat (respuesta WhatsApp) tiene texto largo: mismo tamaño ~14px que
+     los otros valores, en línea, con wrap elegante si no entra (no se acorta). */
   .ph-stat-note--inline {
     margin-block-start: 0;
-    max-inline-size: 22ch;
+    max-inline-size: 26ch;
+    font-size: var(--fs-sm);
+    color: var(--color-text-2);
   }
 
   /* ---- Fila de disponibilidad: solo visible en móvil ---- */
@@ -243,10 +262,9 @@ const { t } = Astro.props;
 
   /* ---- Móvil (<960px): tarjeta compacta estilo Clearly ---- */
   @media (max-width: 960px) {
-    .ph-top {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--sp-4);
+    /* En móvil la StickyCard se oculta → la foto vuelve al header compacto. */
+    .ph-photo {
+      display: block;
     }
 
     .ph-name {

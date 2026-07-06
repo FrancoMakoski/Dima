@@ -14,6 +14,7 @@ export const he: ProfileDict = {
     name: 'דמיטרי קזקוב',
     role: 'מטפל מוסמך בפסיכוסומטיקה',
     yearsExp: 'מעל 8 שנות ניסיון',
+    certShort: 'תעודה מס׳ 00113',
     stats: {
       price: '197 ₪',
       priceNote: 'מפגש ראשון',

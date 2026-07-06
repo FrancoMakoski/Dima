@@ -14,6 +14,7 @@ export const ru: ProfileDict = {
     name: 'Дмитрий Казаков',
     role: 'Сертифицированный специалист по психосоматике',
     yearsExp: 'Более 8 лет опыта',
+    certShort: 'Сертификат № 00113',
     stats: {
       price: '197 ₪',
       priceNote: 'первая сессия',
