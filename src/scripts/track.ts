@@ -18,8 +18,9 @@ declare global {
   }
 }
 
-/** Label de conversión de Google Ads para el lead de WhatsApp. */
-const WHATSAPP_CONVERSION_LABEL = 'AW-18096499266/PLACEHOLDER_WHATSAPP';
+/** Label de conversión de Google Ads para el lead de WhatsApp
+ *  (acción "WhatsApp click", cuenta 107-044-8380, creada 7-jul-2026). */
+const WHATSAPP_CONVERSION_LABEL = 'AW-18096499266/6IurCI_9h8wcEMLUirVD';
 
 let initialized = false;
 
