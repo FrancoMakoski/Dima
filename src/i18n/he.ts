@@ -109,7 +109,7 @@ export const he: ProfileDict = {
           },
           {
             src: '/assets/img/certificate-practical-psychology-1600.webp',
-            full: '/assets/img/certificate-practical-psychology.jpg',
+            full: '/assets/img/certificate-practical-psychology-1600.webp',
             alt: 'תעודת השתלמות מקצועית בהיקף 120 שעות, מוסקבה 2018',
           },
         ],
@@ -123,6 +123,8 @@ export const he: ProfileDict = {
         ],
       },
     ],
+    lightboxLabel: 'תצוגת תעודה',
+    lightboxCloseLabel: 'סגירה',
   },
   schedule: {
     title: 'בחרו זמן שנוח לכם',

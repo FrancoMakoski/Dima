@@ -38,6 +38,10 @@ export interface ProfileDict {
       body: string[];
       thumbs?: { src: string; full: string; alt: string }[];
     }[];
+    /** aria-label del <dialog> del Lightbox de certificados (contenido genérico, no por item). */
+    lightboxLabel: string;
+    /** aria-label del botón X que cierra el Lightbox de certificados. */
+    lightboxCloseLabel: string;
   };
   schedule: {
     title: string;

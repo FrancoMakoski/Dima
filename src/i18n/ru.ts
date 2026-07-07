@@ -109,7 +109,7 @@ export const ru: ProfileDict = {
           },
           {
             src: '/assets/img/certificate-practical-psychology-1600.webp',
-            full: '/assets/img/certificate-practical-psychology.jpg',
+            full: '/assets/img/certificate-practical-psychology-1600.webp',
             alt: 'Удостоверение о повышении квалификации на 120 часов, Москва 2018',
           },
         ],
@@ -123,6 +123,8 @@ export const ru: ProfileDict = {
         ],
       },
     ],
+    lightboxLabel: 'Просмотр сертификата',
+    lightboxCloseLabel: 'Закрыть',
   },
   schedule: {
     title: 'Выберите удобное время',

@@ -260,8 +260,60 @@ function el<K extends keyof HTMLElementTagNameMap>(
 const CHEVRON = (dir: 'left' | 'right') =>
   `<svg width="18" height="18" aria-hidden="true" class="flip-rtl"><use href="/assets/img/profile-icons.svg#chevron-${dir}"></use></svg>`;
 
-/** Punto de entrada: renderiza el schedule y llena el contrato de next-availability. */
+/** "AAAA-MM-DD" civil en Israel — clave para detectar el cambio de día. */
+function israelDateKey(now: Date): string {
+  const p = israelNowParts(now);
+  return `${p.year}-${p.month}-${p.day}`;
+}
+
+// ---- Reloj en vivo + re-render al cruzar medianoche de Israel ----
+// Módulo compartido por todas las instancias (una sola ScheduleCard por
+// página, pero initSchedule podría llamarse más de una vez): guardamos el
+// interval y los últimos opts/fecha civil a nivel de módulo para no crear
+// más de un setInterval ni perder la referencia entre llamadas.
+let liveClockInterval: ReturnType<typeof setInterval> | undefined;
+let lastOpts: InitScheduleOptions | undefined;
+let lastDateKey: string | undefined;
+
+function tickLiveClock(): void {
+  if (!lastOpts) return;
+  const now = new Date();
+  const { locale } = lastOpts;
+
+  // (a) Actualiza el reloj en vivo cada minuto, siempre.
+  document.querySelectorAll<HTMLElement>('[data-live-time]').forEach((span) => {
+    span.textContent = ` ${formatLiveTime(now, locale)}`;
+  });
+
+  // (b) Si cambió la fecha civil de Israel desde el último render, los slots
+  // de "Hoy" quedaron viejos: re-ejecutar el render completo del schedule.
+  const dateKey = israelDateKey(now);
+  if (lastDateKey && dateKey !== lastDateKey) {
+    lastDateKey = dateKey;
+    renderSchedule(lastOpts);
+  }
+}
+
+function ensureLiveClockLoop(): void {
+  if (liveClockInterval !== undefined) return;
+  liveClockInterval = setInterval(tickLiveClock, 60_000);
+  // Cuando la pestaña vuelve a estar visible (pudo haber pasado mucho tiempo
+  // en background, donde los timers se throttlean), forzamos un tick ya.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') tickLiveClock();
+  });
+}
+
+/** Punto de entrada público: registra el loop del reloj y dispara el primer render. */
 export function initSchedule(opts: InitScheduleOptions): void {
+  lastOpts = opts;
+  lastDateKey = israelDateKey(new Date());
+  renderSchedule(opts);
+  ensureLiveClockLoop();
+}
+
+/** Renderiza el schedule (días + chips) y llena el contrato de next-availability. */
+function renderSchedule(opts: InitScheduleOptions): void {
   const { container, phone, locale, strings } = opts;
   const now = new Date();
   const days = buildDays(now, strings);
@@ -360,7 +412,21 @@ export function initSchedule(opts: InitScheduleOptions): void {
     // Campos dinámicos del modal (fecha, hora, href de WhatsApp con el slot).
     if (modalDate) modalDate.textContent = dateLong;
     if (modalTime) modalTime.textContent = time;
-    if (modalWaLink) modalWaLink.href = waLink(fullSlot);
+    if (modalWaLink) {
+      // El gating de consentimiento (ScheduleCard.astro) controla si el <a>
+      // tiene o no atributo 'href' navegable: acá solo actualizamos el href
+      // "real" en data-href y dejamos que el sync de consentimiento decida
+      // si corresponde reflejarlo en el href visible. Si el usuario ya dio
+      // su consentimiento, re-sincronizamos de inmediato para que el cambio
+      // de slot no deje un href viejo activo.
+      modalWaLink.dataset.href = waLink(fullSlot);
+      const syncConsent = (window as any).__syncScheduleConsent as (() => void) | undefined;
+      if (typeof syncConsent === 'function') syncConsent();
+      else if (modalWaLink.getAttribute('aria-disabled') === 'false') {
+        // Fallback defensivo si el sync global no está disponible por algún motivo.
+        modalWaLink.setAttribute('href', modalWaLink.dataset.href);
+      }
+    }
   };
 
   days.forEach((col, i) => {

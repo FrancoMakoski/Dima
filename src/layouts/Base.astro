@@ -49,7 +49,7 @@ const canonical = lang === 'he' ? heHref : ruHref;
 // Preload del subset de Rubik del idioma actual + latín (siempre presente: dígitos/símbolos).
 const localeFont = lang === 'he' ? '/assets/fonts/rubik-var-hebrew.woff2' : '/assets/fonts/rubik-var-cyrillic.woff2';
 
-const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
+const ogImage = 'https://dimatherapyonline.com/assets/img/dmitry-photo2.jpeg';
 ---
 
 <!doctype html>
@@ -57,6 +57,10 @@ const ogImage = new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-18096499266"></script>
+    <script is:inline set:html={`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'AW-18096499266');gtag('config', 'G-JXBHPTBC5V');`} />
 
     <!-- Google Tag Manager -->
     <script is:inline set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`} />

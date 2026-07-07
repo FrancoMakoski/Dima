@@ -1,12 +1,21 @@
 ---
-// Lightbox.astro — <dialog> único, sin props. JS delegado: cualquier
+// Lightbox.astro — <dialog> único. JS delegado: cualquier
 // [data-lightbox-src] de la página abre el dialog con esa imagen. Cierra con
 // Esc (nativo del <dialog>), botón, y click en el backdrop. Scroll-lock del body
 // mientras está abierto. Montar UNA sola vez por página.
+// Los aria-label vienen por props (patrón ReviewsCard): el componente nunca
+// importa diccionarios directamente.
+import type { ProfileDict } from '../i18n/types';
+
+interface Props {
+  t: Pick<ProfileDict['experience'], 'lightboxLabel' | 'lightboxCloseLabel'>;
+}
+
+const { t } = Astro.props;
 ---
 
-<dialog class="lightbox" data-lightbox aria-label="Certificate preview">
-  <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close">
+<dialog class="lightbox" data-lightbox aria-label={t.lightboxLabel}>
+  <button type="button" class="lightbox-close" data-lightbox-close aria-label={t.lightboxCloseLabel}>
     <svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24">
       <path
         d="M6 6l12 12M18 6L6 18"

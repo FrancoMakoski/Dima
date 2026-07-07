@@ -173,21 +173,26 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     </div>
 
     {/* CTA primario full-width a WhatsApp; el href se actualiza con el slot.
-        Deshabilitado (is-disabled + aria-disabled) hasta aceptar la declaración. */}
-    <a
-      class="booking-confirm is-disabled"
-      aria-disabled="true"
-      href={initialWaHref}
-      target="_blank"
-      rel="noopener"
-      data-sched-modal-wa
-      data-track="whatsapp_click"
-      data-track-label="booking_modal"
-      data-conversion-whatsapp
-    >
-      <Icon name="whatsapp" size={20} class="booking-confirm-icon" />
-      <span>{t.confirmWhatsApp}</span>
-    </a>
+        Deshabilitado (is-disabled + aria-disabled) hasta aceptar la declaración.
+        Sin consentimiento el <a> NO lleva href navegable (se guarda en
+        data-href y se restituye en syncConsent()): así click-medio / "abrir en
+        pestaña nueva" tampoco pueden saltarse el gating. */}
+    <span class="booking-confirm-wrap" data-sched-modal-wa-wrap>
+      <a
+        class="booking-confirm is-disabled"
+        aria-disabled="true"
+        data-href={initialWaHref}
+        target="_blank"
+        rel="noopener"
+        data-sched-modal-wa
+        data-track="whatsapp_click"
+        data-track-label="booking_modal"
+        data-conversion-whatsapp
+      >
+        <Icon name="whatsapp" size={20} class="booking-confirm-icon" />
+        <span>{t.confirmWhatsApp}</span>
+      </a>
+    </span>
 
     <p class="booking-honesty">{t.honestyNote}</p>
   </div>
@@ -256,28 +261,51 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     bookingModal.addEventListener('close', restoreFocus);
 
     // ---- Consentimiento: el checkbox habilita el CTA de WhatsApp ----
+    // El href real vive en data-href (lo escribe el server-render y lo
+    // actualiza availability.ts al elegir slot, en selectChip()).
+    // Sin consentimiento el <a> NO tiene atributo href navegable: así
+    // click-medio / "abrir en pestaña nueva" no pueden saltarse el gating
+    // (un solo listener de 'click' con preventDefault no alcanza para eso).
     const consentCheck = bookingModal.querySelector<HTMLInputElement>('[data-sched-consent]');
     const consentBox = bookingModal.querySelector<HTMLElement>('[data-sched-consent-box]');
     const confirmLink = bookingModal.querySelector<HTMLAnchorElement>('[data-sched-modal-wa]');
+    const confirmWrap = bookingModal.querySelector<HTMLElement>('[data-sched-modal-wa-wrap]');
     if (consentCheck && confirmLink) {
+      // Expuesto en window para que availability.ts pueda re-sincronizar el
+      // href tras un cambio de slot sin duplicar la lógica de gating acá.
       const syncConsent = () => {
         const ok = consentCheck.checked;
         confirmLink.classList.toggle('is-disabled', !ok);
         confirmLink.setAttribute('aria-disabled', ok ? 'false' : 'true');
+        const realHref = confirmLink.dataset.href || '';
+        if (ok && realHref) confirmLink.setAttribute('href', realHref);
+        else confirmLink.removeAttribute('href');
       };
+      (window as any).__syncScheduleConsent = syncConsent;
       syncConsent();
       consentCheck.addEventListener('change', syncConsent);
-      confirmLink.addEventListener('click', (e) => {
-        if (consentCheck.checked) return;
-        // Sin consentimiento: no navegar ni disparar tracking de conversión;
-        // resaltar la declaración para guiar la vista.
-        e.preventDefault();
-        e.stopPropagation();
+
+      const showAttention = () => {
         if (consentBox) {
           consentBox.classList.add('is-attention');
           window.setTimeout(() => consentBox.classList.remove('is-attention'), 1200);
         }
-      });
+      };
+
+      // Con consentimiento pendiente el <a> pierde 'href' y además la regla
+      // CSS .is-disabled tiene pointer-events:none, así que el click nunca
+      // llega al <a> (ni siquiera con click-medio / "abrir en pestaña
+      // nueva", que ya no tienen href real que seguir). El feedback visual
+      // (.is-attention) se maneja entonces desde el wrapper, que sí recibe
+      // el click cuando el <a> interno está deshabilitado.
+      if (confirmWrap) {
+        confirmWrap.addEventListener('click', (e) => {
+          if (consentCheck.checked) return;
+          e.preventDefault();
+          e.stopPropagation();
+          showAttention();
+        });
+      }
     }
   }
 </script>
@@ -478,7 +506,12 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
   }
 
   /* Chips ahora son <button>: reset + estado seleccionable. Borde presente
-     siempre (transparente) para que la selección no desplace el layout. */
+     siempre (transparente) para que la selección no desplace el layout.
+     Texto en --color-primary-hover (no --color-primary): #4a6cf7 sobre
+     --color-primary-100 da 3.79:1 (falla AA); #3452d8 da ≈5.5:1 (pasa AA
+     para texto 14px). El chip SELECCIONADO no se toca (fondo blanco/borde
+     azul, ver .sched-chip.is-selected más abajo, que sigue usando
+     --color-primary porque su contraste ahí es distinto). */
   .sched-mount :global(.sched-chip) {
     display: inline-flex;
     align-items: center;
@@ -487,7 +520,7 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     border: 2px solid transparent;
     border-radius: var(--r-input);
     background: var(--color-primary-100);
-    color: var(--color-primary);
+    color: var(--color-primary-hover);
     font-family: inherit;
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
@@ -751,13 +784,25 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     border-color: var(--color-primary-hover);
   }
 
-  /* Sin consentimiento: gris, no clickeable visualmente (el JS bloquea el click). */
+  /* Sin consentimiento: gris, no clickeable (ni visual ni funcionalmente: sin
+     'href' navegable + pointer-events:none evita click-medio / "abrir en
+     pestaña nueva"). El feedback .is-attention se maneja desde el wrapper,
+     ver .booking-confirm-wrap más abajo. */
   .booking-confirm.is-disabled,
   .booking-confirm.is-disabled:hover {
     background: var(--color-surface-2);
     border-color: var(--color-border-strong);
     color: var(--color-text-2);
     cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Wrapper del CTA de WhatsApp: mismo ancho que el <a>, recibe el click de
+     "atención" cuando el <a> interno está deshabilitado (pointer-events:none
+     en el <a> le pasa el evento al wrapper). */
+  .booking-confirm-wrap {
+    display: block;
+    inline-size: 100%;
   }
 
   .booking-confirm-icon {
