@@ -1,0 +1,52 @@
+name: Preview en GitHub Pages
+
+# Preview navegable de la 3.0 en https://francomakoski.github.io/Dima/
+# OJO: esto NO es el deploy de producción. El sitio en vivo se publica desde ..\Web 1.0
+# a Hostinger con push-dima.bat. Este workflow solo sirve para mirar la 3.0 online.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # Reescribe el dist/ para que cuelgue de /Dima/ y lo marca noindex.
+      # No toca el código fuente: el build de producción sigue saliendo igual.
+      - run: node scripts/pages-basepath.mjs /Dima
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
