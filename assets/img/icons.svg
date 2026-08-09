@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- ico-waves: dos ondas sinusoidales -->
+  <symbol id="ico-waves" viewBox="0 0 24 24">
+    <path d="M2 8c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0 3.5 2 5 0"/>
+    <path d="M2 16c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0 3.5 2 5 0"/>
+  </symbol>
+
+  <!-- ico-zap: rayo -->
+  <symbol id="ico-zap" viewBox="0 0 24 24">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </symbol>
+
+  <!-- ico-users: dos personas -->
+  <symbol id="ico-users" viewBox="0 0 24 24">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </symbol>
+
+  <!-- ico-heart-pulse: corazon con latido -->
+  <symbol id="ico-heart-pulse" viewBox="0 0 24 24">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+    <path d="M3.5 12h4l1.5-3 2.5 6 1.5-3h4"/>
+  </symbol>
+
+  <!-- ico-heart-crack: corazon partido -->
+  <symbol id="ico-heart-crack" viewBox="0 0 24 24">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+    <path d="M12 5 9.5 10l4 3-2.5 5"/>
+  </symbol>
+
+  <!-- ico-cloud-fog: nube con niebla -->
+  <symbol id="ico-cloud-fog" viewBox="0 0 24 24">
+    <path d="M7 15a4.5 4.5 0 0 1 0-9 5.5 5.5 0 0 1 10.4 1.5A3.5 3.5 0 0 1 17 15Z"/>
+    <path d="M5 19h14"/>
+    <path d="M8 22h8"/>
+  </symbol>
+
+  <!-- ico-repeat: flechas de repeticion -->
+  <symbol id="ico-repeat" viewBox="0 0 24 24">
+    <path d="m17 2 4 4-4 4"/>
+    <path d="M3 11v-1a4 4 0 0 1 4-4h14"/>
+    <path d="m7 22-4-4 4-4"/>
+    <path d="M21 13v1a4 4 0 0 1-4 4H3"/>
+  </symbol>
+
+  <!-- ico-brain: cerebro simple (dos lobulos) -->
+  <symbol id="ico-brain" viewBox="0 0 24 24">
+    <path d="M12 5a2.5 2.5 0 0 0-4.5-1.5A2.5 2.5 0 0 0 4 6a2.5 2.5 0 0 0-1 4.5A3 3 0 0 0 4.5 16 2.5 2.5 0 0 0 8 19a2.5 2.5 0 0 0 4-1Z"/>
+    <path d="M12 5a2.5 2.5 0 0 1 4.5-1.5A2.5 2.5 0 0 1 20 6a2.5 2.5 0 0 1 1 4.5A3 3 0 0 1 19.5 16 2.5 2.5 0 0 1 16 19a2.5 2.5 0 0 1-4-1Z"/>
+    <path d="M12 5v14"/>
+  </symbol>
+
+  <!-- ico-target: diana -->
+  <symbol id="ico-target" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <circle cx="12" cy="12" r="5"/>
+    <circle cx="12" cy="12" r="1.5"/>
+  </symbol>
+
+  <!-- ico-shield-check: escudo con tilde -->
+  <symbol id="ico-shield-check" viewBox="0 0 24 24">
+    <path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5Z"/>
+    <path d="m8.5 12 2.5 2.5 4.5-5"/>
+  </symbol>
+
+  <!-- ico-handshake: apreton de manos simple -->
+  <symbol id="ico-handshake" viewBox="0 0 24 24">
+    <path d="M12 12 9.5 9.5a2 2 0 0 0-2.83 0L3 13"/>
+    <path d="m14 10 3.5 3.5a1.8 1.8 0 0 1-2.5 2.5l-1-1a1.8 1.8 0 0 1-2.5 2.5 1.8 1.8 0 0 1-2.5 2.5l-1-1"/>
+    <path d="M21 13 17 9l-3.5 3.5a1.8 1.8 0 0 0 2.5 2.5"/>
+    <path d="M3 13v-2l3.5-3.5a2 2 0 0 1 2.83 0L12 10l2-2 2.5-2.5a2 2 0 0 1 2.83 0L21 8v3"/>
+  </symbol>
+
+  <!-- ico-sprout: brote con dos hojas -->
+  <symbol id="ico-sprout" viewBox="0 0 24 24">
+    <path d="M12 21v-9"/>
+    <path d="M12 12C12 8 9 6 4 6c0 4 3 6 8 6Z"/>
+    <path d="M12 10c0-3.5 3-5.5 7-5.5 0 3.5-3 5.5-7 5.5Z"/>
+    <path d="M7 21h10"/>
+  </symbol>
+
+  <!-- ico-clock: reloj -->
+  <symbol id="ico-clock" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 7v5l3.5 2"/>
+  </symbol>
+
+  <!-- ico-play: triangulo reproducir -->
+  <symbol id="ico-play" viewBox="0 0 24 24">
+    <polygon points="6 3 20 12 6 21 6 3"/>
+  </symbol>
+
+  <!-- ico-check: tilde -->
+  <symbol id="ico-check" viewBox="0 0 24 24">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+
+  <!-- ico-whatsapp: glifo de relleno (excepcion) -->
+  <symbol id="ico-whatsapp" viewBox="0 0 720 720">
+    <path d="M360,0C161.18,0,0,161.18,0,360c0,65.41,17.45,126.75,47.94,179.61L0,720l187.02-44.21c51.34,28.18,110.28,44.21,172.98,44.21,198.82,0,360-161.18,360-360S558.82,0,360,0ZM360,655.52c-60.17,0-116.13-17.98-162.82-48.87l-110.49,28.14,30.99-105.61c-33.53-47.93-53.2-106.26-53.2-169.19,0-163.21,132.31-295.52,295.52-295.52s295.52,132.31,295.52,295.52-132.31,295.52-295.52,295.52Z"/>
+    <path d="M444.35,407.52l87.1,41.06c4,1.88,6.56,5.94,6.2,10.34-.94,11.46-5.54,34.43-26.13,55.02-58.12,58.12-162.49-7.64-166.74-10.18-25.67-13.79-50.06-32.24-73.19-55.36-23.12-23.12-41.58-47.52-55.37-73.19-2.55-4.24-68.31-108.61-10.18-166.74,20.59-20.59,43.56-25.19,55.02-26.13,4.41-.36,8.46,2.2,10.34,6.2l41.07,87.1c1.94,4.12,1.09,9.02-2.13,12.24l-30.61,30.61c-6.62,6.62-8.56,16.93-4,25.11,11.17,20.03,26.19,39.32,43.59,57.07,17.75,17.4,37.04,32.43,57.07,43.59,8.18,4.56,18.48,2.62,25.11-4l30.61-30.61c3.22-3.22,8.12-4.08,12.24-2.13Z"/>
+  </symbol>
+</svg>
