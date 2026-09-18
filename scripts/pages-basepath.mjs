@@ -56,9 +56,12 @@ for (const file of walk(DIST)) {
   // rutas a assets embebidas en strings de JS
   out = out.replace(new RegExp(`(["'\`])\\/assets\\/`, 'g'), `$1${BASE}/assets/`);
 
-  // preview no indexable
-  if (ext === '.html' && !out.includes('name="robots"')) {
-    out = out.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n    ${NOINDEX}`);
+  // Preview no indexable. El sitio ya emite su propia <meta name="robots" content="index,follow…">,
+  // asi que hay que REEMPLAZARLA — insertar solo cuando falta dejaba las paginas indexables.
+  if (ext === '.html') {
+    out = out.includes('name="robots"')
+      ? out.replace(/<meta\s+name="robots"[^>]*>/gi, NOINDEX)
+      : out.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n    ${NOINDEX}`);
   }
 
   if (out !== original) {

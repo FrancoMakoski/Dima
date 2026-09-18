@@ -32,6 +32,8 @@ const { t } = Astro.props;
   .badge-group {
     display: flex;
     flex-wrap: wrap;
+    min-inline-size: 0;
+    max-inline-size: 100%;
     gap: var(--sp-2);
   }
 
@@ -40,5 +42,6 @@ const { t } = Astro.props;
     font-weight: var(--fw-semibold);
     color: var(--color-text-2);
     margin: var(--sp-5) 0 var(--sp-3);
+    overflow-wrap: anywhere;
   }
 </style>

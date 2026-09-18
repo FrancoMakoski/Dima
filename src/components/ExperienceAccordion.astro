@@ -55,11 +55,13 @@ const { t } = Astro.props;
 <style>
   .exp-list {
     display: flex;
+    min-inline-size: 0;
     flex-direction: column;
     gap: var(--sp-2);
   }
 
   .exp-item {
+    min-inline-size: 0;
     border: 1px solid var(--color-border);
     border-radius: var(--r-btn);
     background: var(--color-surface);
@@ -68,6 +70,7 @@ const { t } = Astro.props;
 
   .exp-summary {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
@@ -83,7 +86,10 @@ const { t } = Astro.props;
   }
 
   .exp-summary-title {
+    flex: 1 1 auto;
+    min-inline-size: 0;
     font-size: var(--fs-base);
+    overflow-wrap: anywhere;
   }
 
   .exp-summary-toggle {
@@ -117,12 +123,14 @@ const { t } = Astro.props;
 
   .exp-body {
     overflow: hidden;
+    min-inline-size: 0;
     min-block-size: 0;
     padding-inline: var(--sp-4);
     padding-block-end: var(--sp-4);
   }
 
   .exp-para {
+    overflow-wrap: anywhere;
     color: var(--color-text-2);
     font-size: var(--fs-sm);
     line-height: var(--lh-normal);

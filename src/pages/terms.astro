@@ -9,6 +9,7 @@ import Base from '../layouts/Base.astro';
 import TopBar from './../components/TopBar.astro';
 import Card from '../components/Card.astro';
 import { getDict } from '../i18n';
+import { PHONE_DISPLAY, waLink } from '../config/site';
 
 const t = getDict('he');
 
@@ -37,7 +38,7 @@ const toc = [
 ];
 ---
 
-<Base title={pageTitle} description={pageDescription} lang="he" robots="noindex,follow" alternates={false}>
+<Base title={pageTitle} description={pageDescription} lang="he" robots="noindex,follow" alternates={false} ogType="website">
   <div class="legal">
     <TopBar t={t.topbar} locale="he" />
 
@@ -74,7 +75,7 @@ const toc = [
         <ul>
           <li><strong>שם מלא:</strong> דמיטרי קזקוב (Dmitriy Kazakov)</li>
           <li><strong>כתובת דוא"ל:</strong> kadimaclinic@gmail.com</li>
-          <li><strong>טלפון / WhatsApp:</strong> +972-52-805-6068</li>
+          <li><strong>טלפון / WhatsApp:</strong> {PHONE_DISPLAY}</li>
           <li><strong>מדינה:</strong> מדינת ישראל</li>
         </ul>
       </section>
@@ -248,7 +249,7 @@ const toc = [
           <p class="legal-contact-title">מומחה לפסיכוסומטיקה</p>
           <p class="legal-contact-subtitle">דמיטרי קזקוב</p>
           <p>דוא"ל: <a href="mailto:kadimaclinic@gmail.com">kadimaclinic@gmail.com</a></p>
-          <p>WhatsApp: <a href="https://wa.me/972528056068">+972-52-805-6068</a></p>
+          <p>WhatsApp: <a href={waLink('')}>{PHONE_DISPLAY}</a></p>
           <p>בקשות עיון במידע אישי, ביטול הסכמה, ותלונות על פרטיות — לאותה כתובת דוא"ל, בנושא: "בקשת פרטיות".</p>
         </div>
       </section>

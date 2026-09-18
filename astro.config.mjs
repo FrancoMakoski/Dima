@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // TODO: poner el dominio real antes de generar sitemap/canonicals
-  // site: 'https://…',
+  site: 'https://dimatherapyonline.com',
   i18n: {
     defaultLocale: 'he',
     locales: ['he', 'ru'],

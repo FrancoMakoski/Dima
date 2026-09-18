@@ -15,6 +15,7 @@
 // Solo props lógicas → se espeja solo con dir="rtl".
 import Card from './Card.astro';
 import Icon from './Icon.astro';
+import { PROFILE_IMAGE } from '../config/site';
 import type { ProfileDict } from '../i18n/types';
 
 interface Props {
@@ -28,10 +29,10 @@ const { t } = Astro.props;
   <div class="ph-top">
     <img
       class="ph-photo"
-      src="/assets/img/dmitry-photo2-880.webp"
+      src={PROFILE_IMAGE}
       alt={t.name}
-      width="880"
-      height="1100"
+      width="503"
+      height="492"
       loading="eager"
       decoding="async"
     />
@@ -77,7 +78,7 @@ const { t } = Astro.props;
     <a
       class="ph-availability-chip"
       href="#schedule"
-      data-track="free_call_cta_click"
+      data-track="booking_intent"
       data-track-label="availability_chip"
       data-next-availability
       hidden
@@ -92,6 +93,7 @@ const { t } = Astro.props;
      MÓVIL: foto chica + el mismo bloque al lado (ver media query). */
   .ph-top {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: var(--sp-4);
   }
@@ -108,7 +110,9 @@ const { t } = Astro.props;
   }
 
   .ph-id {
+    flex: 1 1 12rem;
     min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 
   .ph-name {
@@ -177,6 +181,7 @@ const { t } = Astro.props;
     flex-direction: column;
     min-inline-size: 0;
     line-height: var(--lh-tight);
+    overflow-wrap: anywhere;
   }
 
   .ph-stat-strong {
@@ -203,6 +208,8 @@ const { t } = Astro.props;
   /* ---- Fila de disponibilidad: solo visible en móvil ---- */
   .ph-availability {
     display: none;
+    flex-wrap: wrap;
+    min-inline-size: 0;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
@@ -216,12 +223,18 @@ const { t } = Astro.props;
   }
 
   .ph-availability-label {
+    flex: 1 1 10ch;
+    min-inline-size: 0;
     font-size: var(--fs-sm);
     color: var(--color-text-2);
+    overflow-wrap: anywhere;
   }
 
   .ph-availability-chip {
     display: inline-flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
     align-items: center;
     justify-content: center;
     padding-inline: var(--sp-4);
@@ -233,6 +246,9 @@ const { t } = Astro.props;
     font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
     text-decoration: none;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
     transition: background-color 0.15s ease;
   }
 

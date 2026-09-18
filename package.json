@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node scripts/postbuild.mjs",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "npm run build && node scripts/verify-build.mjs && node scripts/test-tracking.mjs"
   },
   "dependencies": {
     "astro": "^5.0.0"

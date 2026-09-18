@@ -20,7 +20,7 @@ const { t, waMessage } = Astro.props;
   <a
     class="mcb-primary"
     href="#schedule"
-    data-track="free_call_cta_click"
+    data-track="booking_intent"
     data-track-label="mobilebar_reserve"
   >
     {t.ctaBook}
@@ -44,6 +44,8 @@ const { t, waMessage } = Astro.props;
   @media (max-width: 960px) {
     .mobile-cta-bar {
       display: flex;
+      flex-wrap: wrap;
+      min-inline-size: 0;
       gap: var(--sp-3);
       position: fixed;
       inset-inline: 0;
@@ -70,7 +72,8 @@ const { t, waMessage } = Astro.props;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex: 1 1 8rem;
+    min-inline-size: 0;
     padding-block: var(--sp-2);
     padding-inline: var(--sp-4);
     border-radius: var(--r-btn);
@@ -82,6 +85,8 @@ const { t, waMessage } = Astro.props;
     line-height: var(--lh-tight);
     text-align: center;
     text-decoration: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .mcb-primary:hover {
@@ -90,11 +95,19 @@ const { t, waMessage } = Astro.props;
   }
 
   /* La CTA de WhatsApp (outline) ocupa la otra mitad y se compacta como la barra. */
-  .mcb-wa {
-    flex: 1;
+  .mobile-cta-bar :global(.mcb-wa) {
+    flex: 1 1 8rem;
+    min-inline-size: 0;
     padding-block: var(--sp-2);
     padding-inline: var(--sp-4);
     font-size: var(--fs-sm);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-cta-bar :global(.mcb-wa > span) {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 </style>
 

@@ -1,11 +1,11 @@
 ---
 // Base.astro — layout raíz del sitio 3.0 (perfil estilo Clearly).
 // Head completo: meta, OG, canonical + hreflang he<->ru, favicon, preload de fuentes,
-// GTM, y un slot 'head' para JSON-LD por página.
+// Google tag, y un slot 'head' para JSON-LD por página.
 import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
-import { SITE_URL, GTM_ID } from '../config/site';
+import { SITE_URL, PROFILE_IMAGE } from '../config/site';
 import type { Locale } from '../i18n/types';
 
 interface Props {
@@ -19,6 +19,11 @@ interface Props {
   // Páginas que existen en un solo idioma (ej. /terms, solo hebreo) ponen esto en
   // false para NO emitir hreflang hacia un espejo /ru/... inexistente.
   alternates?: boolean;
+  // Canonical explícito para rutas únicas cuyo idioma de contenido no coincide
+  // con su prefijo URL (ej. /credentials con contenido ruso pero sin /ru/).
+  canonicalPath?: string;
+  // El perfil usa `profile`; páginas funcionales, legales y de error usan `website`.
+  ogType?: 'profile' | 'website';
 }
 
 const {
@@ -27,6 +32,8 @@ const {
   description = '',
   robots = 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   alternates = true,
+  canonicalPath,
+  ogType = 'profile',
 } = Astro.props;
 const dir = lang === 'he' ? 'rtl' : 'ltr';
 
@@ -44,12 +51,38 @@ let basePath = cleanPath.replace(/^\/ru(?=\/|$)/, '') || '/';
 if (basePath !== '/' && basePath.endsWith('/')) basePath = basePath.slice(0, -1);
 const heHref = new URL(basePath, SITE_URL).href;
 const ruHref = new URL(basePath === '/' ? '/ru/' : `/ru${basePath}`, SITE_URL).href;
-const canonical = lang === 'he' ? heHref : ruHref;
+const canonical = canonicalPath
+  ? new URL(canonicalPath, SITE_URL).href
+  : lang === 'he'
+    ? heHref
+    : ruHref;
 
 // Preload del subset de Rubik del idioma actual + latín (siempre presente: dígitos/símbolos).
 const localeFont = lang === 'he' ? '/assets/fonts/rubik-var-hebrew.woff2' : '/assets/fonts/rubik-var-cyrillic.woff2';
 
-const ogImage = 'https://dimatherapyonline.com/assets/img/dmitry-photo2.jpeg';
+const ogImage = new URL(PROFILE_IMAGE, SITE_URL).href;
+
+// Una sola implementación de medición: Google tag directo para GA4.
+// El guard de hostname vive también en el cliente para que `astro preview`, localhost,
+// GitHub Pages y dominios temporales de Hostinger no contaminen la propiedad real.
+const GOOGLE_ANALYTICS_ID = 'G-JXBHPTBC5V';
+const analyticsConsent = lang === 'he'
+  ? {
+      ariaLabel: 'פרטיות ומדידה',
+      title: 'פרטיות ומדידה',
+      text: 'לאחר הסכמתך נשתמש ב-Google Analytics לסטטיסטיקה כללית של ביקורים ולחיצות. האתר ימשיך לפעול גם ללא אנליטיקה.',
+      accept: 'אישור מדידה',
+      decline: 'לא תודה',
+      policy: 'מדיניות פרטיות',
+    }
+  : {
+      ariaLabel: 'Конфиденциальность и аналитика',
+      title: 'Конфиденциальность и аналитика',
+      text: 'После вашего согласия мы используем Google Analytics для общей статистики посещений и нажатий. Сайт продолжит работать и без аналитики.',
+      accept: 'Разрешить аналитику',
+      decline: 'Нет, спасибо',
+      policy: 'Политика конфиденциальности',
+    };
 ---
 
 <!doctype html>
@@ -58,13 +91,14 @@ const ogImage = 'https://dimatherapyonline.com/assets/img/dmitry-photo2.jpeg';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-18096499266"></script>
-    <script is:inline set:html={`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'AW-18096499266');gtag('config', 'G-JXBHPTBC5V');`} />
-
-    <!-- Google Tag Manager -->
-    <script is:inline set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`} />
-    <!-- End Google Tag Manager -->
+    <!--
+      Google Analytics se carga una sola vez, únicamente en producción real y
+      después del consentimiento. Las URLs enviadas excluyen query y fragmento.
+    -->
+    <script
+      is:inline
+      set:html={`(function(w,d){var key='dima_analytics_consent';var host=w.location.hostname.toLowerCase().replace(/^www\\./,'');var production=w.location.protocol==='https:'&&host==='dimatherapyonline.com';var loading=false;w.__dimaTrackingEnabled=false;function read(){try{return w.localStorage.getItem(key)||'';}catch(e){return '';}}function write(value){try{w.localStorage.setItem(key,value);}catch(e){}}function cleanUrl(value){try{var url=new URL(value,w.location.origin);return url.origin+url.pathname;}catch(e){return '';}}function enable(){if(!production||loading)return;loading=true;w.dataLayer=w.dataLayer||[];w.gtag=w.gtag||function(){w.dataLayer.push(arguments);};w.gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});w.gtag('js',new Date());w.gtag('config','${GOOGLE_ANALYTICS_ID}',{send_page_view:true,page_location:cleanUrl(w.location.href),page_referrer:cleanUrl(d.referrer),allow_google_signals:false,allow_ad_personalization_signals:false});w.__dimaTrackingEnabled=true;d.dispatchEvent(new CustomEvent('dima:analytics-ready'));var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}';d.head.appendChild(s);}function init(){var box=d.querySelector('[data-analytics-consent]');if(!production){if(box)box.hidden=true;return;}var choice=read();if(choice==='accepted'){if(box)box.hidden=true;enable();return;}if(choice==='declined'){if(box)box.hidden=true;return;}if(!box)return;box.hidden=false;var accept=box.querySelector('[data-analytics-accept]');var decline=box.querySelector('[data-analytics-decline]');if(accept)accept.addEventListener('click',function(){write('accepted');box.hidden=true;enable();});if(decline)decline.addEventListener('click',function(){write('declined');box.hidden=true;});}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();})(window,document);`}
+    />
 
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
@@ -81,7 +115,7 @@ const ogImage = 'https://dimatherapyonline.com/assets/img/dmitry-photo2.jpeg';
     {alternates && <link rel="alternate" hreflang="x-default" href={heHref} />}
 
     <!-- Open Graph -->
-    <meta property="og:type" content="profile" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Dima Therapy Online" />
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
@@ -109,12 +143,121 @@ const ogImage = 'https://dimatherapyonline.com/assets/img/dmitry-photo2.jpeg';
     <slot name="head" />
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-      <iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style="display:none;visibility:hidden"></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <slot />
+
+    <aside
+      class="analytics-consent"
+      data-analytics-consent
+      role="region"
+      aria-label={analyticsConsent.ariaLabel}
+      hidden
+    >
+      <div class="analytics-consent-copy">
+        <strong>{analyticsConsent.title}</strong>
+        <p>{analyticsConsent.text}</p>
+        <a href="/terms">{analyticsConsent.policy}</a>
+      </div>
+      <div class="analytics-consent-actions">
+        <button type="button" class="analytics-consent-accept" data-analytics-accept>
+          {analyticsConsent.accept}
+        </button>
+        <button type="button" class="analytics-consent-decline" data-analytics-decline>
+          {analyticsConsent.decline}
+        </button>
+      </div>
+    </aside>
+
+    <script>
+      import '../scripts/track';
+    </script>
   </body>
 </html>
+
+<style>
+  .analytics-consent {
+    position: fixed;
+    z-index: 1000;
+    inset-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+    inset-block-end: max(12px, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    max-inline-size: 760px;
+    margin-inline: auto;
+    padding: var(--sp-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--r-card);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--sh-pop);
+  }
+
+  .analytics-consent[hidden] {
+    display: none;
+  }
+
+  .analytics-consent-copy {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .analytics-consent-copy strong {
+    display: block;
+    margin-block-end: var(--sp-1);
+  }
+
+  .analytics-consent-copy p {
+    margin: 0;
+    color: var(--color-text-2);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-normal);
+  }
+
+  .analytics-consent-copy a {
+    display: inline-block;
+    margin-block-start: var(--sp-1);
+    color: var(--color-primary-hover);
+    font-size: var(--fs-xs);
+  }
+
+  .analytics-consent-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--sp-2);
+  }
+
+  .analytics-consent-actions button {
+    min-block-size: 44px;
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-btn);
+    font: inherit;
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+  }
+
+  .analytics-consent-accept {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+
+  .analytics-consent-decline {
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 640px) {
+    .analytics-consent {
+      align-items: stretch;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .analytics-consent-actions,
+    .analytics-consent-actions button {
+      inline-size: 100%;
+    }
+  }
+</style>

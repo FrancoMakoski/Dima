@@ -35,6 +35,7 @@ html {
 
 body {
   min-height: 100vh;
+  overflow-wrap: anywhere;
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   font-weight: var(--fw-normal);

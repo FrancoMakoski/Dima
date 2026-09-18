@@ -3,6 +3,7 @@
 // el contenido por el iframe de youtube-nocookie con autoplay. NADA de scripts de
 // YouTube antes del click (performance + privacidad).
 import type { ProfileDict } from '../i18n/types';
+import { PROFILE_IMAGE } from '../config/site';
 
 interface Props {
   t: ProfileDict['video'];
@@ -15,7 +16,7 @@ const { t, videoId } = Astro.props;
 // que consume el script inline con onerror).
 const POSTER_MAX = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
 const POSTER_HQ = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-const POSTER_LOCAL = '/assets/img/dmitry-photo2-880.webp';
+const POSTER_LOCAL = PROFILE_IMAGE;
 ---
 
 <section class="video" aria-label={t.sectionAriaLabel}>

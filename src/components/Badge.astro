@@ -14,22 +14,16 @@ const { variant = 'neutral', class: className } = Astro.props;
 
 <style>
   .badge {
-    display: inline-flex;
-    align-items: center;
+    display: inline-block;
+    min-inline-size: 0;
     border-radius: var(--r-pill);
     padding: var(--sp-1) var(--sp-4);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
-    /* Chips cortos (blue/green) no envuelven; los neutral (credenciales largas)
-       sí, para no desbordar el ancho en móvil. Ver .badge-neutral. */
     max-inline-size: 100%;
-  }
-
-  /* Pills cortos: una sola línea. */
-  .badge-blue,
-  .badge-green {
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .badge-neutral {
@@ -39,7 +33,6 @@ const { variant = 'neutral', class: className } = Astro.props;
     background: var(--color-surface-2);
     color: var(--color-text-2);
     border-radius: var(--r-btn);
-    white-space: normal;
   }
 
   .badge-blue {

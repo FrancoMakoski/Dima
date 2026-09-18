@@ -31,6 +31,7 @@ const { t } = Astro.props;
 <style>
   .info-grid {
     display: grid;
+    min-inline-size: 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--sp-5) var(--sp-6);
     margin: 0;
@@ -38,6 +39,8 @@ const { t } = Astro.props;
 
   .info-row {
     display: flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
     align-items: flex-start;
     gap: var(--sp-3);
   }
@@ -52,7 +55,10 @@ const { t } = Astro.props;
   }
 
   .info-row-text {
+    flex: 1 1 auto;
     min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
   }
 
   .info-row-label {
@@ -70,7 +76,7 @@ const { t } = Astro.props;
 
   @media (max-width: 480px) {
     .info-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

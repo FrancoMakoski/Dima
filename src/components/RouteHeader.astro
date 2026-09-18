@@ -1,0 +1,102 @@
+---
+// Cabecera compacta para páginas auxiliares. Mantiene la navegación hacia la
+// página principal y, cuando corresponde, hacia el espejo de idioma exacto.
+interface Props {
+  homeHref: string;
+  homeLabel: string;
+  langHref?: string;
+  langLabel?: string;
+}
+
+const { homeHref, homeLabel, langHref, langLabel } = Astro.props;
+---
+
+<header class="route-header">
+  <a class="route-brand" href={homeHref} aria-label="DimaTherapy">
+    <img src="/assets/icons/logo-d-96.png" alt="" width="36" height="36" />
+    <span>DimaTherapy</span>
+  </a>
+
+  <nav class="route-nav" aria-label="Primary">
+    <a class="route-home" href={homeHref}>{homeLabel}</a>
+    {langHref && langLabel && (
+      <a class="route-lang" href={langHref} data-track="lang_switch">{langLabel}</a>
+    )}
+  </nav>
+</header>
+
+<style>
+  .route-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .route-brand,
+  .route-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .route-brand {
+    gap: var(--sp-2);
+    color: var(--color-text);
+    font-weight: var(--fw-semibold);
+  }
+
+  .route-brand:hover,
+  .route-home:hover,
+  .route-lang:hover {
+    text-decoration: none;
+  }
+
+  .route-brand img {
+    inline-size: 36px;
+    block-size: 36px;
+  }
+
+  .route-nav {
+    gap: var(--sp-3);
+  }
+
+  .route-home,
+  .route-lang {
+    min-block-size: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-pill);
+    padding-inline: var(--sp-4);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+  }
+
+  .route-home {
+    color: var(--color-text-2);
+  }
+
+  .route-home:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-50);
+  }
+
+  .route-lang {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-100);
+    background: var(--color-surface);
+  }
+
+  .route-lang:hover {
+    background: var(--color-primary-50);
+  }
+
+  @media (max-width: 480px) {
+    .route-brand span,
+    .route-home {
+      display: none;
+    }
+  }
+</style>

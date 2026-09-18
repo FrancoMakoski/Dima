@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="העמוד לא נמצא | Страница не найдена" lang="he" robots="noindex,follow" alternates={false} ogType="website">
+  <main class="not-found">
+    <a class="brand" href="/" aria-label="DimaTherapy">
+      <img src="/assets/icons/logo-d-96.png" alt="" width="48" height="48" />
+    </a>
+    <p class="code">404</p>
+    <section lang="he" dir="rtl">
+      <h1>העמוד לא נמצא</h1>
+      <p>ייתכן שהכתובת השתנתה או שהקישור אינו תקין.</p>
+      <div class="actions">
+        <a class="primary" href="/">לעמוד הראשי</a>
+        <a class="secondary" href="/booking">לקביעת פגישה</a>
+      </div>
+    </section>
+    <div class="divider" aria-hidden="true"></div>
+    <section lang="ru" dir="ltr">
+      <h2>Страница не найдена</h2>
+      <p>Возможно, адрес изменился или ссылка указана неверно.</p>
+      <div class="actions">
+        <a class="primary" href="/ru/">На главную</a>
+        <a class="secondary" href="/ru/booking">Записаться</a>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .not-found {
+    min-block-size: 100vh;
+    inline-size: min(100% - (var(--page-pad) * 2), 680px);
+    margin-inline: auto;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: var(--sp-5);
+    padding-block: var(--sp-8);
+    text-align: center;
+  }
+
+  .brand {
+    display: inline-flex;
+  }
+
+  .brand img {
+    inline-size: 48px;
+    block-size: 48px;
+  }
+
+  .code {
+    color: var(--color-primary);
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+  }
+
+  section {
+    display: grid;
+    justify-items: center;
+    gap: var(--sp-3);
+  }
+
+  h1,
+  h2 {
+    font-size: var(--fs-xl);
+  }
+
+  section p {
+    color: var(--color-text-2);
+  }
+
+  .divider {
+    inline-size: min(100%, 420px);
+    block-size: 1px;
+    background: var(--color-border);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-2);
+  }
+
+  .actions a {
+    min-block-size: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-btn);
+    font-weight: var(--fw-semibold);
+  }
+
+  .primary {
+    color: var(--color-text-on-primary);
+    background: var(--color-primary);
+  }
+
+  .secondary {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background: var(--color-surface);
+  }
+
+  .actions a:hover {
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,397 @@
+---
+import RouteHeader from './RouteHeader.astro';
+import CtaWhatsApp from './CtaWhatsApp.astro';
+import { CALENDAR_URL, PRICE_DISPLAY } from '../config/site';
+import type { Locale } from '../i18n/types';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const isHe = locale === 'he';
+
+const copy = isHe
+  ? {
+      homeHref: '/',
+      homeLabel: 'חזרה לעמוד הראשי',
+      langHref: '/ru/booking',
+      langLabel: 'РУ',
+      eyebrow: 'קביעת פגישה',
+      title: 'בחרו זמן שמתאים לכם',
+      lead: 'בחרו תאריך ושעה — אישור וקישור לפגישה יישלחו אוטומטית למייל שלכם.',
+      priceLabel: `פגישה ראשונה אונליין · ${PRICE_DISPLAY}`,
+      consentTitle: 'הצהרת מטופל והסכמה לתהליך',
+      consentIntro: 'לחיצה על הכפתור מאשרת את ארבעת הסעיפים הבאים:',
+      consentItems: [
+        'אני בן/בת 18 ומעלה.',
+        'איני נוטל/ת תרופות פסיכיאטריות ואיני נמצא/ת במעקב פסיכיאטרי.',
+        'ידוע לי כי במידה והמטפל ימצא לנכון, מתוך אחריות מקצועית ודאגה לטובתי, ניתן יהיה להפסיק את התהליך. במקרה כזה יוחזר הסכום ששולם.',
+        'לשמירה על תיאום מיטבי, ידוע לי כי ביטול פגישה בפחות מ-24 שעות מראש, או אי-הגעה, ייחשבו כביטול מאוחר, והמקדמה תשמש כדמי ביטול.',
+      ],
+      accept: 'מאשר/ת את כל התנאים — פתח/י את היומן',
+      accepted: 'התנאים אושרו — היומן פתוח למטה',
+      lock: 'אשר/י את התנאים למעלה כדי לפתוח את היומן ולקבוע פגישה.',
+      calendarTitle: 'יומן הזמנת פגישה של דמיטרי קזקוב',
+      fallback: 'אם היומן לא נטען, אפשר לפתוח אותו בחלון חדש.',
+      openCalendar: 'פתיחת היומן בחלון חדש',
+      helpTitle: 'צריכים עזרה בתיאום?',
+      helpText: 'כתבו לדמיטרי ב-WhatsApp ונעזור למצוא זמן מתאים.',
+      helpCta: 'כתיבה ב-WhatsApp',
+      waMessage: 'שלום דמיטרי, אני רוצה לקבוע פגישה וזקוק/ה לעזרה בתיאום.',
+    }
+  : {
+      homeHref: '/ru/',
+      homeLabel: 'Вернуться на главную',
+      langHref: '/booking',
+      langLabel: 'עב',
+      eyebrow: 'Запись на сессию',
+      title: 'Выберите удобное время',
+      lead: 'Выберите дату и время — подтверждение и ссылка на встречу придут автоматически на ваш email.',
+      priceLabel: `Первая онлайн-сессия · ${PRICE_DISPLAY}`,
+      consentTitle: 'Заявление и согласие на терапевтический процесс',
+      consentIntro: 'Нажимая кнопку ниже, вы подтверждаете следующие четыре пункта:',
+      consentItems: [
+        'Мне 18 лет или более.',
+        'Я не принимаю психиатрические препараты и не нахожусь под психиатрическим наблюдением.',
+        'Мне известно, что если терапевт сочтёт нужным, из профессиональной ответственности и заботы о моём благополучии, процесс может быть прекращён. В этом случае уплаченная сумма будет возвращена.',
+        'Отмена менее чем за 24 часа до встречи или неявка считается поздней отменой, и предоплата удерживается как плата за отмену.',
+      ],
+      accept: 'Принимаю все условия — открыть календарь',
+      accepted: 'Условия приняты — календарь открыт ниже',
+      lock: 'Подтвердите условия выше, чтобы открыть календарь и записаться на сессию.',
+      calendarTitle: 'Календарь записи Дмитрия Казакова',
+      fallback: 'Если календарь не загрузился, его можно открыть в новом окне.',
+      openCalendar: 'Открыть календарь в новом окне',
+      helpTitle: 'Нужна помощь с записью?',
+      helpText: 'Напишите Дмитрию в WhatsApp — поможем подобрать удобное время.',
+      helpCta: 'Написать в WhatsApp',
+      waMessage: 'Здравствуйте, Дмитрий. Я хочу записаться на сессию и нуждаюсь в помощи с выбором времени.',
+    };
+---
+
+<div class="booking-page">
+  <RouteHeader
+    homeHref={copy.homeHref}
+    homeLabel={copy.homeLabel}
+    langHref={copy.langHref}
+    langLabel={copy.langLabel}
+  />
+
+  <main>
+    <header class="booking-hero">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1>{copy.title}</h1>
+      <p class="booking-lead">{copy.lead}</p>
+      <p class="price-chip">{copy.priceLabel}</p>
+    </header>
+
+    <section class="consent-card" id="consent-section" aria-labelledby="consent-title">
+      <div>
+        <h2 id="consent-title">{copy.consentTitle}</h2>
+        <p class="consent-intro">{copy.consentIntro}</p>
+      </div>
+      <ul class="consent-list">
+        {copy.consentItems.map((item) => <li>{item}</li>)}
+      </ul>
+      <button
+        class="accept-button"
+        type="button"
+        data-accept-booking-terms
+        data-track="booking_terms_accepted"
+        data-track-label={locale === 'he' ? 'booking_he' : 'booking_ru'}
+      >
+        <span aria-hidden="true">✓</span>
+        <span>{copy.accept}</span>
+      </button>
+      <p class="accepted-note" data-accepted-note hidden aria-live="polite">
+        <span aria-hidden="true">✓</span>
+        <span>{copy.accepted}</span>
+      </p>
+    </section>
+
+    <section class="calendar-shell" data-calendar-shell aria-labelledby="calendar-title">
+      <h2 id="calendar-title" class="visually-hidden">{copy.calendarTitle}</h2>
+      <div class="calendar-lock" data-calendar-lock>
+        <p>{copy.lock}</p>
+      </div>
+      <iframe
+        class="calendar-frame"
+        data-calendar-frame
+        data-src={CALENDAR_URL}
+        title={copy.calendarTitle}
+        width="100%"
+        height="1180"
+        loading="eager"
+        scrolling="no"
+        tabindex="-1"
+        aria-hidden="true"
+      ></iframe>
+      <p class="calendar-fallback">
+        {copy.fallback}
+        <a href={CALENDAR_URL} target="_blank" rel="noopener" data-track="calendar_external_open">
+          {copy.openCalendar}
+        </a>
+      </p>
+    </section>
+
+    <section class="help-card">
+      <div>
+        <h2>{copy.helpTitle}</h2>
+        <p>{copy.helpText}</p>
+      </div>
+      <CtaWhatsApp
+        label={copy.helpCta}
+        message={copy.waMessage}
+        trackLabel={locale === 'he' ? 'booking_help_he' : 'booking_help_ru'}
+        variant="outline"
+      />
+    </section>
+  </main>
+</div>
+
+<script>
+  import '../scripts/track';
+
+  const acceptButton = document.querySelector<HTMLElement>('[data-accept-booking-terms]');
+  const acceptedNote = document.querySelector<HTMLElement>('[data-accepted-note]');
+  const calendarShell = document.querySelector<HTMLElement>('[data-calendar-shell]');
+  const calendarLock = document.querySelector<HTMLElement>('[data-calendar-lock]');
+  const calendarFrame = document.querySelector<HTMLIFrameElement>('[data-calendar-frame]');
+
+  acceptButton?.addEventListener('click', () => {
+    acceptButton.hidden = true;
+    if (acceptedNote) acceptedNote.hidden = false;
+    calendarShell?.classList.add('is-ready');
+    if (calendarLock) calendarLock.hidden = true;
+    if (calendarFrame) {
+      const source = calendarFrame.dataset.src;
+      if (source && !calendarFrame.hasAttribute('src')) calendarFrame.src = source;
+      calendarFrame.removeAttribute('tabindex');
+      calendarFrame.setAttribute('aria-hidden', 'false');
+    }
+    calendarShell?.scrollIntoView({ block: 'start' });
+  });
+</script>
+
+<style>
+  .booking-page {
+    inline-size: min(100% - (var(--page-pad) * 2), 980px);
+    margin-inline: auto;
+    padding-block-end: var(--sp-10);
+  }
+
+  .booking-hero {
+    display: grid;
+    gap: var(--sp-3);
+    padding-block: var(--sp-9) var(--sp-7);
+  }
+
+  .eyebrow {
+    inline-size: fit-content;
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-pill);
+    background: var(--color-primary-100);
+    color: var(--color-primary-hover);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+  }
+
+  h1 {
+    font-size: clamp(var(--fs-xl), 5vw, var(--fs-2xl));
+  }
+
+  .booking-lead,
+  .consent-intro,
+  .help-card p,
+  .calendar-fallback {
+    color: var(--color-text-2);
+  }
+
+  .booking-lead {
+    max-inline-size: 700px;
+    font-size: var(--fs-md);
+  }
+
+  .price-chip {
+    inline-size: fit-content;
+    padding: var(--sp-2) var(--sp-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--r-pill);
+    background: var(--color-surface);
+    font-weight: var(--fw-medium);
+  }
+
+  .consent-card,
+  .calendar-shell,
+  .help-card {
+    background: var(--color-surface);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-card);
+  }
+
+  .consent-card {
+    display: grid;
+    gap: var(--sp-5);
+    padding: var(--sp-6);
+    margin-block-end: var(--sp-6);
+  }
+
+  .consent-card h2,
+  .help-card h2 {
+    font-size: var(--fs-lg);
+    margin-block-end: var(--sp-2);
+  }
+
+  .consent-list {
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .consent-list li {
+    position: relative;
+    padding: var(--sp-3) var(--sp-4);
+    padding-inline-start: var(--sp-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-input);
+    background: var(--color-surface-2);
+    color: var(--color-text-2);
+  }
+
+  .consent-list li::before {
+    content: '•';
+    position: absolute;
+    inset-inline-start: var(--sp-4);
+    color: var(--color-primary);
+    font-weight: var(--fw-bold);
+  }
+
+  .accept-button,
+  .accepted-note {
+    min-block-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-btn);
+    font-weight: var(--fw-semibold);
+  }
+
+  .accept-button {
+    inline-size: 100%;
+    color: var(--color-text-on-primary);
+    background: var(--color-primary);
+  }
+
+  .accept-button:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .accepted-note {
+    color: var(--color-success);
+    background: var(--color-primary-50);
+  }
+
+  .accept-button[hidden],
+  .accepted-note[hidden],
+  .calendar-lock[hidden] {
+    display: none;
+  }
+
+  .calendar-shell {
+    position: relative;
+    min-block-size: 240px;
+    overflow: hidden;
+    padding: var(--sp-3);
+    scroll-margin-block-start: var(--sp-4);
+  }
+
+  .calendar-frame {
+    display: block;
+    inline-size: 100%;
+    border: 0;
+    border-radius: var(--r-input);
+  }
+
+  .calendar-shell:not(.is-ready) .calendar-frame {
+    display: none;
+    pointer-events: none;
+  }
+
+  .calendar-shell.is-ready {
+    min-block-size: 620px;
+  }
+
+  .calendar-lock {
+    position: absolute;
+    inset: var(--sp-3);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    padding: var(--sp-6);
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--r-input);
+    background: var(--color-surface);
+  }
+
+  .calendar-lock p {
+    max-inline-size: 440px;
+    color: var(--color-text-2);
+    font-weight: var(--fw-medium);
+  }
+
+  .calendar-fallback {
+    display: none;
+    padding: var(--sp-4);
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+
+  .calendar-shell.is-ready .calendar-fallback {
+    display: block;
+  }
+
+  .calendar-fallback a {
+    margin-inline-start: var(--sp-1);
+    font-weight: var(--fw-medium);
+  }
+
+  .help-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    margin-block-start: var(--sp-6);
+    padding: var(--sp-6);
+  }
+
+  @media (max-width: 640px) {
+    .booking-hero {
+      padding-block-start: var(--sp-7);
+    }
+
+    .consent-card,
+    .help-card {
+      padding: var(--sp-5);
+    }
+
+    .calendar-shell {
+      padding: var(--sp-2);
+    }
+
+    .calendar-lock {
+      inset: var(--sp-2);
+    }
+
+    .calendar-shell.is-ready .calendar-frame {
+      block-size: 1380px;
+    }
+
+    .help-card {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+</style>

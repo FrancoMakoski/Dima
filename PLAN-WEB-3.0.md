@@ -1,7 +1,7 @@
 # Plan Web 3.0 — DimaTherapy (rebuild desde cero)
 
-**Fecha:** 6-jul-2026 · **Decisión:** Franco — rebuild total en proyecto nuevo porque el sitio
-en producción no genera suficientes conversiones.
+**Fecha inicial:** 6-jul-2026 · **Estado 18-sep-2026:** release candidate completo, publicación
+autorizada por Franco y pendiente de la verificación final antes del switch.
 
 ## La idea en una línea
 
@@ -18,7 +18,7 @@ el diseño nuevo.
 | Carpeta/proyecto | `DimaThereapy\Web 3.0`, repo git propio | Lo pidió Franco: las tres versiones juntas dentro de la carpeta DimaThereapy |
 | Stack | **Astro 5**, salida estática | Componentes + i18n nativo = se acaba el CSS duplicado y los espejos he/ru a mano (la deuda #1 del sitio viejo). El build genera HTML plano → Hostinger no cambia nada |
 | URLs | Idénticas a producción | No se pierde SEO, no hacen falta redirects 301 |
-| Deploy | `npm run build` → `dist/` → `..\Web 1.0` → `push-dima.bat` | Dominio, SSL y hosting intactos; cero riesgo de migración |
+| Deploy | `scripts\prepare-release.ps1` → revisión de diff → `..\Web 1.0\push-dima.bat` | Build, verificación, respaldo y sincronización controlada antes del canal GitHub/Hostinger |
 | Idiomas | Hebreo (RTL) en raíz, ruso en `/ru/` | Igual que producción |
 
 ## Qué se hereda del sitio viejo (obligatorio)
@@ -26,8 +26,8 @@ el diseño nuevo.
 - **Reglas de copy** — ver CLAUDE.md: sin "hipnosis"/"psicólogo", llamada gratis sin duración,
   precios ocultos salvo la primera sesión (197 ₪), WhatsApp primario, sin mencionar a Makulov
   (decisión Franco 6-jul-2026).
-- **Integraciones:** booking con Google Calendar, analytics doble, tracking gclid/utm y
-  `whatsapp_click` en los CTAs.
+- **Integraciones:** booking real con Google Calendar, GA4 bajo consentimiento y eventos
+  normalizados de reserva/WhatsApp. El release no carga Google Ads ni Google Tag Manager.
 - **SEO ya ganado:** schema/JSON-LD, sitemap con hreflang, htaccess (clean URLs, 404),
   imágenes optimizadas, meta descriptions.
 - **Copy y aprendizajes 2.x:** aunque el diseño sea nuevo, el copy Hormozi de la rama
@@ -39,20 +39,18 @@ el diseño nuevo.
 - Ni una línea de HTML/CSS/JS del sitio viejo (se reescribe todo).
 - El server Express local (`run.bat`) — `npm run dev` lo reemplaza.
 - La duplicación manual he/ru.
-- `admin.html` + token débil: **decidir en Fase 3** si se rehace con auth decente o se elimina.
+- `admin.html` + token débil: eliminado del alcance público; no se migra.
 
 ## Fases
 
 ### Fase 0 — Fundaciones ✅ (hecho 6-jul-2026)
 Carpeta, repo git, scaffold Astro con i18n he/ru, este plan, CLAUDE.md con reglas.
 
-### Fase 1 — Diseño (la parte "3.0")
-1. Definir la dirección visual con Franco: referencias de sitios que le gusten, qué transmite
-   "3.0" (premium/minimal/cálido/editorial…).
-2. Maquetar **home + landing de anxiety** primero (hebreo), como muestra de todo el sistema
-   visual: tipografía, color, hero, CTAs, cards, testimonios, FAQ, footer.
-3. Revisión con Franco (y Dima para el copy) antes de replicar al resto. **Gate: no se avanza
-   a Fase 2 sin OK del diseño.**
+### Fase 1 — Diseño (la parte "3.0") ✅
+1. Dirección visual de perfil tipo Clearly definida con Franco.
+2. Sistema visual, home rusa, espejo hebreo RTL, CTAs, cards, formación, opiniones y FAQ construidos.
+3. La landing de ansiedad que figuraba en el borrador inicial se retiró del alcance porque no
+   existía en producción y no había contenido específico aprobado.
 
 > **Nota — 6-jul-2026 (decisión de Franco):** dirección visual definida. La home (`/`) va a
 > ser una **página de perfil de terapeuta estilo Clearly** (referencia:
@@ -63,75 +61,66 @@ Carpeta, repo git, scaffold Astro con i18n he/ru, este plan, CLAUDE.md con regla
 > reales (sin contadores inventados). Precio de la primera sesión (**197 ₪**) visible en el
 > perfil — regla actualizada en CLAUDE.md.
 
-### Fase 2 — Construcción
-1. Layout base + componentes compartidos (nav, hero, CTA WhatsApp, sección precios sin cifras,
-   testimonios, FAQ, footer).
-2. Las 11 páginas en hebreo: home, 4 landings (anxiety, panic-attacks, physical-symptoms,
-   social-anxiety), dmitry-kazakov, booking, free-call, terms, credentials, 404.
-3. Versión rusa (8 páginas espejo) reutilizando los mismos componentes con textos ru.
+### Fase 2 — Construcción del mapa productivo ✅
+1. Layout base y componentes compartidos para hebreo RTL y ruso LTR.
+2. Siete páginas que cubren el mapa público real de Web 1.0: `/`, `/ru/`, `/booking`,
+   `/ru/booking`, `/credentials`, `/terms` y `/404`.
+3. Compatibilidad de `dmitry-kazakov` mediante redirecciones permanentes hacia las homes.
 
-### Fase 3 — Lo invisible
-1. SEO: metas, JSON-LD, sitemap con hreflang, htaccess, redirects si alguna URL cambiara.
-2. Analytics doble + tracking gclid/utm + eventos `whatsapp_click` en todos los CTAs.
-3. Booking con Google Calendar (portar la integración existente).
-4. Fuentes self-hosted (subsets he/cy/latin), imágenes optimizadas, 404.
-5. Decisión admin.html (rehacer o eliminar).
+Las cuatro landings temáticas y `/free-call` fueron ideas de expansión; nunca existieron en
+producción y no forman parte del switch actual. Se podrán crear después con contenido validado.
 
-### Fase 4 — QA
-Móvil primero (el tráfico real es casi todo móvil), RTL en hebreo, Lighthouse (performance +
-accesibilidad), links internos, todos los CTAs disparando su evento de tracking, formularios.
+### Fase 3 — Lo invisible ✅
+1. SEO: metas, JSON-LD, sitemap con hreflang, `.htaccess`, clean URLs, 404 y redirects legacy.
+2. GA4 `G-JXBHPTBC5V` cargado solo después del consentimiento; eventos sin texto libre. Ads y
+   GTM no se cargan en este release. Enhanced Measurement fue desactivado el 18/09 y se verificó
+   en OFF para evitar capturar automáticamente URLs salientes hacia WhatsApp.
+3. Booking real de Google Calendar, diferido hasta aceptar las condiciones; el selector de la
+   home propone horarios para coordinar por WhatsApp y no afirma leer disponibilidad real.
+4. Fuentes self-hosted, imágenes optimizadas y retrato solicitado por Dima.
+5. `admin.html` no se migra.
 
-### Fase 5 — Switch a producción
-1. `npm run build` → verificar `dist/` contra el mapa de URLs de abajo.
-2. Copiar `dist/` adentro de `..\Web 1.0\` (reemplazando los archivos) → `push-dima.bat`.
-3. Verificar en vivo: home he/ru, una landing, booking, free-call, 404, htaccess.
-4. Google Search Console: pedir reindexación de las páginas principales.
-5. Monitorear 2 semanas: visitas, clicks WhatsApp, posiciones SEO.
+### Fase 4 — QA del release candidate 🟡
+Build, verificador de artefacto, rutas, links, metadatos, estados responsive, consentimiento y
+flujo de calendario fueron comprobados. El calendario mostró slots, Google Meet y zona BIT; no
+se reservó una cita. Falta la última revisión consolidada previa al deploy y el smoke test vivo.
 
-## Mapa de URLs (mantener 1:1 con producción)
+### Fase 5 — Switch a producción autorizado, todavía no ejecutado
+1. Ejecutar `scripts/prepare-release.ps1`: build, verificación, respaldo y sincronización con
+   guardas hacia `..\Web 1.0\`.
+2. Revisar el diff y el manifiesto. El script no hace commit, push ni publicación.
+3. Publicar mediante `..\Web 1.0\push-dima.bat` y esperar el redeploy de Hostinger.
+4. Verificar en vivo las siete páginas, redirecciones, códigos de estado, calendario, WhatsApp,
+   consentimiento, recursos y medición.
+5. Pedir reindexación de las páginas principales y monitorear dos semanas.
+
+## Mapa de URLs del switch actual
 
 | Página | Hebreo (raíz) | Ruso |
 |---|---|---|
 | Home | `/` | `/ru/` |
-| Ansiedad | `/anxiety` | `/ru/anxiety` |
-| Ataques de pánico | `/panic-attacks` | `/ru/panic-attacks` |
-| Síntomas físicos | `/physical-symptoms` | `/ru/physical-symptoms` |
-| Ansiedad social | `/social-anxiety` | `/ru/social-anxiety` |
-| Sobre Dima | `/dmitry-kazakov` | `/ru/dmitry-kazakov` |
 | Reservas | `/booking` | `/ru/booking` |
-| Llamada gratis | `/free-call` | `/ru/free-call` |
 | Términos | `/terms` | — |
 | Credenciales | `/credentials` | — |
 | 404 | `/404` | — |
 
-## Deploy y SEO (reglas del switch parcial)
+`/dmitry-kazakov` y `/ru/dmitry-kazakov` se conservan como aliases 301 hacia `/` y `/ru/`.
+Las landings temáticas y `/free-call` quedan como expansión futura, sin enlaces ni entradas de
+sitemap hasta que exista contenido real aprobado.
 
-Hoy la 3.0 solo cubre 2 páginas (`/` y `/ru/`). El resto del sitio en producción
-(`booking`, `credentials`, `terms`, sus variantes) sigue vivo con sus URLs actuales. Por eso
-el deploy de la home nueva es un **reemplazo parcial**, y hay que cuidar los artefactos SEO que
-la 3.0 **todavía no genera**:
+## Deploy y SEO del switch completo
 
-1. **NO sobreescribir ni borrar `sitemap.xml` de producción.** El `sitemap.xml` en `..\Web 1.0`
-   lista todas las URLs vivas (`/`, `/ru/`, `/booking`, `/ru/booking`, `/credentials`,
-   `/terms`). La 3.0 **no genera sitemap** (correcto: solo tiene 2 páginas). Al copiar `dist/`
-   dentro de `..\Web 1.0`, `dist/` no incluye `sitemap.xml`, así que el de producción se
-   mantiene intacto — **verificar que sigue ahí después de copiar** y no pisarlo.
-2. **`robots.txt` y `.htaccess` de producción se mantienen.** Tampoco los genera la 3.0. El
-   `.htaccess` es el que hace las clean URLs (`/booking` → `booking.html`) y los 301 legacy;
-   `robots.txt` apunta al sitemap. `dist/` no los trae → quedan intactos al copiar. **No
-   tocarlos** en este switch.
-3. **Los enlaces internos del footer nuevo apuntan solo a páginas que existen** tras el switch
-   parcial: he → `/booking`, `/credentials`, `/terms`; ru → `/ru/booking` + `/credentials` y
-   `/terms` (compartidas, igual que hace hoy el nav ruso de producción). **No** enlazar todavía
-   a `/anxiety`, `/panic-attacks`, `/physical-symptoms`, `/social-anxiety`, `/free-call`,
-   `/dmitry-kazakov`: esas páginas del mapa de URLs son de fases futuras y **aún no existen** —
-   enlazarlas generaría 404 y desperdiciaría autoridad. Sumarlas al footer recién cuando se
-   construyan.
-4. **Cuando la 3.0 migre TODAS las páginas** (Fase 2 completa), recién ahí conviene que la 3.0
-   genere su **propio `sitemap.xml` con hreflang** (he ↔ ru) y, si aplica, su `robots.txt` /
-   `.htaccess`, reemplazando los de producción. Pendiente futuro — no ahora.
-5. **Tras publicar la home**, pedir en Google Search Console la **reindexación de `/` y `/ru/`**
-   (las 2 páginas que cambian) para que Google recoja el rediseño, metas y JSON-LD nuevos.
+La 3.0 genera sus propios `sitemap.xml`, `robots.txt` y `.htaccess`; ya no depende de páginas
+heredadas. El sitemap incluye las cinco URLs indexables y hreflang en home/booking. `/terms` y
+`/404` siguen disponibles pero no se incluyen porque llevan `noindex`.
+
+Antes de tocar el destino se creó `..\Respaldos\2026-09-18-214312-antes-migracion-3.0\`, con
+ZIP de producción, bundle git, parche previo, retrato y `analytics.db` de 32 KB. El script de
+preparación valida remote, branch, limpieza, hashes y límites de ruta; sincroniza archivos
+individuales dentro de Web 1.0 y no realiza un borrado recursivo fuera del destino.
+
+Franco autorizó publicar el 18/09/2026. Esta autorización no cambia el estado actual: mientras
+la revisión final no termine y no se ejecute push, producción sigue sirviendo Web 1.0.
 
 ## Cómo trabajar en este proyecto
 
@@ -139,8 +128,13 @@ la 3.0 **todavía no genera**:
 - `npm run dev` → http://localhost:4321 (hot reload; ruso en /ru/).
 - Commits acá son libres; a producción solo se llega por la Fase 5.
 
-## Riesgo a tener presente
+## Riesgos a vigilar en el cierre
 
-Mientras se construye la 3.0, producción sigue con el sitio 1.0 (el que no convierte) — la
-carpeta hermana `..\Web 2.0` (branch `cro-hormozi`) tiene un sitio 2.2 terminado que se puede
-publicar en cualquier momento como puente si la 3.0 se demora.
+- El Appointment Schedule es un servicio externo: volver a comprobar slots y carga después del deploy.
+- No confundir los horarios propuestos por WhatsApp en la home con disponibilidad confirmada.
+- La vinculación GA4–Search Console ya está hecha (flujo `14382575313`), pero el cliente/API
+  de lectura con IA sigue en preparación. Analytics Data API y Search Console API están
+  habilitadas en `dimatherapy-medicion`; falta la autorización OAuth de Google antes de poder
+  anunciar la conexión como operativa.
+- Confirmar que Hostinger sirva `.htaccess`, 404 y clean URLs, y observar Search Console tras
+  solicitar reindexación.

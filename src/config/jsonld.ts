@@ -16,43 +16,47 @@ import {
   EMAIL,
   PRICE_FIRST_SESSION,
   PRICE_CURRENCY,
+  PROFILE_IMAGE,
 } from './site';
 import type { ProfileDict, Locale } from '../i18n/types';
 
-/** Construye el JSON-LD Person (+ Offer de la primera sesión) para el perfil. */
+/** Construye ProfilePage con Person como mainEntity y la oferta visible de primera sesión. */
 export function buildPersonSchema(t: ProfileDict, locale: Locale) {
   const path = locale === 'he' ? '/' : '/ru/';
   // availableLanguage con el idioma actual primero (señal de relevancia por locale).
   const languages = locale === 'he' ? ['Hebrew', 'Russian'] : ['Russian', 'Hebrew'];
   return {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: t.header.name,
-    jobTitle: t.header.role,
-    description: t.jsonLd.personDescription,
-    image: new URL('/assets/img/dmitry-photo2-880.webp', SITE_URL).href,
+    '@type': 'ProfilePage',
     url: new URL(path, SITE_URL).href,
-    email: EMAIL,
-    telephone: PHONE_E164,
-    // Perfil de WhatsApp como identidad social/canal de contacto (igual que producción).
-    sameAs: [`https://wa.me/${PHONE}`],
-    knowsLanguage: ['ru', 'he'],
-    // Terapia 100% online: alcance sin fronteras, igual que el ProfessionalService de producción.
-    areaServed: 'Worldwide',
-    availableLanguage: languages,
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'appointments',
-      telephone: PHONE_E164,
+    name: t.meta.title,
+    mainEntity: {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#dmitriy-kazakov`,
+      name: t.header.name,
+      jobTitle: t.header.role,
+      description: t.jsonLd.personDescription,
+      image: new URL(PROFILE_IMAGE, SITE_URL).href,
+      url: new URL(path, SITE_URL).href,
       email: EMAIL,
-      availableLanguage: languages,
-      url: `https://wa.me/${PHONE}`,
-    },
-    makesOffer: {
-      '@type': 'Offer',
-      name: t.jsonLd.offerName,
-      price: PRICE_FIRST_SESSION,
-      priceCurrency: PRICE_CURRENCY,
+      telephone: PHONE_E164,
+      // Perfil de WhatsApp como identidad social/canal de contacto (igual que producción).
+      sameAs: [`https://wa.me/${PHONE}`],
+      knowsLanguage: ['ru', 'he'],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'appointments',
+        telephone: PHONE_E164,
+        email: EMAIL,
+        availableLanguage: languages,
+        url: `https://wa.me/${PHONE}`,
+      },
+      makesOffer: {
+        '@type': 'Offer',
+        name: t.jsonLd.offerName,
+        price: PRICE_FIRST_SESSION,
+        priceCurrency: PRICE_CURRENCY,
+      },
     },
   };
 }

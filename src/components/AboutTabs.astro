@@ -167,6 +167,7 @@ const { t } = Astro.props;
   .about-para {
     color: var(--color-text);
     line-height: var(--lh-normal);
+    overflow-wrap: anywhere;
   }
 
   .about-para + .about-para {
@@ -176,6 +177,7 @@ const { t } = Astro.props;
   /* Clamp por altura (max-block-size): a diferencia de -webkit-line-clamp,
      puede contener la lista de casos frecuentes sin romperla. is-open expande. */
   .about-clamp {
+    min-inline-size: 0;
     max-block-size: 10em;
     overflow: hidden;
   }
@@ -187,6 +189,7 @@ const { t } = Astro.props;
 
   /* ---- Casos frecuentes (contenido de la 1.0) ---- */
   .about-cases {
+    min-inline-size: 0;
     margin-block-start: var(--sp-4);
   }
 
@@ -213,11 +216,13 @@ const { t } = Astro.props;
     display: block;
     color: var(--color-text);
     margin-block-end: var(--sp-1);
+    overflow-wrap: anywhere;
   }
 
   .about-case-text {
     color: var(--color-text-2);
     line-height: var(--lh-normal);
+    overflow-wrap: anywhere;
   }
 
   .about-more {

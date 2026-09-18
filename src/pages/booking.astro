@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import BookingPage from '../components/BookingPage.astro';
+import { EMAIL, PHONE_E164, PRICE_CURRENCY, PRICE_FIRST_SESSION, SITE_URL } from '../config/site';
+
+const title = 'קביעת פגישה אונליין | דמיטרי קזקוב';
+const description = 'קבעו פגישה אונליין עם דמיטרי קזקוב. בחרו זמן נוח ביומן וקבלו אישור וקישור לפגישה למייל.';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Online psychosomatic consultation',
+  url: `${SITE_URL}/booking`,
+  description,
+  serviceType: 'Online psychosomatic consultation',
+  provider: {
+    '@type': 'Person',
+    name: 'Dmitriy Kazakov',
+    email: EMAIL,
+    telephone: PHONE_E164,
+  },
+  offers: {
+    '@type': 'Offer',
+    price: PRICE_FIRST_SESSION,
+    priceCurrency: PRICE_CURRENCY,
+    url: `${SITE_URL}/booking`,
+  },
+  availableChannel: {
+    '@type': 'ServiceChannel',
+    serviceUrl: `${SITE_URL}/booking`,
+    availableLanguage: ['Hebrew', 'Russian'],
+  },
+};
+---
+
+<Base title={title} description={description} lang="he" ogType="website">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+  <BookingPage locale="he" />
+</Base>

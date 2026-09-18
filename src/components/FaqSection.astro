@@ -60,12 +60,20 @@ const faqPageSchema = {
 <script type="application/ld+json" set:html={JSON.stringify(faqPageSchema)}></script>
 
 <style>
+  .faq,
+  .faq-group,
+  .faq-items,
+  .faq-item {
+    min-inline-size: 0;
+  }
+
   .faq-title {
     font-size: var(--fs-xl);
     font-weight: var(--fw-bold);
     color: var(--color-text);
     margin-block-end: var(--sp-6);
     text-align: start;
+    overflow-wrap: anywhere;
   }
 
   .faq-group + .faq-group {
@@ -74,12 +82,14 @@ const faqPageSchema = {
 
   .faq-group-title {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     gap: var(--sp-2);
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
     color: var(--color-text);
     margin-block-end: var(--sp-4);
+    overflow-wrap: anywhere;
   }
 
   .faq-group-icon {
@@ -102,6 +112,7 @@ const faqPageSchema = {
 
   .faq-q {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
@@ -117,6 +128,12 @@ const faqPageSchema = {
     display: none;
   }
 
+  .faq-q-text {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
   .faq-chevron {
     flex-shrink: 0;
     color: var(--color-text-2);
@@ -128,11 +145,13 @@ const faqPageSchema = {
   }
 
   .faq-a-wrap {
+    min-inline-size: 0;
     padding-inline: var(--sp-4);
     padding-block-end: var(--sp-4);
   }
 
   .faq-a {
+    overflow-wrap: anywhere;
     color: var(--color-text-2);
     font-size: var(--fs-sm);
     line-height: var(--lh-normal);

@@ -31,6 +31,8 @@ const { t } = Astro.props;
 <style>
   .verified-banner {
     display: flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-6);
@@ -50,9 +52,11 @@ const { t } = Astro.props;
     font-weight: var(--fw-bold);
     color: var(--color-text);
     margin: 0 0 var(--sp-4);
+    overflow-wrap: anywhere;
   }
 
   .verified-checks {
+    min-inline-size: 0;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -63,10 +67,16 @@ const { t } = Astro.props;
 
   .verified-check {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     gap: var(--sp-2);
     color: var(--color-text);
     font-size: var(--fs-base);
+  }
+
+  .verified-check span {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 
   .verified-check-icon {

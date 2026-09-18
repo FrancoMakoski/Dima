@@ -1,6 +1,6 @@
 ---
-// CtaWhatsApp.astro — CTA primario del sitio. SIEMPRE con tracking de click +
-// marca de conversión (data-conversion-whatsapp), leídos por src/scripts/track.ts.
+// CtaWhatsApp.astro — CTA primario del sitio. El evento `whatsapp_click`
+// se normaliza en src/scripts/track.ts y nunca incluye el mensaje ni el href.
 import Icon from './Icon.astro';
 import { waLink } from '../config/site';
 
@@ -22,7 +22,6 @@ const { label, message, trackLabel, variant = 'primary', class: className } = As
   class:list={['cta-wa', `cta-wa-${variant}`, className]}
   data-track="whatsapp_click"
   data-track-label={trackLabel}
-  data-conversion-whatsapp
 >
   <Icon name="whatsapp" size={variant === 'bar' ? 18 : 20} class="cta-wa-icon" />
   <span>{label}</span>

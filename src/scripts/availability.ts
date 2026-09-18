@@ -453,13 +453,14 @@ function renderSchedule(opts: InitScheduleOptions): void {
       for (const slot of slots) {
         // Los chips ya NO son <a> a wa.me: son <button> seleccionables. El
         // salto a WhatsApp ocurre desde el modal de confirmación. El track de
-        // "schedule_slot_select" lo dispara track.ts vía [data-track] al click.
+        // "booking_slot_select" lo dispara track.ts vía [data-track] al click.
         const btn = el('button', 'sched-chip');
         btn.type = 'button';
         btn.textContent = formatSlotTime(slot, locale);
         btn.setAttribute('aria-pressed', 'false');
-        btn.setAttribute('data-track', 'schedule_slot_select');
-        btn.setAttribute('data-track-label', formatSlotFull(slot, locale));
+        btn.setAttribute('data-track', 'booking_slot_select');
+        // Label fijo: la fecha/hora elegida nunca sale hacia Analytics.
+        btn.setAttribute('data-track-label', 'schedule');
         btn.addEventListener('click', () => selectChip(btn, slot));
         allChips.push(btn);
         chips.appendChild(btn);

@@ -1,0 +1,41 @@
+Options -MultiViews
+DirectoryIndex index.html
+ErrorDocument 404 /404
+
+RewriteEngine On
+
+# El panel y servidor experimental 1.0 se retiraron con la migración.
+# Impide servir copias antiguas aunque el hosting retenga archivos del deploy previo.
+RewriteRule ^(?:admin(?:\.html)?/?|server(?:/.*)?)$ - [G,L,NC]
+
+# Alias históricos conservados para no romper enlaces externos.
+RewriteRule ^dmitry-kazakov(?:\.html)?/?$ / [R=301,L]
+RewriteRule ^ru/dmitry-kazakov(?:\.html)?/?$ /ru/ [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+index(?:\.html)?[?\s] [NC]
+RewriteRule ^index(?:\.html)?/?$ / [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+ru/index(?:\.html)?[?\s] [NC]
+RewriteRule ^ru/index(?:\.html)?/?$ /ru/ [R=301,L]
+
+# La URL pública canónica no expone la extensión del archivo estático.
+RewriteCond %{THE_REQUEST} \s/+.+\.html[?\s] [NC]
+RewriteRule ^(.+)\.html$ /$1 [R=301,L]
+
+# Quita la barra final de páginas, pero conserva directorios reales como /ru/.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/track/?$
+RewriteCond %{REQUEST_URI} !^/event/?$
+RewriteCond %{REQUEST_URI} !^/health/?$
+RewriteCond %{REQUEST_URI} !\.[^./]+$
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Resuelve las clean URLs contra los archivos .html generados por Astro.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/track/?$
+RewriteCond %{REQUEST_URI} !^/event/?$
+RewriteCond %{REQUEST_URI} !^/health/?$
+RewriteCond %{REQUEST_URI} !\.[^./]+$
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+?)/?$ /$1.html [L]

@@ -19,7 +19,8 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
    "consultar precio" que abre wa.me precargado. Excepciones legales que se mantienen: el
    "100 ₪" legal en terms y el `price: 0` del JSON-LD de la llamada gratis. El JSON-LD del
    perfil ahora puede llevar un `Offer` de 197 ILS para la primera sesión.
-4. **WhatsApp es el CTA primario** en todo el sitio, siempre con tracking de conversión.
+4. **WhatsApp es el CTA primario** en todo el sitio, siempre con el evento consentido
+   `whatsapp_click` de GA4. No cargar Google Ads ni enviar el texto o href del mensaje.
 5. **NO mencionar a V.Yu. Makulov ni "el método Makulov"** en ningún copy público, en ningún
    idioma (decisión Franco 6-jul-2026). La formación de 120h se describe por institución,
    horas y año (Instituto Internacional de Psicología Práctica, Moscú, 2018) sin nombrar
@@ -27,11 +28,31 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
 
 ## Stack y estructura
 
+### Pedidos de Dima del 4-ago-2026, aplicados localmente el 18-sep
+
+- Usar su teléfono **+972 52-640-7881**, confirmado en WhatsApp; se define en `src/config/site.ts`.
+- Usar el retrato anterior de fondo claro (`PROFILE_IMAGE` en la misma configuración).
+- No ofrecer las tarjetas de paquetes de 2.190 / 3.490 ₪ ni programas fijos de 3–5 sesiones.
+- La reserva del selector solicita una sesión; no debe presentarla como la llamada gratuita.
+- Contexto, evidencia y publicación pendiente: `..\PLAN-DE-TRABAJO-2026-09-18.md`.
+
 - **Astro 5**, salida 100 % estática (`build.format: 'file'` → `anxiety.html`, etc.).
 - i18n nativo: **hebreo (RTL) en la raíz**, **ruso bajo `/ru/`** — una sola fuente de
   componentes, nada de mantener espejos HTML a mano como en el sitio viejo.
 - Las **URLs deben ser idénticas** a las de producción (mapa en el plan) para no perder SEO.
 - Comandos: `npm run dev` (localhost:4321), `npm run build` (genera `dist/`).
+
+### Medición y privacidad
+
+- Fuente única: **GA4 `G-JXBHPTBC5V`**. No cargar GTM ni destinos `AW-*` desde el sitio.
+- GA4 se carga solo en `https://dimatherapyonline.com` (incluido `www`) y únicamente después
+  del opt-in guardado en `dima_analytics_consent`. Rechazar no bloquea ninguna función.
+- `src/scripts/track.ts` usa nombres y parámetros cerrados. Nunca enviar query strings,
+  mensajes de WhatsApp, hrefs, síntomas, fechas/horas elegidas ni texto libre.
+- En la propiedad GA4, **Enhanced measurement debe permanecer desactivado** para impedir que
+  el evento automático de clic saliente capture el `link_url` completo de WhatsApp.
+- Verificación: `npm run build`, `node scripts/verify-build.mjs` y
+  `node scripts/test-tracking.mjs`.
 
 ## Deploy
 

@@ -12,7 +12,7 @@
 // data-attributes del contenedor, más el teléfono y el locale.
 import Card from './Card.astro';
 import Icon from './Icon.astro';
-import { PHONE, CALENDAR_URL, PRICE_DISPLAY, waLink } from '../config/site';
+import { PHONE, CALENDAR_URL, PRICE_DISPLAY, PROFILE_IMAGE, waLink } from '../config/site';
 import type { ProfileDict, Locale } from '../i18n/types';
 
 interface Props {
@@ -78,7 +78,15 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
 
     {/* Botón de reserva: gris/deshabilitado hasta elegir; el script lo habilita,
         le cambia el label a t.reserveCta y abre el modal al hacer click. */}
-    <button type="button" class="sched-reserve" data-sched-reserve data-sched-open disabled>
+    <button
+      type="button"
+      class="sched-reserve"
+      data-sched-reserve
+      data-sched-open
+      data-track="booking_intent"
+      data-track-label="schedule"
+      disabled
+    >
       {t.chooseSlotCta}
     </button>
   </div>
@@ -90,8 +98,8 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     href={CALENDAR_URL}
     target="_blank"
     rel="noopener"
-    data-track="free_call_cta_click"
-    data-track-label="schedule_calendar_link"
+    data-track="calendar_open"
+    data-track-label="schedule"
   >
     <Icon name="checklist-book" size={16} class="sched-calendar-icon" />
     <span>{t.calendarLinkLabel}</span>
@@ -122,7 +130,7 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
     <div class="booking-therapist">
       <img
         class="booking-therapist-photo"
-        src="/assets/img/dmitry-photo2-880.webp"
+        src={PROFILE_IMAGE}
         alt={name}
         width="48"
         height="48"
@@ -187,7 +195,6 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
         data-sched-modal-wa
         data-track="whatsapp_click"
         data-track-label="booking_modal"
-        data-conversion-whatsapp
       >
         <Icon name="whatsapp" size={20} class="booking-confirm-icon" />
         <span>{t.confirmWhatsApp}</span>
@@ -328,11 +335,17 @@ const initialWaHref = waLink(waBookSlotMessage.replace('{slot}', ''));
   /* "Online, terapia individual" con icono, dentro de la card sobre los chips. */
   .sched-modality {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     gap: var(--sp-2);
     font-size: var(--fs-sm);
     color: var(--color-text-2);
     margin-block-end: var(--sp-4);
+  }
+
+  .sched-modality span {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 
   .sched-modality-icon {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://dimatherapyonline.com/</loc>
+    <lastmod>2026-09-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="he" href="https://dimatherapyonline.com/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dimatherapyonline.com/ru/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dimatherapyonline.com/" />
+  </url>
+  <url>
+    <loc>https://dimatherapyonline.com/ru/</loc>
+    <lastmod>2026-09-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="he" href="https://dimatherapyonline.com/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dimatherapyonline.com/ru/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dimatherapyonline.com/" />
+  </url>
+  <url>
+    <loc>https://dimatherapyonline.com/booking</loc>
+    <lastmod>2026-09-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="he" href="https://dimatherapyonline.com/booking" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dimatherapyonline.com/ru/booking" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dimatherapyonline.com/booking" />
+  </url>
+  <url>
+    <loc>https://dimatherapyonline.com/ru/booking</loc>
+    <lastmod>2026-09-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="he" href="https://dimatherapyonline.com/booking" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dimatherapyonline.com/ru/booking" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dimatherapyonline.com/booking" />
+  </url>
+  <url>
+    <loc>https://dimatherapyonline.com/credentials</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+</urlset>

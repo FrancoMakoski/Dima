@@ -31,6 +31,8 @@ const { title, icon, id, class: className } = Astro.props;
 
 <style>
   .card {
+    min-inline-size: 0;
+    max-inline-size: 100%;
     background: var(--color-surface);
     border-radius: var(--r-card);
     box-shadow: var(--sh-card);
@@ -39,6 +41,7 @@ const { title, icon, id, class: className } = Astro.props;
 
   .card-header {
     display: flex;
+    min-inline-size: 0;
     align-items: center;
     gap: var(--sp-3);
     margin-block-end: var(--sp-5);
@@ -53,14 +56,18 @@ const { title, icon, id, class: className } = Astro.props;
   }
 
   .card-title {
+    flex: 1 1 auto;
+    min-inline-size: 0;
     font-size: var(--fs-lg);
     line-height: var(--lh-tight);
     font-weight: var(--fw-semibold);
     color: var(--color-text);
     margin: 0;
+    overflow-wrap: anywhere;
   }
 
   .card-body {
+    min-inline-size: 0;
     color: var(--color-text);
   }
 </style>
