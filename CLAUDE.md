@@ -1,9 +1,9 @@
 # CLAUDE.md — DimaTherapy 3.0
 
 Sitio web **3.0 de DimaTherapy** (Dima Kazakov, terapeuta en Israel): rebuild total desde cero,
-decidido por Franco el 6-jul-2026 porque el sitio en producción no convierte lo suficiente.
-Reemplaza al sitio 1.0 en producción (carpeta hermana `..\Web 1.0`, el repo que se publica)
-y a la 2.2 nunca publicada (carpeta hermana `..\Web 2.0`, branch `cro-hormozi`).
+decidido por Franco el 6-jul-2026 y publicado el 18-sep-2026. Esta carpeta es la fuente
+canónica (commit publicado `46d3d71`); `..\Web 1.0` contiene el artefacto servido por
+GitHub/Hostinger (`128bcb1`). La 2.2 quedó como referencia nunca publicada.
 
 El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de tocar nada.
 
@@ -28,15 +28,15 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
 
 ## Stack y estructura
 
-### Pedidos de Dima del 4-ago-2026, aplicados localmente el 18-sep
+### Pedidos de Dima del 4-ago-2026, publicados el 18-sep
 
 - Usar su teléfono **+972 52-640-7881**, confirmado en WhatsApp; se define en `src/config/site.ts`.
 - Usar el retrato anterior de fondo claro (`PROFILE_IMAGE` en la misma configuración).
 - No ofrecer las tarjetas de paquetes de 2.190 / 3.490 ₪ ni programas fijos de 3–5 sesiones.
 - La reserva del selector solicita una sesión; no debe presentarla como la llamada gratuita.
-- Contexto, evidencia y publicación pendiente: `..\PLAN-DE-TRABAJO-2026-09-18.md`.
+- Contexto, evidencia y publicación confirmada: `..\PLAN-DE-TRABAJO-2026-09-18.md`.
 
-- **Astro 5**, salida 100 % estática (`build.format: 'file'` → `anxiety.html`, etc.).
+- **Astro 5**, salida 100 % estática (`build.format: 'file'` → `booking.html`, etc.).
 - i18n nativo: **hebreo (RTL) en la raíz**, **ruso bajo `/ru/`** — una sola fuente de
   componentes, nada de mantener espejos HTML a mano como en el sitio viejo.
 - Las **URLs deben ser idénticas** a las de producción (mapa en el plan) para no perder SEO.
@@ -51,14 +51,34 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
   mensajes de WhatsApp, hrefs, síntomas, fechas/horas elegidas ni texto libre.
 - En la propiedad GA4, **Enhanced measurement debe permanecer desactivado** para impedir que
   el evento automático de clic saliente capture el `link_url` completo de WhatsApp.
+- Enhanced Measurement fue desactivado el 18-sep y se verificó el interruptor en OFF.
+- GA4 y Search Console están vinculados; Analytics Data API y Search Console API están
+  habilitadas en `dimatherapy-medicion`. El cliente OAuth desktop `DimaTherapy Medicion Local`
+  está autorizado como `kadimaclinic@gmail.com` con solo lectura; el scope canónico de email
+  fue corregido y 8 pruebas pasan. La aplicación OAuth sigue en Testing: el refresh token puede
+  expirar a los 7 días hasta que Franco decida pasarla a Production o reautorizarla al vencer.
+- `..\Integraciones\medicion\actualizar-informe.ps1` fue probado contra las APIs reales y
+  regenera los reportes JSON y Markdown de solo lectura.
 - Verificación: `npm run build`, `node scripts/verify-build.mjs` y
   `node scripts/test-tracking.mjs`.
 
 ## Deploy
 
-El hosting NO cambia: mismo dominio, mismo Hostinger, mismo repo (`..\Web 1.0`).
-Publicar = `npm run build` → copiar el contenido de `dist/` adentro de `..\Web 1.0\` →
-`push-dima.bat` desde ahí.
+El hosting NO cambia: mismo dominio, mismo Hostinger, mismo repo de publicación (`..\Web 1.0`).
+Actualizar producción = ejecutar `scripts\prepare-release.ps1`, revisar el diff generado en
+`..\Web 1.0` y recién entonces usar `push-dima.bat`.
+
+**Requisito Hostinger:** conservar siempre `..\Web 1.0\package.json`. El primer commit de
+migración fue `fd10f813`; Hostinger completó el deploy después de restaurar ese manifiesto en
+`c651ab16`. El script de preparación ya lo preserva. Evidencia del release:
+`..\Verificaciones\2026-09-18-220800-migracion-3.0\`.
+
+Producción actual es `128bcb1`, que corrige el ErrorDocument a `/404.html`. Mantener la misma
+línea en `public/.htaccess`; la corrección se conserva también en la fuente.
+La verificación pública final pasó 7 páginas, 26 recursos, 6 redirects y 4 rutas protegidas:
+`..\Verificaciones\2026-09-18-201745-verificacion-publica-3.0.json`.
+Search Console aceptó `sitemap.xml`; las portadas `/` y `/ru/` ya están indexadas y ambas
+solicitudes de reindexación fueron confirmadas y quedaron en la cola prioritaria de rastreo.
 
 ## Idioma de trabajo
 

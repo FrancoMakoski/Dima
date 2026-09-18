@@ -30,7 +30,7 @@ $archivePath = Join-Path $releaseDir 'produccion-anterior.zip'
 git -C $targetRoot archive --format=zip "--output=$archivePath" HEAD
 if ($LASTEXITCODE -ne 0) { throw 'No se pudo respaldar produccion.' }
 
-$keep = @('.gitignore', '.hostinger.json', 'push-dima.bat', 'README.md')
+$keep = @('.gitignore', '.hostinger.json', 'package.json', 'push-dima.bat', 'README.md')
 $files = @(Get-ChildItem -LiteralPath $distRoot -File -Recurse -Force)
 $manifest = @{}
 foreach ($item in $files) {

@@ -1,7 +1,7 @@
 # Plan Web 3.0 — DimaTherapy (rebuild desde cero)
 
-**Fecha inicial:** 6-jul-2026 · **Estado 18-sep-2026:** release candidate completo, publicación
-autorizada por Franco y pendiente de la verificación final antes del switch.
+**Fecha inicial:** 6-jul-2026 · **Estado 18-sep-2026:** 3.0 publicada. Hostinger confirmó
+`Completed` y `Current`; producción actual `128bcb1`, fuente publicada `46d3d71`.
 
 ## La idea en una línea
 
@@ -80,19 +80,19 @@ producción y no forman parte del switch actual. Se podrán crear después con c
 4. Fuentes self-hosted, imágenes optimizadas y retrato solicitado por Dima.
 5. `admin.html` no se migra.
 
-### Fase 4 — QA del release candidate 🟡
-Build, verificador de artefacto, rutas, links, metadatos, estados responsive, consentimiento y
-flujo de calendario fueron comprobados. El calendario mostró slots, Google Meet y zona BIT; no
-se reservó una cita. Falta la última revisión consolidada previa al deploy y el smoke test vivo.
+### Fase 4 — QA del release ✅
+Build, verificador de artefacto, rutas, links, metadatos, estados responsive y consentimiento
+fueron comprobados. El calendario público se inspeccionó en una pestaña separada: mostró slots
+de 60 minutos, reuniones por Google Meet e instrucciones de pago BIT. No se aceptaron las
+condiciones del paciente ni se reservó una cita. Hebreo y ruso pasaron QA móvil a 320 px y texto
+al 200 %. La verificación pública final pasó 7 páginas, 26 recursos, 6 redirects y 4 rutas protegidas.
 
-### Fase 5 — Switch a producción autorizado, todavía no ejecutado
-1. Ejecutar `scripts/prepare-release.ps1`: build, verificación, respaldo y sincronización con
-   guardas hacia `..\Web 1.0\`.
-2. Revisar el diff y el manifiesto. El script no hace commit, push ni publicación.
-3. Publicar mediante `..\Web 1.0\push-dima.bat` y esperar el redeploy de Hostinger.
-4. Verificar en vivo las siete páginas, redirecciones, códigos de estado, calendario, WhatsApp,
-   consentimiento, recursos y medición.
-5. Pedir reindexación de las páginas principales y monitorear dos semanas.
+### Fase 5 — Switch a producción ✅
+1. Fuente 3.0 guardada en `46d3d71`.
+2. Migración sincronizada y publicada en `fd10f813`.
+3. `package.json` requerido por Hostinger restaurado y preservado en `c651ab16`.
+4. ErrorDocument corregido para servir `/404.html` en producción `128bcb1`.
+5. Hostinger confirmó el deploy actual como `Completed`; home y verificación pública pasaron.
 
 ## Mapa de URLs del switch actual
 
@@ -119,8 +119,10 @@ ZIP de producción, bundle git, parche previo, retrato y `analytics.db` de 32 KB
 preparación valida remote, branch, limpieza, hashes y límites de ruta; sincroniza archivos
 individuales dentro de Web 1.0 y no realiza un borrado recursivo fuera del destino.
 
-Franco autorizó publicar el 18/09/2026. Esta autorización no cambia el estado actual: mientras
-la revisión final no termine y no se ejecute push, producción sigue sirviendo Web 1.0.
+Franco autorizó publicar y el switch se completó el 18/09/2026. Evidencia y manifiesto:
+`..\Verificaciones\2026-09-18-220800-migracion-3.0\`. Para futuras publicaciones debe
+preservarse `..\Web 1.0\package.json`; Hostinger lo necesita para reconocer el build estático y
+`scripts\prepare-release.ps1` ya fue ajustado para conservarlo.
 
 ## Cómo trabajar en este proyecto
 
@@ -133,8 +135,12 @@ la revisión final no termine y no se ejecute push, producción sigue sirviendo 
 - El Appointment Schedule es un servicio externo: volver a comprobar slots y carga después del deploy.
 - No confundir los horarios propuestos por WhatsApp en la home con disponibilidad confirmada.
 - La vinculación GA4–Search Console ya está hecha (flujo `14382575313`), pero el cliente/API
-  de lectura con IA sigue en preparación. Analytics Data API y Search Console API están
-  habilitadas en `dimatherapy-medicion`; falta la autorización OAuth de Google antes de poder
-  anunciar la conexión como operativa.
-- Confirmar que Hostinger sirva `.htaccess`, 404 y clean URLs, y observar Search Console tras
-  solicitar reindexación.
+  de lectura funciona mediante Analytics Data API y Search Console API en
+  `dimatherapy-medicion`; OAuth desktop está autorizado con `kadimaclinic@gmail.com`, scope
+  canónico de email y solo lectura. Ocho pruebas pasan; `actualizar-informe.ps1` fue probado
+  contra datos reales y regeneró los reportes JSON/Markdown.
+- OAuth permanece en modo Testing: el refresh token puede expirar a los 7 días. Franco debe
+  decidir si la app pasa a Production o si se reautoriza al vencer.
+- Search Console aceptó el sitemap. Las portadas `/` y `/ru/` ya aparecen indexadas;
+  ambas solicitudes de reindexación fueron confirmadas y quedaron en la cola prioritaria.
+  La actualización del índice depende ahora del rastreo de Google.
