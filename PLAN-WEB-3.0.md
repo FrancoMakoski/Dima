@@ -1,5 +1,10 @@
 # Plan Web 3.0 — DimaTherapy (rebuild desde cero)
 
+**Cambio vigente 19-sep-2026:** por pedido de Franco se retira temporalmente el aviso de
+Analytics y se desactiva su carga en todas las páginas. La conexión de lectura histórica
+GA4/Search Console se conserva. El HTML se revalida en cada visita y los recursos con hash
+mantienen caché larga. Ver `../CAMBIOS-2026-09-19-cache-y-analytics.md` para publicación y QA.
+
 **Fecha inicial:** 6-jul-2026 · **Estado 18-sep-2026:** 3.0 publicada. Hostinger confirmó
 `Completed` y `Current`; producción actual `128bcb1`, fuente publicada `46d3d71`.
 

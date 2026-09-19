@@ -1,11 +1,16 @@
 ---
 // Base.astro — layout raíz del sitio 3.0 (perfil estilo Clearly).
 // Head completo: meta, OG, canonical + hreflang he<->ru, favicon, preload de fuentes,
-// Google tag, y un slot 'head' para JSON-LD por página.
+// metadatos sociales y un slot 'head' para JSON-LD por página.
 import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
-import { SITE_URL, PROFILE_IMAGE } from '../config/site';
+import {
+  ANALYTICS_ENABLED,
+  GOOGLE_ANALYTICS_ID,
+  SITE_URL,
+  PROFILE_IMAGE,
+} from '../config/site';
 import type { Locale } from '../i18n/types';
 
 interface Props {
@@ -62,10 +67,10 @@ const localeFont = lang === 'he' ? '/assets/fonts/rubik-var-hebrew.woff2' : '/as
 
 const ogImage = new URL(PROFILE_IMAGE, SITE_URL).href;
 
-// Una sola implementación de medición: Google tag directo para GA4.
-// El guard de hostname vive también en el cliente para que `astro preview`, localhost,
-// GitHub Pages y dominios temporales de Hostinger no contaminen la propiedad real.
-const GOOGLE_ANALYTICS_ID = 'G-JXBHPTBC5V';
+// Implementación de opt-in conservada detrás de ANALYTICS_ENABLED. Cuando está
+// apagada no se genera markup, bootstrap ni loader; una aceptación anterior en
+// localStorage no puede reactivar GA4 por sí sola.
+const analyticsBootstrap = `(function(w,d){var key='dima_analytics_consent';var host=w.location.hostname.toLowerCase().replace(/^www\\./,'');var production=w.location.protocol==='https:'&&host==='dimatherapyonline.com';var loading=false;w.__dimaTrackingEnabled=false;function read(){try{return w.localStorage.getItem(key)||'';}catch(e){return '';}}function write(value){try{w.localStorage.setItem(key,value);}catch(e){}}function cleanUrl(value){try{var url=new URL(value,w.location.origin);return url.origin+url.pathname;}catch(e){return '';}}function enable(){if(!production||loading)return;loading=true;w.dataLayer=w.dataLayer||[];w.gtag=w.gtag||function(){w.dataLayer.push(arguments);};w.gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});w.gtag('js',new Date());w.gtag('config','${GOOGLE_ANALYTICS_ID}',{send_page_view:true,page_location:cleanUrl(w.location.href),page_referrer:cleanUrl(d.referrer),allow_google_signals:false,allow_ad_personalization_signals:false});w.__dimaTrackingEnabled=true;d.dispatchEvent(new CustomEvent('dima:analytics-ready'));var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}';d.head.appendChild(s);}function init(){var box=d.querySelector('[data-analytics-consent]');if(!production){if(box)box.hidden=true;return;}var choice=read();if(choice==='accepted'){if(box)box.hidden=true;enable();return;}if(choice==='declined'){if(box)box.hidden=true;return;}if(!box)return;box.hidden=false;var accept=box.querySelector('[data-analytics-accept]');var decline=box.querySelector('[data-analytics-decline]');if(accept)accept.addEventListener('click',function(){write('accepted');box.hidden=true;enable();});if(decline)decline.addEventListener('click',function(){write('declined');box.hidden=true;});}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();})(window,document);`;
 const analyticsConsent = lang === 'he'
   ? {
       ariaLabel: 'פרטיות ומדידה',
@@ -95,10 +100,7 @@ const analyticsConsent = lang === 'he'
       Google Analytics se carga una sola vez, únicamente en producción real y
       después del consentimiento. Las URLs enviadas excluyen query y fragmento.
     -->
-    <script
-      is:inline
-      set:html={`(function(w,d){var key='dima_analytics_consent';var host=w.location.hostname.toLowerCase().replace(/^www\\./,'');var production=w.location.protocol==='https:'&&host==='dimatherapyonline.com';var loading=false;w.__dimaTrackingEnabled=false;function read(){try{return w.localStorage.getItem(key)||'';}catch(e){return '';}}function write(value){try{w.localStorage.setItem(key,value);}catch(e){}}function cleanUrl(value){try{var url=new URL(value,w.location.origin);return url.origin+url.pathname;}catch(e){return '';}}function enable(){if(!production||loading)return;loading=true;w.dataLayer=w.dataLayer||[];w.gtag=w.gtag||function(){w.dataLayer.push(arguments);};w.gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});w.gtag('js',new Date());w.gtag('config','${GOOGLE_ANALYTICS_ID}',{send_page_view:true,page_location:cleanUrl(w.location.href),page_referrer:cleanUrl(d.referrer),allow_google_signals:false,allow_ad_personalization_signals:false});w.__dimaTrackingEnabled=true;d.dispatchEvent(new CustomEvent('dima:analytics-ready'));var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}';d.head.appendChild(s);}function init(){var box=d.querySelector('[data-analytics-consent]');if(!production){if(box)box.hidden=true;return;}var choice=read();if(choice==='accepted'){if(box)box.hidden=true;enable();return;}if(choice==='declined'){if(box)box.hidden=true;return;}if(!box)return;box.hidden=false;var accept=box.querySelector('[data-analytics-accept]');var decline=box.querySelector('[data-analytics-decline]');if(accept)accept.addEventListener('click',function(){write('accepted');box.hidden=true;enable();});if(decline)decline.addEventListener('click',function(){write('declined');box.hidden=true;});}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();})(window,document);`}
-    />
+    {ANALYTICS_ENABLED && <script is:inline set:html={analyticsBootstrap} />}
 
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
@@ -145,31 +147,35 @@ const analyticsConsent = lang === 'he'
   <body>
     <slot />
 
-    <aside
-      class="analytics-consent"
-      data-analytics-consent
-      role="region"
-      aria-label={analyticsConsent.ariaLabel}
-      hidden
-    >
-      <div class="analytics-consent-copy">
-        <strong>{analyticsConsent.title}</strong>
-        <p>{analyticsConsent.text}</p>
-        <a href="/terms">{analyticsConsent.policy}</a>
-      </div>
-      <div class="analytics-consent-actions">
-        <button type="button" class="analytics-consent-accept" data-analytics-accept>
-          {analyticsConsent.accept}
-        </button>
-        <button type="button" class="analytics-consent-decline" data-analytics-decline>
-          {analyticsConsent.decline}
-        </button>
-      </div>
-    </aside>
+    {ANALYTICS_ENABLED && (
+      <aside
+        class="analytics-consent"
+        data-analytics-consent
+        role="region"
+        aria-label={analyticsConsent.ariaLabel}
+        hidden
+      >
+        <div class="analytics-consent-copy">
+          <strong>{analyticsConsent.title}</strong>
+          <p>{analyticsConsent.text}</p>
+          <a href="/terms">{analyticsConsent.policy}</a>
+        </div>
+        <div class="analytics-consent-actions">
+          <button type="button" class="analytics-consent-accept" data-analytics-accept>
+            {analyticsConsent.accept}
+          </button>
+          <button type="button" class="analytics-consent-decline" data-analytics-decline>
+            {analyticsConsent.decline}
+          </button>
+        </div>
+      </aside>
+    )}
 
-    <script>
-      import '../scripts/track';
-    </script>
+    {ANALYTICS_ENABLED && (
+      <script>
+        import '../scripts/track';
+      </script>
+    )}
   </body>
 </html>
 

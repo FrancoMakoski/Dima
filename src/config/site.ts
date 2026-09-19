@@ -35,8 +35,16 @@ export const CALENDAR_URL =
 /** ID del video de presentación (YouTube). */
 export const VIDEO_ID = 'xA8gP1GijxA' as const;
 
-/** Google Tag Manager. */
-export const GTM_ID = 'GTM-N56J29D8' as const;
+/**
+ * Interruptor único de Analytics en el sitio público.
+ *
+ * `false` impide generar el aviso, el bootstrap y el loader de Google incluso
+ * si el visitante conservaba una aceptación anterior en localStorage.
+ */
+export const ANALYTICS_ENABLED = false as const;
+
+/** Destino GA4 conservado para una futura reactivación explícita del opt-in. */
+export const GOOGLE_ANALYTICS_ID = 'G-JXBHPTBC5V' as const;
 
 /** Precio de la primera sesión (visible en el perfil, decisión Franco 6-jul-2026). */
 export const PRICE_FIRST_SESSION = 197 as const;

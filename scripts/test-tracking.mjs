@@ -1,10 +1,12 @@
-// Smoke test sin navegador para el bootstrap de consentimiento y los eventos GA4.
+// Smoke test sin navegador para Analytics desactivado, el opt-in conservado y los eventos GA4.
 // Ejecutar después de `npm run build`.
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import vm from 'node:vm';
 
 const DIST = resolve(import.meta.dirname, '../dist');
+const SITE_CONFIG = resolve(import.meta.dirname, '../src/config/site.ts');
+const BASE_LAYOUT = resolve(import.meta.dirname, '../src/layouts/Base.astro');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -17,20 +19,45 @@ function walk(path) {
   });
 }
 
-const htmlFiles = walk(DIST).filter((file) => file.endsWith('.html'));
+const siteConfig = readFileSync(SITE_CONFIG, 'utf8');
+const analyticsFlag = siteConfig.match(/export const ANALYTICS_ENABLED = (true|false) as const;/)?.[1];
+const analyticsId = siteConfig.match(/export const GOOGLE_ANALYTICS_ID = '([^']+)' as const;/)?.[1];
+assert(analyticsFlag, 'No se encontró ANALYTICS_ENABLED en site.ts');
+assert(analyticsId, 'No se encontró GOOGLE_ANALYTICS_ID en site.ts');
+const analyticsEnabled = analyticsFlag === 'true';
+
+const publicFiles = walk(DIST).filter((file) => /\.(?:html|js)$/.test(file));
+const htmlFiles = publicFiles.filter((file) => file.endsWith('.html'));
 assert(htmlFiles.length > 0, 'No hay HTML construido; ejecutar npm run build primero');
 
-for (const file of htmlFiles) {
-  const html = readFileSync(file, 'utf8');
-  assert(html.includes('data-analytics-consent'), `${file}: falta el control de consentimiento`);
-  assert(html.includes('G-JXBHPTBC5V'), `${file}: falta el destino GA4`);
-  assert(!html.includes('AW-'), `${file}: contiene un destino Google Ads`);
-  assert(!html.includes('GTM-'), `${file}: contiene Google Tag Manager`);
+for (const file of publicFiles) {
+  const source = readFileSync(file, 'utf8');
+  assert(!source.includes('AW-'), `${file}: contiene un destino Google Ads`);
+  assert(!source.includes('GTM-'), `${file}: contiene Google Tag Manager`);
+  if (!analyticsEnabled) {
+    assert(!source.includes('data-analytics-consent'), `${file}: contiene el aviso de Analytics desactivado`);
+    assert(!source.includes('dima_analytics_consent'), `${file}: contiene el bootstrap de consentimiento desactivado`);
+    assert(!source.includes(analyticsId), `${file}: contiene el destino GA4 desactivado`);
+    assert(!source.includes('googletagmanager.com/gtag/js'), `${file}: contiene el loader de GA4 desactivado`);
+  }
 }
 
-const indexHtml = readFileSync(resolve(DIST, 'index.html'), 'utf8');
-const bootstrap = indexHtml.match(/<script>(\(function\(w,d\)[\s\S]*?)<\/script>/)?.[1];
-assert(bootstrap, 'No se encontró el bootstrap de consentimiento');
+if (analyticsEnabled) {
+  for (const file of htmlFiles) {
+    const html = readFileSync(file, 'utf8');
+    assert(html.includes('data-analytics-consent'), `${file}: falta el control de consentimiento`);
+    assert(html.includes(analyticsId), `${file}: falta el destino GA4`);
+  }
+}
+
+// El bootstrap no llega al build mientras el flag está apagado. Se prueba desde
+// la fuente para conservar la cobertura del guard de producción y del opt-in.
+const baseLayout = readFileSync(BASE_LAYOUT, 'utf8');
+const bootstrapTemplate = baseLayout.match(/const analyticsBootstrap = `([\s\S]*?)`;\r?\nconst analyticsConsent/)?.[1];
+assert(bootstrapTemplate, 'No se encontró el bootstrap de consentimiento conservado');
+const bootstrap = vm.runInNewContext(`\`${bootstrapTemplate}\``, {
+  GOOGLE_ANALYTICS_ID: analyticsId,
+});
 
 function consentScenario({ hostname, protocol = 'https:', choice = '' }) {
   const handlers = {};
@@ -102,7 +129,7 @@ accepted.handlers.accept();
 assert(accepted.box.hidden, 'Aceptar no cerró el aviso');
 assert(accepted.storage.get('dima_analytics_consent') === 'accepted', 'Aceptación no persistida');
 assert(accepted.scripts.length === 1, 'Aceptar no cargó exactamente un Google tag');
-assert(accepted.scripts[0].src.endsWith('gtag/js?id=G-JXBHPTBC5V'), 'Se cargó un destino inesperado');
+assert(accepted.scripts[0].src.endsWith(`gtag/js?id=${analyticsId}`), 'Se cargó un destino inesperado');
 assert(accepted.window.__dimaTrackingEnabled === true, 'Aceptar no habilitó los eventos');
 const config = accepted.window.dataLayer.find((args) => args[0] === 'config');
 assert(config, 'Falta la configuración GA4');
@@ -176,4 +203,4 @@ for (const forbidden of ['SECRET_MESSAGE', 'SECRET_DATE_AND_TIME', 'wa.me', '?te
   assert(!serializedCalls.includes(forbidden), `Se filtró un dato no permitido: ${forbidden}`);
 }
 
-console.log(`OK tracking: ${htmlFiles.length} páginas; hosts, opt-in/deny, URL limpia, eventos privados y deduplicación.`);
+console.log(`OK tracking ${analyticsEnabled ? 'activo' : 'desactivado'}: ${htmlFiles.length} páginas; artefacto público, hosts, opt-in/deny, URL limpia, eventos privados y deduplicación.`);

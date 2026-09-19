@@ -2,6 +2,18 @@ Options -MultiViews
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
+# Revalidar las páginas al volver a abrirlas: evita conservar un HTML antiguo
+# con referencias a recursos de un despliegue anterior. Mantiene ETag/304.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html?|xml|txt)$">
+    Header set Cache-Control "no-cache, max-age=0, must-revalidate"
+  </FilesMatch>
+  # Astro incluye el hash del contenido en estos nombres de CSS/JS.
+  <FilesMatch "\.[A-Za-z0-9_-]{8,}\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
 RewriteEngine On
 
 # El panel y servidor experimental 1.0 se retiraron con la migración.

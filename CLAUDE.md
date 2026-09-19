@@ -19,8 +19,9 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
    "consultar precio" que abre wa.me precargado. Excepciones legales que se mantienen: el
    "100 ₪" legal en terms y el `price: 0` del JSON-LD de la llamada gratis. El JSON-LD del
    perfil ahora puede llevar un `Offer` de 197 ILS para la primera sesión.
-4. **WhatsApp es el CTA primario** en todo el sitio, siempre con el evento consentido
-   `whatsapp_click` de GA4. No cargar Google Ads ni enviar el texto o href del mensaje.
+4. **WhatsApp es el CTA primario** en todo el sitio. Desde el 19-sep-2026, Analytics está
+   desactivado por pedido de Franco. Si se autoriza reactivarlo, usar el evento consentido
+   `whatsapp_click`. No cargar Google Ads ni enviar el texto o href del mensaje.
 5. **NO mencionar a V.Yu. Makulov ni "el método Makulov"** en ningún copy público, en ningún
    idioma (decisión Franco 6-jul-2026). La formación de 120h se describe por institución,
    horas y año (Instituto Internacional de Psicología Práctica, Moscú, 2018) sin nombrar
@@ -45,8 +46,10 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
 ### Medición y privacidad
 
 - Fuente única: **GA4 `G-JXBHPTBC5V`**. No cargar GTM ni destinos `AW-*` desde el sitio.
-- GA4 se carga solo en `https://dimatherapyonline.com` (incluido `www`) y únicamente después
-  del opt-in guardado en `dima_analytics_consent`. Rechazar no bloquea ninguna función.
+- **Estado vigente 19-sep-2026:** `ANALYTICS_ENABLED=false` en `src/config/site.ts`.
+  No generar el aviso ni cargar GA4, incluso para visitantes que aceptaron anteriormente.
+  Es una pausa de medición del sitio, no una eliminación de datos o de las APIs de lectura.
+  Para una futura reactivación explícita, conservar el opt-in y el límite al dominio real.
 - `src/scripts/track.ts` usa nombres y parámetros cerrados. Nunca enviar query strings,
   mensajes de WhatsApp, hrefs, síntomas, fechas/horas elegidas ni texto libre.
 - En la propiedad GA4, **Enhanced measurement debe permanecer desactivado** para impedir que
@@ -63,6 +66,10 @@ El roadmap completo vive en [PLAN-WEB-3.0.md](PLAN-WEB-3.0.md). Leerlo antes de 
   `node scripts/test-tracking.mjs`.
 
 ## Deploy
+
+El HTML, sitemap y robots deben responder con `Cache-Control: no-cache, max-age=0,
+must-revalidate`. Los CSS/JS con hash de Astro pueden usar caché larga e `immutable`.
+Después de publicar, purgar la caché del dominio desde el Dashboard de Hostinger.
 
 El hosting NO cambia: mismo dominio, mismo Hostinger, mismo repo de publicación (`..\Web 1.0`).
 Actualizar producción = ejecutar `scripts\prepare-release.ps1`, revisar el diff generado en
